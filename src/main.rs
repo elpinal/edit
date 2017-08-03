@@ -3,6 +3,13 @@ struct Editor {
     position: u32,
 }
 
+fn build_editor(buffer: String, position: u32) -> Editor {
+    Editor {
+        buffer,
+        position,
+    }
+}
+
 fn move_left(editor: Editor, n: u32) -> Editor {
     Editor {
         position: editor.position-n,
@@ -18,10 +25,10 @@ fn move_right(editor: Editor, n: u32) -> Editor {
 }
 
 fn main() {
-    let editor = Editor {
-        buffer: String::from("Hello, world!"),
-        position: 6,
-    };
+    let editor = build_editor(
+        String::from("Hello, world!"),
+        6,
+    );
     let editor = move_right(editor, 1);
     let editor = move_left(editor, 2);
     println!("editor: {} {}", editor.buffer, editor.position);
