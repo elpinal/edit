@@ -138,6 +138,19 @@ mod editor {
         }
     }
 
+    pub fn delete_at(editor: Editor, line: u32, column: u32) -> Editor {
+        let mut buffer = editor.buffer.clone();
+        let offset = editor.offset(line, column).unwrap() as usize;
+        buffer.remove(offset);
+        let mut indices = &mut editor.newline_indices.clone();
+        let v: Vec<u32> = indices.into_iter().map(|x| if *x > offset as u32 {*x - 1} else {*x}).collect();
+        Editor {
+            buffer,
+            newline_indices: v,
+            ..editor
+        }
+    }
+
 #[cfg(test)]
     mod tests {
         use super::*;
@@ -309,6 +322,22 @@ mod editor {
             editor = insert_at(editor, '\n', 0, 6);
             assert_eq!(editor, build_editor(
                     String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCC."),
+                    0,
+                    6,
+                    ));
+        }
+
+        #[test]
+        fn test_delete_at() {
+            let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
+            let mut editor = build_editor(
+                String::from(buffer),
+                0,
+                6,
+                );
+            editor = delete_at(editor, 0, 6);
+            assert_eq!(editor, build_editor(
+                    String::from("Hello,world!\nThe 2nd line.\nAAABBBCCC."),
                     0,
                     6,
                     ));
