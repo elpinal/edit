@@ -145,8 +145,9 @@ mod tests {
 
     #[test]
     fn test_move_left() {
+        let buffer = "Hello, world!\nThe 2nd line.";
         let mut editor = build_editor(
-            String::from("Hello, world!\nThe 2nd line."),
+            String::from(buffer),
             1,
             6,
         );
@@ -154,9 +155,23 @@ mod tests {
         for i in 0..expected.len() {
             editor = move_left(editor, 1);
             assert_eq!(editor, build_editor(
-                    String::from("Hello, world!\nThe 2nd line."),
+                    String::from(buffer),
                     1,
                     expected[i],
+            ));
+        }
+
+        for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()){
+            let editor = build_editor(
+                String::from(buffer),
+                1,
+                i as u32,
+            );
+            let editor = move_left(editor, buffer.len() as u32 + 1);
+            assert_eq!(editor, build_editor(
+                    String::from(buffer),
+                    1,
+                    0,
             ));
         }
     }
@@ -178,6 +193,20 @@ mod tests {
                     4,
             ));
         }
+
+        for i in 0..(buffer.match_indices('\n').count() + 1) {
+            let editor = build_editor(
+                String::from(buffer),
+                i as u32,
+                1,
+            );
+            let editor = move_up(editor, buffer.len() as u32 + 1);
+            assert_eq!(editor, build_editor(
+                    String::from(buffer),
+                    0,
+                    1,
+            ));
+        }
     }
 
     #[test]
@@ -195,6 +224,20 @@ mod tests {
                     String::from(buffer),
                     expected[i],
                     4,
+            ));
+        }
+
+        for i in 0..(buffer.match_indices('\n').count() + 1) {
+            let editor = build_editor(
+                String::from(buffer),
+                i as u32,
+                1,
+            );
+            let editor = move_down(editor, buffer.len() as u32 + 1);
+            assert_eq!(editor, build_editor(
+                    String::from(buffer),
+                    buffer.match_indices('\n').count() as u32,
+                    1,
             ));
         }
     }
