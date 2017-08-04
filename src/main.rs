@@ -32,14 +32,14 @@ fn move_left(editor: Editor, n: u32) -> Editor {
 
 fn move_right(editor: Editor, n: u32) -> Editor {
     // TODO: How about try_from?
-    let line_offset = if editor.line == 0 {
+    let line_len = editor.newline_indices[editor.line as usize] - if editor.line == 0 {
         0
     } else {
         editor.newline_indices[(editor.line - 1) as usize]
     };
-    if editor.column + n > line_offset {
+    if editor.column + n >= line_len {
         return Editor {
-            column: line_offset,
+            column: line_len - 1,
             ..editor
         };
     }
@@ -112,8 +112,9 @@ mod tests {
 
     #[test]
     fn test_move_right() {
+        let buffer = "Hello, world!\nThe 2nd line.";
         let mut editor = build_editor(
-            String::from("Hello, world!\nThe 2nd line."),
+            String::from(buffer),
             1,
             6,
         );
@@ -121,9 +122,23 @@ mod tests {
         for i in 0..expected.len() {
             editor = move_right(editor, 1);
             assert_eq!(editor, build_editor(
-                    String::from("Hello, world!\nThe 2nd line."),
+                    String::from(buffer),
                     1,
                     expected[i],
+            ));
+        }
+
+        for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()){
+            let editor = build_editor(
+                String::from(buffer),
+                1,
+                i as u32,
+            );
+            let editor = move_right(editor, buffer.len() as u32 + 1);
+            assert_eq!(editor, build_editor(
+                    String::from(buffer),
+                    1,
+                    buffer.rfind('\n').unwrap() as u32,
             ));
         }
     }
