@@ -1,3 +1,4 @@
+#[derive(PartialEq, Debug)]
 struct Editor {
     buffer: String,
     newline_indices: Vec<u32>,
@@ -99,4 +100,25 @@ fn main() {
     let editor = insert_at(editor, '4', 1, 4);
     let editor = insert_at(editor, '4', 0, 0);
     println!("editor: {} {} {}", editor.buffer, editor.line, editor.column);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_move_right() {
+        let editor = build_editor(
+            String::from("Hello, world!\nThe 2nd line."),
+            1,
+            6,
+        );
+        let editor = move_right(editor, 1);
+        let want = build_editor(
+            String::from("Hello, world!\nThe 2nd line."),
+            1,
+            7,
+        );
+        assert_eq!(editor, want);
+    }
 }
