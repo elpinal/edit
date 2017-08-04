@@ -64,14 +64,14 @@ fn move_up(editor: Editor, n: u32) -> Editor {
 
 fn move_down(editor: Editor, n: u32) -> Editor {
     let len: u32 = editor.newline_indices.len() as u32;
-    if editor.line + n > len {
+    if editor.line + n >= len {
         return Editor {
             line: len - 1,
             ..editor
         };
     }
     Editor {
-        line: editor.line-n,
+        line: editor.line+n,
         ..editor
     }
 }
@@ -142,6 +142,44 @@ mod tests {
                     String::from("Hello, world!\nThe 2nd line."),
                     1,
                     expected[i],
+            ));
+        }
+    }
+
+    #[test]
+    fn test_move_up() {
+        let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
+        let mut editor = build_editor(
+            String::from(buffer),
+            2,
+            4,
+        );
+        let expected = [1, 0, 0];
+        for i in 0..expected.len() {
+            editor = move_up(editor, 1);
+            assert_eq!(editor, build_editor(
+                    String::from(buffer),
+                    expected[i],
+                    4,
+            ));
+        }
+    }
+
+    #[test]
+    fn test_move_down() {
+        let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
+        let mut editor = build_editor(
+            String::from(buffer),
+            0,
+            4,
+        );
+        let expected = [1, 2, 2];
+        for i in 0..expected.len() {
+            editor = move_down(editor, 1);
+            assert_eq!(editor, build_editor(
+                    String::from(buffer),
+                    expected[i],
+                    4,
             ));
         }
     }
