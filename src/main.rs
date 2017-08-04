@@ -57,6 +57,22 @@ mod editor {
             }
             self.column += n;
         }
+
+        pub fn move_up(&mut self, n: u32) {
+            if self.line < n {
+                self.line = 0;
+                return
+            }
+            self.line-=n;
+        }
+
+        pub fn move_down(&mut self, n: u32) {
+            if self.line + n >= self.line_count() {
+                    self.line = self.line_count() - 1;
+                    return
+            }
+            self.line += n;
+        }
     }
 
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
@@ -67,33 +83,6 @@ mod editor {
             newline_indices: indices,
             line,
             column,
-        }
-    }
-
-    pub fn move_up(editor: Editor, n: u32) -> Editor {
-        if editor.line < n {
-            return Editor {
-                line: 0,
-                ..editor
-            };
-        }
-        Editor {
-            line: editor.line-n,
-            ..editor
-        }
-    }
-
-    pub fn move_down(editor: Editor, n: u32) -> Editor {
-        let len: u32 = editor.newline_indices.len() as u32;
-        if editor.line + n >= len {
-            return Editor {
-                line: len - 1,
-                ..editor
-            };
-        }
-        Editor {
-            line: editor.line+n,
-            ..editor
         }
     }
 
@@ -239,7 +228,7 @@ mod editor {
                 );
             let expected = [1, 0, 0];
             for i in 0..expected.len() {
-                editor = move_up(editor, 1);
+                editor.move_up(1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         expected[i],
@@ -248,12 +237,12 @@ mod editor {
             }
 
             for i in 0..(buffer.match_indices('\n').count() + 1) {
-                let editor = build_editor(
+                let mut editor = build_editor(
                     String::from(buffer),
                     i as u32,
                     1,
                     );
-                let editor = move_up(editor, buffer.len() as u32 + 1);
+                editor.move_up(buffer.len() as u32 + 1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         0,
@@ -272,7 +261,7 @@ mod editor {
                 );
             let expected = [1, 2, 2];
             for i in 0..expected.len() {
-                editor = move_down(editor, 1);
+                editor.move_down(1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         expected[i],
@@ -281,12 +270,12 @@ mod editor {
             }
 
             for i in 0..(buffer.match_indices('\n').count() + 1) {
-                let editor = build_editor(
+                let mut editor = build_editor(
                     String::from(buffer),
                     i as u32,
                     1,
                     );
-                let editor = move_down(editor, buffer.len() as u32 + 1);
+                editor.move_down(buffer.len() as u32 + 1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         buffer.match_indices('\n').count() as u32,
@@ -339,8 +328,8 @@ fn main() {
         );
     editor.move_right(1);
     editor.move_left(2);
-    let editor = move_up(editor, 1);
-    let editor = move_down(editor, 4);
+    editor.move_up(1);
+    editor.move_down(4);
     let editor = insert_at(editor, '4', 1, 4);
     let editor = insert_at(editor, '4', 0, 0);
     println!("editor: {} {} {}", editor.buffer(), editor.line(), editor.column())
