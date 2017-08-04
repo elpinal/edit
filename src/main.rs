@@ -127,4 +127,22 @@ mod tests {
             ));
         }
     }
+
+    #[test]
+    fn test_move_left() {
+        let mut editor = build_editor(
+            String::from("Hello, world!\nThe 2nd line."),
+            1,
+            6,
+        );
+        let expected = [5, 4, 3, 2, 1, 0, 0];
+        for i in 0..expected.len() {
+            editor = move_left(editor, 1);
+            assert_eq!(editor, build_editor(
+                    String::from("Hello, world!\nThe 2nd line."),
+                    1,
+                    expected[i],
+            ));
+        }
+    }
 }
