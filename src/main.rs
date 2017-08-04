@@ -30,6 +30,17 @@ mod editor {
                 self.newline_indices[n as usize - 1] + 1
             })
         }
+        pub fn offset(&self, line: u32, column: u32) -> Option<u32> {
+            if line >= self.line_count() || self.line_width(line).unwrap() < column { // FIXME: It's incomplete.
+                return None;
+            };
+            let line_offset = if line == 0 {
+                0
+            } else {
+                self.newline_indices[(line-1) as usize] + 1
+            };
+            Some(line_offset + column)
+        }
     }
 
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
