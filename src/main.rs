@@ -118,7 +118,7 @@ mod tests {
             6,
         );
         let expected = [7, 8, 9, 10, 11, 12, 13, 13];
-        for i in 0..8 {
+        for i in 0..expected.len() {
             editor = move_right(editor, 1);
             assert_eq!(editor, build_editor(
                     String::from("Hello, world!\nThe 2nd line."),
