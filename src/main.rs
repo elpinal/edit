@@ -87,6 +87,16 @@ mod editor {
                 }
             }
         }
+
+        pub fn delete_at(&mut self, line: u32, column: u32) {
+            let offset = self.offset(line, column).unwrap();
+            self.buffer.remove(offset as usize);
+            for x in self.newline_indices.iter_mut() {
+                if *x > offset {
+                    *x -= 1
+                }
+            }
+        }
     }
 
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
@@ -97,19 +107,6 @@ mod editor {
             newline_indices: indices,
             line,
             column,
-        }
-    }
-
-    pub fn delete_at(editor: Editor, line: u32, column: u32) -> Editor {
-        let mut buffer = editor.buffer.clone();
-        let offset = editor.offset(line, column).unwrap() as usize;
-        buffer.remove(offset);
-        let mut indices = &mut editor.newline_indices.clone();
-        let v: Vec<u32> = indices.into_iter().map(|x| if *x > offset as u32 {*x - 1} else {*x}).collect();
-        Editor {
-            buffer,
-            newline_indices: v,
-            ..editor
         }
     }
 
@@ -297,7 +294,7 @@ mod editor {
                 0,
                 6,
                 );
-            editor = delete_at(editor, 0, 6);
+            editor.delete_at(0, 6);
             assert_eq!(editor, build_editor(
                     String::from("Hello,world!\nThe 2nd line.\nAAABBBCCC."),
                     0,
