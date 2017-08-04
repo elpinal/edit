@@ -85,6 +85,16 @@ fn insert_at(editor: Editor, ch: char, line: u32, column: u32) -> Editor {
     };
     let i: usize = (line_offset + column) as usize;
     buffer.insert(i, ch);
+    if ch == '\n' {
+        let mut indices = &mut editor.newline_indices.clone();
+        indices.insert(line as usize, i as u32);
+        let v: Vec<u32> = indices.into_iter().map(|x| if *x > i as u32 {*x + 1} else {*x}).collect();
+        return Editor {
+            buffer,
+            newline_indices: v,
+            ..editor
+        };
+    }
     Editor {
         buffer: buffer,
         ..editor
@@ -240,5 +250,21 @@ mod tests {
                     1,
             ));
         }
+    }
+
+    #[test]
+    fn test_insert_at() {
+        let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
+        let mut editor = build_editor(
+            String::from(buffer),
+            0,
+            6,
+        );
+        editor = insert_at(editor, '\n', 0, 6);
+        assert_eq!(editor, build_editor(
+                String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCC."),
+                0,
+                6,
+        ));
     }
 }
