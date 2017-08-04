@@ -7,6 +7,18 @@ mod editor {
         column: u32,
     }
 
+    impl Editor {
+        pub fn buffer(&self) -> String {
+            self.buffer.clone()
+        }
+        pub fn line(&self) -> u32 {
+            self.line
+        }
+        pub fn column(&self) -> u32 {
+            self.column
+        }
+    }
+
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
         let mut indices: Vec<u32> = buffer.match_indices('\n').map(|(a, _)| a as u32).collect();
         indices.push(buffer.len() as u32);
@@ -270,5 +282,5 @@ fn main() {
     let editor = move_down(editor, 4);
     let editor = insert_at(editor, '4', 1, 4);
     let editor = insert_at(editor, '4', 0, 0);
-    println!("editor: {:?}", editor)
+    println!("editor: {} {} {}", editor.buffer(), editor.line(), editor.column())
 }
