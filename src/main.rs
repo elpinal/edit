@@ -17,6 +17,19 @@ mod editor {
         pub fn column(&self) -> u32 {
             self.column
         }
+        pub fn line_count(&self) -> u32 {
+            self.newline_indices.len() as u32
+        }
+        pub fn line_width(&self, n: u32) -> Option<u32> {
+            if n >= self.line_count() {
+                return None;
+            };
+            Some(self.newline_indices[n as usize] - if n == 0 {
+                0
+            } else {
+                self.newline_indices[n as usize - 1]
+            })
+        }
     }
 
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
