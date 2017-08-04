@@ -27,7 +27,7 @@ mod editor {
             Some(self.newline_indices[n as usize] - if n == 0 {
                 0
             } else {
-                self.newline_indices[n as usize - 1]
+                self.newline_indices[n as usize - 1] + 1
             })
         }
     }
@@ -130,6 +130,30 @@ mod editor {
 #[cfg(test)]
     mod tests {
         use super::*;
+
+        #[test]
+        fn test_line_count() {
+            let buffer = "Hello, world!\nThe 2nd line.";
+            let editor = build_editor(
+                String::from(buffer),
+                0,
+                0,
+                );
+            assert_eq!(editor.line_count(), 2);
+        }
+
+        #[test]
+        fn test_line_width() {
+            let buffer = "Hello, world!\nThe 2nd line.";
+            let editor = build_editor(
+                String::from(buffer),
+                0,
+                0,
+                );
+            assert_eq!(editor.line_width(0), Some(13));
+            assert_eq!(editor.line_width(1), Some(13));
+            assert_eq!(editor.line_width(2), None);
+        }
 
         #[test]
         fn test_move_right() {
