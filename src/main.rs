@@ -73,6 +73,20 @@ mod editor {
             }
             self.line += n;
         }
+
+        pub fn insert_at(&mut self, ch: char, line: u32, column: u32) {
+            let i = self.offset(line, column).unwrap();
+            self.buffer.insert(i as usize, ch);
+            if ch != '\n' {
+                return
+            }
+            self.newline_indices.insert(line as usize, i);
+            for x in self.newline_indices.iter_mut() {
+                if *x > i {
+                    *x += 1
+                }
+            }
+        }
     }
 
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
@@ -83,31 +97,6 @@ mod editor {
             newline_indices: indices,
             line,
             column,
-        }
-    }
-
-    pub fn insert_at(editor: Editor, ch: char, line: u32, column: u32) -> Editor {
-        let mut buffer: String = editor.buffer;
-        let line_offset = if line == 0 {
-            0
-        } else {
-            editor.newline_indices[(line-1) as usize] + 1
-        };
-        let i: usize = (line_offset + column) as usize;
-        buffer.insert(i, ch);
-        if ch == '\n' {
-            let mut indices = &mut editor.newline_indices.clone();
-            indices.insert(line as usize, i as u32);
-            let v: Vec<u32> = indices.into_iter().map(|x| if *x > i as u32 {*x + 1} else {*x}).collect();
-            return Editor {
-                buffer,
-                newline_indices: v,
-                ..editor
-            };
-        }
-        Editor {
-            buffer: buffer,
-            ..editor
         }
     }
 
@@ -292,7 +281,7 @@ mod editor {
                 0,
                 6,
                 );
-            editor = insert_at(editor, '\n', 0, 6);
+            editor.insert_at('\n', 0, 6);
             assert_eq!(editor, build_editor(
                     String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCC."),
                     0,
@@ -330,7 +319,7 @@ fn main() {
     editor.move_left(2);
     editor.move_up(1);
     editor.move_down(4);
-    let editor = insert_at(editor, '4', 1, 4);
-    let editor = insert_at(editor, '4', 0, 0);
+    editor.insert_at('4', 1, 4);
+    editor.insert_at('4', 0, 0);
     println!("editor: {} {} {}", editor.buffer(), editor.line(), editor.column())
 }
