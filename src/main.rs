@@ -41,6 +41,14 @@ mod editor {
             };
             Some(line_offset + column)
         }
+
+        pub fn move_left(&mut self, n: u32) {
+            if self.column < n {
+                self.column = 0;
+                return
+            }
+            self.column -= n;
+        }
     }
 
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
@@ -51,19 +59,6 @@ mod editor {
             newline_indices: indices,
             line,
             column,
-        }
-    }
-
-    pub fn move_left(editor: Editor, n: u32) -> Editor {
-        if editor.column < n {
-            return Editor {
-                column: 0,
-                ..editor
-            };
-        }
-        Editor {
-            column: editor.column-n,
-            ..editor
         }
     }
 
@@ -222,7 +217,7 @@ mod editor {
                 );
             let expected = [5, 4, 3, 2, 1, 0, 0];
             for i in 0..expected.len() {
-                editor = move_left(editor, 1);
+                editor.move_left(1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         1,
@@ -231,12 +226,12 @@ mod editor {
             }
 
             for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()){
-                let editor = build_editor(
+                let mut editor = build_editor(
                     String::from(buffer),
                     1,
                     i as u32,
                     );
-                let editor = move_left(editor, buffer.len() as u32 + 1);
+                editor.move_left(buffer.len() as u32 + 1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         1,
@@ -353,8 +348,8 @@ fn main() {
         1,
         6,
         );
-    let editor = move_right(editor, 1);
-    let editor = move_left(editor, 2);
+    let mut editor = move_right(editor, 1);
+    editor.move_left(2);
     let editor = move_up(editor, 1);
     let editor = move_down(editor, 4);
     let editor = insert_at(editor, '4', 1, 4);
