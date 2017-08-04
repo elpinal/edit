@@ -73,7 +73,11 @@ fn move_down(editor: Editor, n: u32) -> Editor {
 
 fn insert_at(editor: Editor, ch: char, line: u32, column: u32) -> Editor {
     let mut buffer: String = editor.buffer;
-    let line_offset = if line == 0 {0} else {editor.newline_indices[(line-1) as usize] + 1};
+    let line_offset = if line == 0 {
+        0
+    } else {
+        editor.newline_indices[(line-1) as usize] + 1
+    };
     let i: usize = (line_offset + column) as usize;
     buffer.insert(i, ch);
     Editor {
