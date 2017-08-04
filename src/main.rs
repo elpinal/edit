@@ -49,6 +49,14 @@ mod editor {
             }
             self.column -= n;
         }
+
+        pub fn move_right(&mut self, n: u32) {
+            if self.column + n >= self.line_width(self.line).unwrap() {
+                self.column = self.line_width(self.line).unwrap();
+                return
+            }
+            self.column += n;
+        }
     }
 
     pub fn build_editor(buffer: String, line: u32, column: u32) -> Editor {
@@ -59,25 +67,6 @@ mod editor {
             newline_indices: indices,
             line,
             column,
-        }
-    }
-
-    pub fn move_right(editor: Editor, n: u32) -> Editor {
-        // TODO: How about try_from?
-        let line_len = editor.newline_indices[editor.line as usize] - if editor.line == 0 {
-            0
-        } else {
-            editor.newline_indices[(editor.line - 1) as usize]
-        };
-        if editor.column + n >= line_len {
-            return Editor {
-                column: line_len - 1,
-                ..editor
-            };
-        }
-        Editor {
-            column: editor.column+n,
-            ..editor
         }
     }
 
@@ -184,7 +173,7 @@ mod editor {
                 );
             let expected = [7, 8, 9, 10, 11, 12, 13, 13];
             for i in 0..expected.len() {
-                editor = move_right(editor, 1);
+                editor.move_right(1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         1,
@@ -193,12 +182,12 @@ mod editor {
             }
 
             for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()){
-                let editor = build_editor(
+                let mut editor = build_editor(
                     String::from(buffer),
                     1,
                     i as u32,
                     );
-                let editor = move_right(editor, buffer.len() as u32 + 1);
+                editor.move_right(buffer.len() as u32 + 1);
                 assert_eq!(editor, build_editor(
                         String::from(buffer),
                         1,
@@ -343,12 +332,12 @@ mod editor {
 use editor::*;
 
 fn main() {
-    let editor = build_editor(
+    let mut editor = build_editor(
         String::from("Hello, world!\nThe 2nd line."),
         1,
         6,
         );
-    let mut editor = move_right(editor, 1);
+    editor.move_right(1);
     editor.move_left(2);
     let editor = move_up(editor, 1);
     let editor = move_down(editor, 4);
