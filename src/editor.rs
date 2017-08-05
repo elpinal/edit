@@ -83,10 +83,9 @@ impl Editor {
     pub fn insert_at(&mut self, ch: char, line: u32, column: u32) {
         let i = self.offset(line, column).unwrap();
         self.buffer.insert(i as usize, ch);
-        if ch != '\n' {
-            return;
+        if ch == '\n' {
+            self.newline_indices.insert(line as usize, i);
         }
-        self.newline_indices.insert(line as usize, i);
         for x in self.newline_indices.iter_mut() {
             if *x > i {
                 *x += 1
@@ -273,6 +272,15 @@ mod tests {
             editor,
             build_editor(
                 String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCC."),
+                0,
+                6,
+                )
+            );
+        editor.insert_at('D', 3, 9);
+        assert_eq!(
+            editor,
+            build_editor(
+                String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCCD."),
                 0,
                 6,
                 )
