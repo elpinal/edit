@@ -190,12 +190,13 @@ mod editor {
                 assert_eq!(editor, build_editor(String::from(buffer), 1, expected[i]));
             }
 
-            for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()) {
+            for i in 0..editor.line_width(editor.line()).unwrap() {
                 let mut editor = build_editor(String::from(buffer), 1, i as u32);
-                editor.move_right(buffer.len() as u32 + 1);
+                let width = editor.line_width(editor.line()).unwrap();
+                editor.move_right(width + 1);
                 assert_eq!(
                     editor,
-                    build_editor(String::from(buffer), 1, buffer.rfind('\n').unwrap() as u32)
+                    build_editor(String::from(buffer), 1, width)
                 );
             }
         }
@@ -210,9 +211,10 @@ mod editor {
                 assert_eq!(editor, build_editor(String::from(buffer), 1, expected[i]));
             }
 
-            for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()) {
+            for i in 0..editor.line_width(editor.line()).unwrap() {
                 let mut editor = build_editor(String::from(buffer), 1, i as u32);
-                editor.move_left(buffer.len() as u32 + 1);
+                let width = editor.line_width(editor.line()).unwrap();
+                editor.move_left(width + 1);
                 assert_eq!(editor, build_editor(String::from(buffer), 1, 0));
             }
         }
@@ -227,9 +229,10 @@ mod editor {
                 assert_eq!(editor, build_editor(String::from(buffer), expected[i], 4));
             }
 
-            for i in 0..(buffer.match_indices('\n').count() + 1) {
+            for i in 0..editor.line_count() {
                 let mut editor = build_editor(String::from(buffer), i as u32, 1);
-                editor.move_up(buffer.len() as u32 + 1);
+                let count = editor.line_count();
+                editor.move_up(count);
                 assert_eq!(editor, build_editor(String::from(buffer), 0, 1));
             }
         }
@@ -244,9 +247,10 @@ mod editor {
                 assert_eq!(editor, build_editor(String::from(buffer), expected[i], 4));
             }
 
-            for i in 0..(buffer.match_indices('\n').count() + 1) {
+            for i in 0..editor.line_count() {
                 let mut editor = build_editor(String::from(buffer), i as u32, 1);
-                editor.move_down(buffer.len() as u32 + 1);
+                let count = editor.line_count();
+                editor.move_down(count);
                 assert_eq!(
                     editor,
                     build_editor(
