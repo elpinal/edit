@@ -11,15 +11,19 @@ mod editor {
         pub fn buffer(&self) -> String {
             self.buffer.clone()
         }
+
         pub fn line(&self) -> u32 {
             self.line
         }
+
         pub fn column(&self) -> u32 {
             self.column
         }
+
         pub fn line_count(&self) -> u32 {
             self.newline_indices.len() as u32
         }
+
         pub fn line_width(&self, n: u32) -> Option<u32> {
             if n >= self.line_count() {
                 return None;
@@ -32,6 +36,7 @@ mod editor {
                 },
             )
         }
+
         pub fn offset(&self, line: u32, column: u32) -> Option<u32> {
             if line >= self.line_count() || self.line_width(line).unwrap() < column {
                 return None;
