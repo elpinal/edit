@@ -157,7 +157,7 @@ mod editor {
             let expected = [7, 8, 9, 10, 11, 12, 13, 13];
             for i in 0..expected.len() {
                 editor.move_right(1);
-                assert_eq!(editor, build_editor(String::from(buffer), 1, expected[i],));
+                assert_eq!(editor, build_editor(String::from(buffer), 1, expected[i]));
             }
 
             for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()) {
@@ -165,7 +165,7 @@ mod editor {
                 editor.move_right(buffer.len() as u32 + 1);
                 assert_eq!(
                     editor,
-                    build_editor(String::from(buffer), 1, buffer.rfind('\n').unwrap() as u32,)
+                    build_editor(String::from(buffer), 1, buffer.rfind('\n').unwrap() as u32)
                 );
             }
         }
@@ -177,13 +177,13 @@ mod editor {
             let expected = [5, 4, 3, 2, 1, 0, 0];
             for i in 0..expected.len() {
                 editor.move_left(1);
-                assert_eq!(editor, build_editor(String::from(buffer), 1, expected[i],));
+                assert_eq!(editor, build_editor(String::from(buffer), 1, expected[i]));
             }
 
             for i in 0..(buffer.len() - buffer.rfind('\n').unwrap()) {
                 let mut editor = build_editor(String::from(buffer), 1, i as u32);
                 editor.move_left(buffer.len() as u32 + 1);
-                assert_eq!(editor, build_editor(String::from(buffer), 1, 0,));
+                assert_eq!(editor, build_editor(String::from(buffer), 1, 0));
             }
         }
 
@@ -194,13 +194,13 @@ mod editor {
             let expected = [1, 0, 0];
             for i in 0..expected.len() {
                 editor.move_up(1);
-                assert_eq!(editor, build_editor(String::from(buffer), expected[i], 4,));
+                assert_eq!(editor, build_editor(String::from(buffer), expected[i], 4));
             }
 
             for i in 0..(buffer.match_indices('\n').count() + 1) {
                 let mut editor = build_editor(String::from(buffer), i as u32, 1);
                 editor.move_up(buffer.len() as u32 + 1);
-                assert_eq!(editor, build_editor(String::from(buffer), 0, 1,));
+                assert_eq!(editor, build_editor(String::from(buffer), 0, 1));
             }
         }
 
@@ -211,7 +211,7 @@ mod editor {
             let expected = [1, 2, 2];
             for i in 0..expected.len() {
                 editor.move_down(1);
-                assert_eq!(editor, build_editor(String::from(buffer), expected[i], 4,));
+                assert_eq!(editor, build_editor(String::from(buffer), expected[i], 4));
             }
 
             for i in 0..(buffer.match_indices('\n').count() + 1) {
