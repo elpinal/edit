@@ -31,7 +31,7 @@ mod editor {
             })
         }
         pub fn offset(&self, line: u32, column: u32) -> Option<u32> {
-            if line >= self.line_count() || self.line_width(line).unwrap() < column { // FIXME: It's incomplete.
+            if line >= self.line_count() || self.line_width(line).unwrap() < column {
                 return None;
             };
             let line_offset = if line == 0 {
@@ -136,6 +136,23 @@ mod editor {
             assert_eq!(editor.line_width(0), Some(13));
             assert_eq!(editor.line_width(1), Some(13));
             assert_eq!(editor.line_width(2), None);
+        }
+
+        #[test]
+        fn test_offset() {
+            let buffer = "Hello, world!\nThe 2nd line.";
+            let editor = build_editor(
+                String::from(buffer),
+                0,
+                0,
+                );
+            assert_eq!(editor.offset(0, 0), Some(0));
+            assert_eq!(editor.offset(1, 1), Some(15));
+            assert_eq!(editor.offset(2, 2), None);
+            assert_eq!(editor.offset(1, 13), Some(27));
+            assert_eq!(editor.offset(1, 14), None);
+            assert_eq!(editor.offset(0, 13), Some(13));
+            assert_eq!(editor.offset(0, 14), None);
         }
 
         #[test]
