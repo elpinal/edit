@@ -96,7 +96,10 @@ impl Editor {
 
     pub fn delete_at(&mut self, line: u32, column: u32) {
         let offset = self.offset(line, column).unwrap();
-        self.buffer.remove(offset as usize);
+        let ch = self.buffer.remove(offset as usize);
+        if ch == '\n' {
+            self.newline_indices.remove(line as usize);
+        }
         for x in self.newline_indices.iter_mut() {
             if *x > offset {
                 *x -= 1
@@ -285,6 +288,15 @@ mod tests {
             editor,
             build_editor(
                 String::from("Hello,world!\nThe 2nd line.\nAAABBBCCC."),
+                0,
+                6,
+                )
+            );
+        editor.delete_at(0, 12);
+        assert_eq!(
+            editor,
+            build_editor(
+                String::from("Hello,world!The 2nd line.\nAAABBBCCC."),
                 0,
                 6,
                 )
