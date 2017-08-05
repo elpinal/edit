@@ -126,6 +126,12 @@ mod editor {
             let buffer = "Hello, world!\nThe 2nd line.";
             let editor = build_editor(String::from(buffer), 0, 0);
             assert_eq!(editor.line_count(), 2);
+
+            let editor = build_editor(String::new(), 0, 0);
+            assert_eq!(editor.line_count(), 1);
+
+            let editor = build_editor(String::from("aaa bbb"), 0, 0);
+            assert_eq!(editor.line_count(), 1);
         }
 
         #[test]
@@ -135,6 +141,14 @@ mod editor {
             assert_eq!(editor.line_width(0), Some(13));
             assert_eq!(editor.line_width(1), Some(13));
             assert_eq!(editor.line_width(2), None);
+
+            let editor = build_editor(String::new(), 0, 0);
+            assert_eq!(editor.line_width(0), Some(0));
+            assert_eq!(editor.line_width(1), None);
+
+            let editor = build_editor(String::from("aaa bbb"), 0, 0);
+            assert_eq!(editor.line_width(0), Some(7));
+            assert_eq!(editor.line_width(1), None);
         }
 
         #[test]
@@ -148,6 +162,22 @@ mod editor {
             assert_eq!(editor.offset(1, 14), None);
             assert_eq!(editor.offset(0, 13), Some(13));
             assert_eq!(editor.offset(0, 14), None);
+
+            let editor = build_editor(String::new(), 0, 0);
+            assert_eq!(editor.offset(0, 0), Some(0));
+            assert_eq!(editor.offset(0, 1), None);
+            assert_eq!(editor.offset(1, 0), None);
+            assert_eq!(editor.offset(1, 1), None);
+            assert_eq!(editor.offset(10, 10), None);
+
+            let editor = build_editor(String::from("aaa bbb"), 0, 0);
+            assert_eq!(editor.offset(0, 0), Some(0));
+            assert_eq!(editor.offset(0, 1), Some(1));
+            assert_eq!(editor.offset(1, 0), None);
+            assert_eq!(editor.offset(1, 1), None);
+            assert_eq!(editor.offset(10, 10), None);
+            assert_eq!(editor.offset(0, 7), Some(7));
+            assert_eq!(editor.offset(0, 8), None);
         }
 
         #[test]
