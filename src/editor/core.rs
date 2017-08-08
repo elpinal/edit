@@ -419,9 +419,69 @@ mod tests {
         b.iter(|| editor.insert_at('x', 0, 500));
     }
 
-    #[bench]
-    fn bench_insert_string_at(b: &mut Bencher) {
+    fn bench_insert_string_at_n(b: &mut Bencher, s: &str, n: usize) {
         let mut editor = new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
-        b.iter(|| editor.insert_string_at("xyz", 0, 500));
+        b.iter(|| editor.insert_string_at(String::from(s).repeat(n).as_str(), 0, 500));
+    }
+
+    #[bench]
+    fn bench_insert_string_at_1(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x", 1);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_2(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x", 2);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_4(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x", 4);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_8(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x", 8);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_16(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x", 16);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_256(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x", 256);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_1024(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x", 1024);
+    }
+
+
+    #[bench]
+    fn bench_insert_string_at_1_with_newline(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x\ny", 1);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_2_with_newline(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x\ny", 2);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_4_with_newline(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x\ny", 4);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_8_with_newline(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x\ny", 8);
+    }
+
+    #[bench]
+    fn bench_insert_string_at_16_with_newline(b: &mut Bencher) {
+        bench_insert_string_at_n(b, "x\ny", 16);
     }
 }
