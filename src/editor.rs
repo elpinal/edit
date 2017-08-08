@@ -114,23 +114,29 @@ impl Editor {
             return;
         }
         let current_offset = self.offset(self.line, self.column).expect(&format!("current_offset: {} {}", self.line, self.column));
-        if self.line == line && self.column == line_width {
-            self.column -= 1;
-        }
         let width = self.line_width(line).expect(&format!("width: {}", line));
         let offset = self.offset(line, column).expect(&format!("offset: {} {}", line, column));
         let ch = self.buffer.remove(offset as usize);
         if ch == '\n' {
             self.newline_indices.remove(line as usize);
-            if offset <= current_offset {
-                self.line -= 1;
-                self.column = width;;
-            }
         }
         for x in self.newline_indices.iter_mut() {
             if *x > offset {
                 *x -= 1
             }
+        }
+        if ch == '\n' && offset <= current_offset {
+            self.line -= 1;
+            if self.line == line {
+                self.column = width + current_offset - offset - 1;
+            }
+            return;
+        }
+        if line != self.line {
+            return;
+        }
+        if column < self.column {
+            self.column -= 1;
         }
     }
 }
@@ -366,6 +372,15 @@ mod tests {
                 String::from("abcdef"),
                 0,
                 3,
+                )
+            );
+        editor.delete_at(0, 1);
+        assert_eq!(
+            editor,
+            build_editor(
+                String::from("acdef"),
+                0,
+                2,
                 )
             );
     }
