@@ -33,7 +33,7 @@ impl Editor {
             } else {
                 self.newline_indices[n as usize - 1] + 1
             },
-            )
+        )
     }
 
     pub fn offset(&self, line: u32, column: u32) -> Option<u32> {
@@ -113,9 +113,11 @@ impl Editor {
         if self.line_count() <= line || line_width < column {
             return;
         }
-        let current_offset = self.offset(self.line, self.column).expect(&format!("current_offset: {} {}", self.line, self.column));
+        let current_offset = self.offset(self.line, self.column)
+            .expect(&format!("current_offset: {} {}", self.line, self.column));
         let width = self.line_width(line).expect(&format!("width: {}", line));
-        let offset = self.offset(line, column).expect(&format!("offset: {} {}", line, column));
+        let offset = self.offset(line, column)
+            .expect(&format!("offset: {} {}", line, column));
         let ch = self.buffer.remove(offset as usize);
         if ch == '\n' {
             self.newline_indices.remove(line as usize);
@@ -229,10 +231,7 @@ mod tests {
             let mut editor = build_editor(String::from(buffer), 1, i as u32);
             let width = editor.line_width(editor.line()).unwrap();
             editor.move_right(width + 1);
-            assert_eq!(
-                editor,
-                build_editor(String::from(buffer), 1, width)
-                );
+            assert_eq!(editor, build_editor(String::from(buffer), 1, width));
         }
     }
 
@@ -292,8 +291,8 @@ mod tests {
                     String::from(buffer),
                     buffer.match_indices('\n').count() as u32,
                     1,
-                    )
-                );
+                )
+            );
         }
     }
 
@@ -308,8 +307,8 @@ mod tests {
                 String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCC."),
                 1,
                 0,
-                )
-            );
+            )
+        );
         editor.insert_at('D', 3, 9);
         assert_eq!(
             editor,
@@ -317,8 +316,8 @@ mod tests {
                 String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCCD."),
                 1,
                 0,
-                )
-            );
+            )
+        );
     }
 
     #[test]
@@ -332,56 +331,24 @@ mod tests {
                 String::from("Hello,world!\nThe 2nd line.\nAAABBBCCC."),
                 0,
                 6,
-                )
-            );
+            )
+        );
         editor.delete_at(0, 12);
         assert_eq!(
             editor,
-            build_editor(
-                String::from("Hello,world!The 2nd line.\nAAABBBCCC."),
-                0,
-                6,
-                )
-            );
+            build_editor(String::from("Hello,world!The 2nd line.\nAAABBBCCC."), 0, 6)
+        );
 
         let mut editor = build_editor(String::from("abc\ndef"), 0, 3);
         editor.delete_at(0, 2);
-        assert_eq!(
-            editor,
-            build_editor(
-                String::from("ab\ndef"),
-                0,
-                2,
-                )
-            );
+        assert_eq!(editor, build_editor(String::from("ab\ndef"), 0, 2));
 
         let mut editor = build_editor(String::from("abc\ndef"), 1, 0);
         editor.delete_at(0, 3);
-        assert_eq!(
-            editor,
-            build_editor(
-                String::from("abcdef"),
-                0,
-                3,
-                )
-            );
+        assert_eq!(editor, build_editor(String::from("abcdef"), 0, 3));
         editor.delete_at(10, 10);
-        assert_eq!(
-            editor,
-            build_editor(
-                String::from("abcdef"),
-                0,
-                3,
-                )
-            );
+        assert_eq!(editor, build_editor(String::from("abcdef"), 0, 3));
         editor.delete_at(0, 1);
-        assert_eq!(
-            editor,
-            build_editor(
-                String::from("acdef"),
-                0,
-                2,
-                )
-            );
+        assert_eq!(editor, build_editor(String::from("acdef"), 0, 2));
     }
 }
