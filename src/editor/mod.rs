@@ -2,18 +2,18 @@ mod core;
 
 use editor::core::Core;
 
-pub struct Ed {
+pub struct Editor {
     core: Core,
 }
 
-pub fn new(buffer: String, line: u32, column: u32) -> Result<Ed, String> {
+pub fn new(buffer: String, line: u32, column: u32) -> Result<Editor, String> {
     match core::new(buffer, line, column) {
-        Ok(editor) => Ok(Ed { core: editor }),
+        Ok(editor) => Ok(Editor { core: editor }),
         Err(err) => Err(err),
     }
 }
 
-impl Ed {
+impl Editor {
     pub fn move_right(&mut self, n: u32) {
         self.core.move_right(n);
     }
