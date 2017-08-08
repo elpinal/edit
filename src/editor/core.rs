@@ -106,6 +106,12 @@ impl Core {
         }
     }
 
+    pub fn insert_string_at(&mut self, s: &str, line: u32, column: u32) {
+        for ch in s.chars().rev() {
+            self.insert_at(ch, line, column)
+        }
+    }
+
     pub fn delete_at(&mut self, line: u32, column: u32) {
         let line_width = self.line_width(line);
         if line_width.is_none() {
@@ -355,6 +361,21 @@ mod tests {
     }
 
     #[test]
+    fn test_insert_string_at() {
+        let buffer = "aaa ccc ddd";
+        let mut editor = new(String::from(buffer), 0, 7).unwrap();
+        editor.insert_string_at("bbb ", 0, 4);
+        assert_eq!(
+            editor,
+            new(
+                String::from("aaa bbb ccc ddd"),
+                0,
+                11,
+            ).unwrap()
+        );
+    }
+
+    #[test]
     fn test_delete_at() {
         let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
         let mut editor = new(String::from(buffer), 0, 6).unwrap();
@@ -396,5 +417,11 @@ mod tests {
     fn bench_insert_at(b: &mut Bencher) {
         let mut editor = new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
         b.iter(|| editor.insert_at('x', 0, 500));
+    }
+
+    #[bench]
+    fn bench_insert_string_at(b: &mut Bencher) {
+        let mut editor = new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
+        b.iter(|| editor.insert_string_at("xyz", 0, 500));
     }
 }
