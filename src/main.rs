@@ -2,7 +2,7 @@ mod editor;
 use editor::*;
 
 fn main() {
-    let mut editor = build_editor(String::from("Hello, world!\nThe 2nd line."), 1, 6);
+    let mut editor = build_editor(String::from("Hello, world!\nThe 2nd line."), 1, 6).unwrap();
     editor.move_right(1);
     editor.move_left(2);
     editor.move_up(1);
