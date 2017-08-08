@@ -1,14 +1,14 @@
 mod core;
 
-use editor::core::{Editor};
+use editor::core::Core;
 
 pub struct Ed {
-    core: Editor,
+    core: Core,
 }
 
 pub fn new(buffer: String, line: u32, column: u32) -> Result<Ed, String> {
     match core::new(buffer, line, column) {
-        Ok(editor) => Ok(Ed {core: editor}),
+        Ok(editor) => Ok(Ed { core: editor }),
         Err(err) => Err(err),
     }
 }

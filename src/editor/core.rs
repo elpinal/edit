@@ -1,12 +1,12 @@
 #[derive(PartialEq, Debug)]
-pub struct Editor {
+pub struct Core {
     buffer: String,
     newline_indices: Vec<u32>,
     line: u32,
     column: u32,
 }
 
-impl Editor {
+impl Core {
     pub fn buffer(&self) -> String {
         self.buffer.clone()
     }
@@ -143,11 +143,15 @@ impl Editor {
     }
 }
 
-pub fn new(buffer: String, line: u32, column: u32) -> Result<Editor, String> {
+pub fn new(buffer: String, line: u32, column: u32) -> Result<Core, String> {
     let mut indices: Vec<u32> = buffer.match_indices('\n').map(|(a, _)| a as u32).collect();
     indices.push(buffer.len() as u32);
     if indices.len() as u32 <= line {
-        return Err(format!("Line {} is out of range [0, {})", line, indices.len()));
+        return Err(format!(
+            "Line {} is out of range [0, {})",
+            line,
+            indices.len()
+        ));
     }
     let width = indices[line as usize] - if line == 0 {
         0
@@ -157,7 +161,7 @@ pub fn new(buffer: String, line: u32, column: u32) -> Result<Editor, String> {
     if width < column {
         return Err(format!("Column {} is out of range [0, {}]", column, width));
     }
-    Ok(Editor {
+    Ok(Core {
         buffer: buffer.clone(),
         newline_indices: indices,
         line,
@@ -238,7 +242,7 @@ mod tests {
     #[test]
     fn test_move_right() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let mut editor: Editor = new(String::from(buffer), 1, 6).unwrap();
+        let mut editor = new(String::from(buffer), 1, 6).unwrap();
         let expected = [7, 8, 9, 10, 11, 12, 13, 13];
         for i in 0..expected.len() {
             editor.move_right(1);
