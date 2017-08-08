@@ -81,6 +81,7 @@ impl Editor {
     }
 
     pub fn insert_at(&mut self, ch: char, line: u32, column: u32) {
+        let current_offset = self.offset(self.line, self.column).unwrap();
         let i = self.offset(line, column).unwrap();
         self.buffer.insert(i as usize, ch);
         if ch == '\n' {
@@ -90,6 +91,16 @@ impl Editor {
             if *x > i {
                 *x += 1
             }
+        }
+        if ch == '\n' && i <= current_offset {
+            if self.line == line {
+                self.column = current_offset - i;
+            }
+            self.line += 1;
+            return;
+        }
+        if line == self.line && column <= self.column {
+            self.column += 1;
         }
     }
 
@@ -289,8 +300,8 @@ mod tests {
             editor,
             build_editor(
                 String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCC."),
+                1,
                 0,
-                6,
                 )
             );
         editor.insert_at('D', 3, 9);
@@ -298,8 +309,8 @@ mod tests {
             editor,
             build_editor(
                 String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCCD."),
+                1,
                 0,
-                6,
                 )
             );
     }
