@@ -1,3 +1,5 @@
+extern crate test;
+
 #[derive(PartialEq, Debug)]
 pub struct Core {
     buffer: String,
@@ -172,6 +174,7 @@ pub fn new(buffer: String, line: u32, column: u32) -> Result<Core, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use self::test::Bencher;
 
     #[test]
     fn test_build_editor() {
@@ -381,5 +384,17 @@ mod tests {
         assert_eq!(editor, new(String::from("abcdef"), 0, 3).unwrap());
         editor.delete_at(0, 1);
         assert_eq!(editor, new(String::from("acdef"), 0, 2).unwrap());
+    }
+
+    #[bench]
+    fn bench_move_right(b: &mut Bencher) {
+        let mut editor = new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
+        b.iter(|| editor.move_right(10));
+    }
+
+    #[bench]
+    fn bench_insert_at(b: &mut Bencher) {
+        let mut editor = new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
+        b.iter(|| editor.insert_at('x', 0, 500));
     }
 }
