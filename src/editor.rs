@@ -318,6 +318,15 @@ mod tests {
                 0,
             )
         );
+        editor.insert_at('a', 1, 0);
+        assert_eq!(
+            editor,
+            build_editor(
+                String::from("Hello,\na world!\nThe 2nd line.\nAAABBBCCCD."),
+                1,
+                1,
+            )
+        );
     }
 
     #[test]
