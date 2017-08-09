@@ -77,26 +77,34 @@ impl Editor {
         self.core.delete_at(line, column);
     }
 
+    /// Shows the content of the buffer.
     pub fn buffer(&self) -> String {
         self.core.buffer()
     }
 
+    /// Returns the line of the position.
     pub fn line(&self) -> usize {
         self.core.line()
     }
 
+    /// Returns the column of the position.
     pub fn column(&self) -> usize {
         self.core.column()
     }
 
+    /// Returns the count of bytes of line `n`.
+    ///
+    /// Returns `None` if `n` is out of the range.
     pub fn line_width(&self, n: usize) -> Option<usize> {
         self.core.line_width(n)
     }
 
+    /// Moves a cursor to the beginning of the current line.
     pub fn move_to_beginning(&mut self) {
         self.core.set_column(0);
     }
 
+    /// Moves a cursor to the end of the current line.
     pub fn move_to_end(&mut self) {
         let width = self.line_width(self.line()).unwrap();
         self.core.set_column(width);
