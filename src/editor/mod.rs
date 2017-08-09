@@ -27,7 +27,7 @@ pub struct Editor {
 impl Editor {
     /// Creates a new `Editor` which has a buffer and a position of the cursor.
     pub fn new(buffer: String, line: usize, column: usize) -> Result<Editor, String> {
-        match core::new(buffer, line, column) {
+        match Core::new(buffer, line, column) {
             Ok(editor) => Ok(Editor { core: editor }),
             Err(err) => Err(err),
         }
