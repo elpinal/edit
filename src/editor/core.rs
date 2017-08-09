@@ -353,7 +353,7 @@ mod tests {
         let buffer = String::from("aaa\nbbbb");
         let mut editor = Core::new(buffer.clone(), 1, 4).unwrap();
         editor.move_up(1);
-        assert_eq!(editor, Core::new(buffer.clone(), 0, 3).unwrap());
+        assert_eq!(editor, Core::new(buffer, 0, 3).unwrap());
     }
 
     #[test]
@@ -382,7 +382,7 @@ mod tests {
         let buffer = String::from("aaaa\nbbb");
         let mut editor = Core::new(buffer.clone(), 0, 4).unwrap();
         editor.move_down(1);
-        assert_eq!(editor, Core::new(buffer.clone(), 1, 3).unwrap());
+        assert_eq!(editor, Core::new(buffer, 1, 3).unwrap());
     }
 
     #[test]
