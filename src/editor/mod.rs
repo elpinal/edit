@@ -32,41 +32,47 @@ impl Editor {
 
     /// Moves a cursor by `n` bytes rightward.
     ///
-    /// If the corsor will be out of the range, it is moved to the rightmost column.
+    /// If the cursor will be out of the range, it is moved to the rightmost column.
     pub fn move_right(&mut self, n: usize) {
         self.core.move_right(n);
     }
 
     /// Moves a cursor by `n` bytes leftward.
     ///
-    /// If the corsor will be out of the range, it is moved to the leftmost column.
+    /// If the cursor will be out of the range, it is moved to the leftmost column.
     pub fn move_left(&mut self, n: usize) {
         self.core.move_left(n);
     }
 
     /// Moves a cursor by `n` lines upward.
     ///
-    /// If the corsor will be out of the range, it is moved to the uppermost line.
+    /// If the cursor will be out of the range, it is moved to the uppermost line.
     pub fn move_up(&mut self, n: usize) {
         self.core.move_up(n);
     }
 
     /// Moves a cursor by `n` lines downward.
     ///
-    /// If the corsor will be out of the range, it is moved to the downmost line.
+    /// If the cursor will be out of the range, it is moved to the downmost line.
     pub fn move_down(&mut self, n: usize) {
         self.core.move_down(n);
     }
 
     /// Inserts a character into the buffer at a byte position.
+    ///
+    /// If a position is out of the range, nothing happens.
     pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
         self.core.insert_at(ch, line, column);
     }
 
+    /// Inserts a string into the buffer at a byte position.
+    ///
+    /// If a position is out of the range, nothing happens.
     pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) {
         self.core.insert_string_at(s, line, column);
     }
 
+    /// Deletes a `char` from the buffer at a byte position.
     pub fn delete_at(&mut self, line: usize, column: usize) {
         self.core.delete_at(line, column);
     }
