@@ -1,5 +1,4 @@
 //! The experimental playground of two-dimensional editing facility.
-
 #![warn(missing_docs)]
 
 extern crate edit;
