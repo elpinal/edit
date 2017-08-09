@@ -3,9 +3,9 @@ extern crate test;
 #[derive(PartialEq, Debug)]
 pub struct Core {
     buffer: String,
-    newline_indices: Vec<u32>,
-    line: u32,
-    column: u32,
+    newline_indices: Vec<usize>,
+    line: usize,
+    column: usize,
 }
 
 impl Core {
@@ -13,44 +13,44 @@ impl Core {
         self.buffer.clone()
     }
 
-    pub fn line(&self) -> u32 {
+    pub fn line(&self) -> usize {
         self.line
     }
 
-    pub fn column(&self) -> u32 {
+    pub fn column(&self) -> usize {
         self.column
     }
 
-    pub fn line_count(&self) -> u32 {
-        self.newline_indices.len() as u32
+    pub fn line_count(&self) -> usize {
+        self.newline_indices.len()
     }
 
-    pub fn line_width(&self, n: u32) -> Option<u32> {
+    pub fn line_width(&self, n: usize) -> Option<usize> {
         if n >= self.line_count() {
             return None;
         };
         Some(
-            self.newline_indices[n as usize] - if n == 0 {
+            self.newline_indices[n] - if n == 0 {
                 0
             } else {
-                self.newline_indices[n as usize - 1] + 1
+                self.newline_indices[n - 1] + 1
             },
         )
     }
 
-    pub fn offset(&self, line: u32, column: u32) -> Option<u32> {
+    pub fn offset(&self, line: usize, column: usize) -> Option<usize> {
         if line >= self.line_count() || self.line_width(line).unwrap() < column {
             return None;
         };
         let line_offset = if line == 0 {
             0
         } else {
-            self.newline_indices[(line - 1) as usize] + 1
+            self.newline_indices[(line - 1)] + 1
         };
         Some(line_offset + column)
     }
 
-    pub fn move_left(&mut self, n: u32) {
+    pub fn move_left(&mut self, n: usize) {
         if self.column < n {
             self.column = 0;
             return;
@@ -58,7 +58,7 @@ impl Core {
         self.column -= n;
     }
 
-    pub fn move_right(&mut self, n: u32) {
+    pub fn move_right(&mut self, n: usize) {
         if self.column + n >= self.line_width(self.line).unwrap() {
             self.column = self.line_width(self.line).unwrap();
             return;
@@ -66,7 +66,7 @@ impl Core {
         self.column += n;
     }
 
-    pub fn move_up(&mut self, n: u32) {
+    pub fn move_up(&mut self, n: usize) {
         if self.line < n {
             self.line = 0;
             return;
@@ -74,7 +74,7 @@ impl Core {
         self.line -= n;
     }
 
-    pub fn move_down(&mut self, n: u32) {
+    pub fn move_down(&mut self, n: usize) {
         if self.line + n >= self.line_count() {
             self.line = self.line_count() - 1;
             return;
@@ -82,12 +82,12 @@ impl Core {
         self.line += n;
     }
 
-    pub fn insert_at(&mut self, ch: char, line: u32, column: u32) {
+    pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
         let current_offset = self.offset(self.line, self.column).unwrap();
         let i = self.offset(line, column).unwrap();
-        self.buffer.insert(i as usize, ch);
+        self.buffer.insert(i, ch);
         if ch == '\n' {
-            self.newline_indices.insert(line as usize, i);
+            self.newline_indices.insert(line, i);
         }
         for x in self.newline_indices.iter_mut() {
             if *x > i {
@@ -106,13 +106,13 @@ impl Core {
         }
     }
 
-    pub fn insert_string_at(&mut self, s: &str, line: u32, column: u32) {
+    pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) {
         for ch in s.chars().rev() {
             self.insert_at(ch, line, column)
         }
     }
 
-    pub fn delete_at(&mut self, line: u32, column: u32) {
+    pub fn delete_at(&mut self, line: usize, column: usize) {
         let line_width = self.line_width(line);
         if line_width.is_none() {
             return;
@@ -126,9 +126,9 @@ impl Core {
         let width = self.line_width(line).expect(&format!("width: {}", line));
         let offset = self.offset(line, column)
             .expect(&format!("offset: {} {}", line, column));
-        let ch = self.buffer.remove(offset as usize);
+        let ch = self.buffer.remove(offset);
         if ch == '\n' {
-            self.newline_indices.remove(line as usize);
+            self.newline_indices.remove(line);
         }
         for x in self.newline_indices.iter_mut() {
             if *x > offset {
@@ -151,20 +151,20 @@ impl Core {
     }
 }
 
-pub fn new(buffer: String, line: u32, column: u32) -> Result<Core, String> {
-    let mut indices: Vec<u32> = buffer.match_indices('\n').map(|(a, _)| a as u32).collect();
-    indices.push(buffer.len() as u32);
-    if indices.len() as u32 <= line {
+pub fn new(buffer: String, line: usize, column: usize) -> Result<Core, String> {
+    let mut indices: Vec<usize> = buffer.match_indices('\n').map(|(a, _)| a).collect();
+    indices.push(buffer.len());
+    if indices.len() <= line {
         return Err(format!(
             "Line {} is out of range [0, {})",
             line,
             indices.len()
         ));
     }
-    let width = indices[line as usize] - if line == 0 {
+    let width = indices[line] - if line == 0 {
         0
     } else {
-        indices[line as usize - 1] + 1
+        indices[line - 1] + 1
     };
     if width < column {
         return Err(format!("Column {} is out of range [0, {}]", column, width));
@@ -259,7 +259,7 @@ mod tests {
         }
 
         for i in 0..editor.line_width(editor.line()).unwrap() {
-            let mut editor = new(String::from(buffer), 1, i as u32).unwrap();
+            let mut editor = new(String::from(buffer), 1, i).unwrap();
             let width = editor.line_width(editor.line()).unwrap();
             editor.move_right(width + 1);
             assert_eq!(editor, new(String::from(buffer), 1, width).unwrap());
@@ -277,7 +277,7 @@ mod tests {
         }
 
         for i in 0..editor.line_width(editor.line()).unwrap() {
-            let mut editor = new(String::from(buffer), 1, i as u32).unwrap();
+            let mut editor = new(String::from(buffer), 1, i).unwrap();
             let width = editor.line_width(editor.line()).unwrap();
             editor.move_left(width + 1);
             assert_eq!(editor, new(String::from(buffer), 1, 0).unwrap());
@@ -295,7 +295,7 @@ mod tests {
         }
 
         for i in 0..editor.line_count() {
-            let mut editor = new(String::from(buffer), i as u32, 1).unwrap();
+            let mut editor = new(String::from(buffer), i, 1).unwrap();
             let count = editor.line_count();
             editor.move_up(count);
             assert_eq!(editor, new(String::from(buffer), 0, 1).unwrap());
@@ -313,14 +313,14 @@ mod tests {
         }
 
         for i in 0..editor.line_count() {
-            let mut editor = new(String::from(buffer), i as u32, 1).unwrap();
+            let mut editor = new(String::from(buffer), i, 1).unwrap();
             let count = editor.line_count();
             editor.move_down(count);
             assert_eq!(
                 editor,
                 new(
                     String::from(buffer),
-                    buffer.match_indices('\n').count() as u32,
+                    buffer.match_indices('\n').count(),
                     1,
                 ).unwrap()
             );
