@@ -25,6 +25,7 @@ pub struct Editor {
 }
 
 impl Editor {
+    /// Creates a new `Editor` which has a buffer and a position of the cursor.
     pub fn new(buffer: String, line: usize, column: usize) -> Result<Editor, String> {
         match core::new(buffer, line, column) {
             Ok(editor) => Ok(Editor { core: editor }),
@@ -32,22 +33,35 @@ impl Editor {
         }
     }
 
+    /// Moves a cursor by `n` bytes rightward.
+    ///
+    /// If the corsor will be out of the range, it is moved to the rightmost column.
     pub fn move_right(&mut self, n: usize) {
         self.core.move_right(n);
     }
 
+    /// Moves a cursor by `n` bytes leftward.
+    ///
+    /// If the corsor will be out of the range, it is moved to the leftmost column.
     pub fn move_left(&mut self, n: usize) {
         self.core.move_left(n);
     }
 
+    /// Moves a cursor by `n` lines upward.
+    ///
+    /// If the corsor will be out of the range, it is moved to the uppermost line.
     pub fn move_up(&mut self, n: usize) {
         self.core.move_up(n);
     }
 
+    /// Moves a cursor by `n` lines downward.
+    ///
+    /// If the corsor will be out of the range, it is moved to the downmost line.
     pub fn move_down(&mut self, n: usize) {
         self.core.move_down(n);
     }
 
+    /// Inserts a character into the buffer at a byte position.
     pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
         self.core.insert_at(ch, line, column);
     }
