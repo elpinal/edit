@@ -75,17 +75,25 @@ impl Core {
     pub fn move_up(&mut self, n: usize) {
         if self.line < n {
             self.line = 0;
-            return;
+        } else {
+            self.line -= n;
         }
-        self.line -= n;
+        let width = self.line_width(self.line).unwrap();
+        if width < self.column {
+            self.column = width;
+        }
     }
 
     pub fn move_down(&mut self, n: usize) {
         if self.line + n >= self.line_count() {
             self.line = self.line_count() - 1;
-            return;
+        } else {
+            self.line += n;
         }
-        self.line += n;
+        let width = self.line_width(self.line).unwrap();
+        if width < self.column {
+            self.column = width;
+        }
     }
 
     pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
@@ -313,6 +321,11 @@ mod tests {
             editor.move_up(count);
             assert_eq!(editor, new(String::from(buffer), 0, 1).unwrap());
         }
+
+        let buffer = String::from("aaa\nbbbb");
+        let mut editor = new(buffer.clone(), 1, 4).unwrap();
+        editor.move_up(1);
+        assert_eq!(editor, new(buffer.clone(), 0, 3).unwrap());
     }
 
     #[test]
@@ -334,6 +347,11 @@ mod tests {
                 new(String::from(buffer), buffer.match_indices('\n').count(), 1,).unwrap()
             );
         }
+
+        let buffer = String::from("aaaa\nbbb");
+        let mut editor = new(buffer.clone(), 0, 4).unwrap();
+        editor.move_down(1);
+        assert_eq!(editor, new(buffer.clone(), 1, 3).unwrap());
     }
 
     #[test]
