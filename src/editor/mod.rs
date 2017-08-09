@@ -53,4 +53,22 @@ impl Editor {
     pub fn column(&self) -> usize {
         self.core.column()
     }
+
+    pub fn move_to_beginning(&mut self) {
+        self.core.set_column(0);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_move_to_beginning() {
+        let buffer = "Hello, world!\nThe 2nd line.";
+        let mut editor = new(String::from(buffer), 1, 8).unwrap();
+        editor.move_to_beginning();
+        assert_eq!(editor.line(), 1);
+        assert_eq!(editor.column(), 0);
+    }
 }

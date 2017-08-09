@@ -50,6 +50,12 @@ impl Core {
         Some(line_offset + column)
     }
 
+    pub fn set_column(&mut self, n: usize) {
+        if n <= self.line_width(self.line).unwrap() {
+            self.column = n;
+        }
+    }
+
     pub fn move_left(&mut self, n: usize) {
         if self.column < n {
             self.column = 0;
