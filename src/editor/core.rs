@@ -60,6 +60,13 @@ impl Core {
         )
     }
 
+    pub fn current_line_width(&self) -> usize {
+        self.line_width(self.line).expect(&format!(
+            "current_line_width: unexpected error (line: {})",
+            self.line
+        ))
+    }
+
     pub fn offset(&self, line: usize, column: usize) -> Option<usize> {
         if line >= self.line_count() || self.line_width(line).unwrap() < column {
             return None;
@@ -72,8 +79,16 @@ impl Core {
         Some(line_offset + column)
     }
 
+    pub fn current_offset(&self) -> usize {
+        self.offset(self.line, self.column).expect(&format!(
+            "current_offset: unexpected error (line: {}, column: {})",
+            self.line,
+            self.column,
+        ))
+    }
+
     pub fn set_column(&mut self, n: usize) {
-        if n <= self.line_width(self.line).unwrap() {
+        if n <= self.current_line_width() {
             self.column = n;
         }
     }
@@ -87,8 +102,8 @@ impl Core {
     }
 
     pub fn move_right(&mut self, n: usize) {
-        if self.column + n >= self.line_width(self.line).unwrap() {
-            self.column = self.line_width(self.line).unwrap();
+        if self.column + n >= self.current_line_width() {
+            self.column = self.current_line_width();
             return;
         }
         self.column += n;
@@ -100,7 +115,7 @@ impl Core {
         } else {
             self.line -= n;
         }
-        let width = self.line_width(self.line).unwrap();
+        let width = self.current_line_width();
         if width < self.column {
             self.column = width;
         }
@@ -112,7 +127,7 @@ impl Core {
         } else {
             self.line += n;
         }
-        let width = self.line_width(self.line).unwrap();
+        let width = self.current_line_width();
         if width < self.column {
             self.column = width;
         }
@@ -124,7 +139,7 @@ impl Core {
             return;
         }
         let i = offset.unwrap();
-        let current_offset = self.offset(self.line, self.column).unwrap();
+        let current_offset = self.current_offset();
         self.buffer.insert(i, ch);
         if ch == '\n' {
             self.newline_indices.insert(line, i);
