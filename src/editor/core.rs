@@ -97,8 +97,12 @@ impl Core {
     }
 
     pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
+        let offset = self.offset(line, column);
+        if offset.is_none() {
+            return;
+        }
+        let i = offset.unwrap();
         let current_offset = self.offset(self.line, self.column).unwrap();
-        let i = self.offset(line, column).unwrap();
         self.buffer.insert(i, ch);
         if ch == '\n' {
             self.newline_indices.insert(line, i);
@@ -383,6 +387,18 @@ mod tests {
                 String::from("Hello,\na world!\nThe 2nd line.\nAAABBBCCCD."),
                 1,
                 1,
+            ).unwrap()
+        );
+
+        let buffer = String::from("aaa");
+        let mut editor = new(buffer.clone(), 0, 0).unwrap();
+        editor.insert_at('a', 10, 10);
+        assert_eq!(
+            editor,
+            new(
+                buffer,
+                0,
+                0,
             ).unwrap()
         );
     }
