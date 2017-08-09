@@ -151,6 +151,17 @@ impl Core {
     }
 }
 
+impl Clone for Core {
+    fn clone(&self) -> Core {
+        Core {
+            buffer: self.buffer.clone(),
+            line: self.line,
+            column: self.column,
+            newline_indices: self.newline_indices.clone(),
+        }
+    }
+}
+
 pub fn new(buffer: String, line: usize, column: usize) -> Result<Core, String> {
     let mut indices: Vec<usize> = buffer.match_indices('\n').map(|(a, _)| a).collect();
     indices.push(buffer.len());
@@ -161,11 +172,7 @@ pub fn new(buffer: String, line: usize, column: usize) -> Result<Core, String> {
             indices.len()
         ));
     }
-    let width = indices[line] - if line == 0 {
-        0
-    } else {
-        indices[line - 1] + 1
-    };
+    let width = indices[line] - if line == 0 { 0 } else { indices[line - 1] + 1 };
     if width < column {
         return Err(format!("Column {} is out of range [0, {}]", column, width));
     }
@@ -318,11 +325,7 @@ mod tests {
             editor.move_down(count);
             assert_eq!(
                 editor,
-                new(
-                    String::from(buffer),
-                    buffer.match_indices('\n').count(),
-                    1,
-                ).unwrap()
+                new(String::from(buffer), buffer.match_indices('\n').count(), 1,).unwrap()
             );
         }
     }
@@ -367,11 +370,7 @@ mod tests {
         editor.insert_string_at("bbb ", 0, 4);
         assert_eq!(
             editor,
-            new(
-                String::from("aaa bbb ccc ddd"),
-                0,
-                11,
-            ).unwrap()
+            new(String::from("aaa bbb ccc ddd"), 0, 11,).unwrap()
         );
     }
 
@@ -415,13 +414,21 @@ mod tests {
 
     #[bench]
     fn bench_insert_at(b: &mut Bencher) {
-        let mut editor = new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
-        b.iter(|| editor.insert_at('x', 0, 500));
+        let buffer = String::from("abcdef").repeat(10000);
+        let editor = new(buffer.clone(), 0, 0).unwrap();
+        b.iter(|| {
+            let mut ed = editor.clone();
+            ed.insert_at('x', 0, 500)
+        });
     }
 
     fn bench_insert_string_at_n(b: &mut Bencher, s: &str, n: usize) {
-        let mut editor = new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
-        b.iter(|| editor.insert_string_at(String::from(s).repeat(n).as_str(), 0, 500));
+        let buffer = String::from("abcdef").repeat(10000);
+        let editor = new(buffer, 0, 0).unwrap();
+        b.iter(|| {
+            let mut ed = editor.clone();
+            ed.insert_string_at(String::from(s).repeat(n).as_str(), 0, 500)
+        });
     }
 
     #[bench]
@@ -483,5 +490,14 @@ mod tests {
     #[bench]
     fn bench_insert_string_at_16_with_newline(b: &mut Bencher) {
         bench_insert_string_at_n(b, "x\ny", 16);
+    }
+
+    #[bench]
+    fn bench_buffer(b: &mut Bencher) {
+        let buffer = String::from("abcdef").repeat(10000);
+        b.iter(|| {
+            let mut buf = buffer.clone();
+            buf.insert(3, 'x')
+        });
     }
 }
