@@ -34,6 +34,14 @@ impl Editor {
         self.core.insert_at(ch, line, column);
     }
 
+    pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) {
+        self.core.insert_string_at(s, line, column);
+    }
+
+    pub fn delete_at(&mut self, line: usize, column: usize) {
+        self.core.delete_at(line, column);
+    }
+
     pub fn buffer(&self) -> String {
         self.core.buffer()
     }
