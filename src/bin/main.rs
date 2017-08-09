@@ -1,10 +1,12 @@
-#![feature(test)]
+//! The experimental playground of two-dimensional editing facility.
 
-mod editor;
-use editor::*;
+#![warn(missing_docs)]
+
+extern crate edit;
+use edit::editor::*;
 
 fn main() {
-    let mut editor = new(String::from("Hello, world!\nThe 2nd line."), 1, 6).unwrap();
+    let mut editor = Editor::new(String::from("Hello, world!\nThe 2nd line."), 1, 6).unwrap();
     editor.move_to_end();
     editor.move_right(1);
     editor.move_left(2);

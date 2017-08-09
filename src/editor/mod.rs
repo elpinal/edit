@@ -1,19 +1,37 @@
+//! A fundamental two-dimensional editor which has text as its buffer.
+//!
+//! This module contains the `Editor` type.
+//!
+//! # Examples
+//!
+//! ```
+//! use edit::editor::Editor;
+//!
+//! let mut editor = Editor::new(String::from("abcabc\ndefdef"), 1, 3).unwrap();
+//! editor.move_up(1);
+//! editor.move_left(2);
+//! editor.insert_string_at("\nghighi" , 1, 6);
+//!
+//! assert_eq!(editor.buffer(), String::from("abcabc\ndefdef\nghighi"));
+//! ```
+
 mod core;
 
 use editor::core::Core;
 
+/// A fundamental two-dimensional editor which has text as its buffer.
 pub struct Editor {
     core: Core,
 }
 
-pub fn new(buffer: String, line: usize, column: usize) -> Result<Editor, String> {
-    match core::new(buffer, line, column) {
-        Ok(editor) => Ok(Editor { core: editor }),
-        Err(err) => Err(err),
-    }
-}
-
 impl Editor {
+    pub fn new(buffer: String, line: usize, column: usize) -> Result<Editor, String> {
+        match core::new(buffer, line, column) {
+            Ok(editor) => Ok(Editor { core: editor }),
+            Err(err) => Err(err),
+        }
+    }
+
     pub fn move_right(&mut self, n: usize) {
         self.core.move_right(n);
     }
