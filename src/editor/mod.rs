@@ -79,6 +79,11 @@ mod tests {
         editor.move_to_beginning();
         assert_eq!(editor.line(), 1);
         assert_eq!(editor.column(), 0);
+
+        let mut editor = new(String::from(buffer), 0, 7).unwrap();
+        editor.move_to_beginning();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 0);
     }
 
     #[test]
@@ -87,6 +92,11 @@ mod tests {
         let mut editor = new(String::from(buffer), 1, 8).unwrap();
         editor.move_to_end();
         assert_eq!(editor.line(), 1);
+        assert_eq!(editor.column(), 13);
+
+        let mut editor = new(String::from(buffer), 0, 7).unwrap();
+        editor.move_to_end();
+        assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 13);
     }
 }
