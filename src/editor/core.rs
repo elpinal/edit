@@ -152,14 +152,21 @@ impl Core {
         }
         let i = offset.unwrap();
         let current_offset = self.current_offset();
-        self.buffer.insert(i, ch);
-        if ch == '\n' {
-            self.newline_indices.insert(line, i);
+        if let Some((n, _)) = self.buffer.char_indices().nth(i) {
+            self.buffer.insert(n, ch);
+        } else if self.buffer.chars().count() == i {
+            let len = self.buffer.len();
+            self.buffer.insert(len, ch);
+        } else {
+            return;
         }
         for x in self.newline_indices.iter_mut() {
-            if *x > i {
+            if *x >= i {
                 *x += 1
             }
+        }
+        if ch == '\n' {
+            self.newline_indices.insert(line, i);
         }
         if ch == '\n' && i <= current_offset {
             if self.line == line {
@@ -365,6 +372,17 @@ mod tests {
             editor.move_left(width + 1);
             assert_eq!(editor, Core::new(String::from(buffer), 1, 0).unwrap());
         }
+
+        let buffer = "abc\nHello, 世界\ndef";
+        let mut editor = Core::new(String::from(buffer), 1, 9).unwrap();
+        let expected = [7, 5, 3, 1, 0, 0];
+        for i in 0..expected.len() {
+            editor.move_left(2);
+            assert_eq!(
+                editor,
+                Core::new(String::from(buffer), 1, expected[i]).unwrap()
+            );
+        }
     }
 
     #[test]
@@ -457,7 +475,13 @@ mod tests {
         let buffer = String::from("aaa");
         let mut editor = Core::new(buffer.clone(), 0, 0).unwrap();
         editor.insert_at('a', 10, 10);
-        assert_eq!(editor, Core::new(buffer, 0, 0,).unwrap());
+        assert_eq!(editor, Core::new(buffer, 0, 0).unwrap());
+
+        let buffer = String::from("💖a");
+        let mut editor = Core::new(buffer, 0, 0).unwrap();
+        editor.insert_at('💖', 0, 2);
+        let want = String::from("💖a💖");
+        assert_eq!(editor, Core::new(want, 0, 0).unwrap());
     }
 
     #[test]
