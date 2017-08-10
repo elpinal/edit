@@ -11,12 +11,12 @@ pub struct Core {
 impl Core {
     pub fn new(buffer: &str, line: usize, column: usize) -> Result<Core, String> {
         let chars: Vec<char> = buffer.chars().collect();
-        let mut indices: Vec<usize> = buffer
-            .chars()
+        let mut indices: Vec<usize> = chars
+            .iter()
             .enumerate()
-            .filter_map(|(i, ch)| if ch == '\n' { Some(i) } else { None })
+            .filter_map(|(i, ch)| if *ch == '\n' { Some(i) } else { None })
             .collect();
-        let char_count = buffer.chars().count();
+        let char_count = chars.len();
         if indices.last() != Some(&char_count) {
             indices.push(char_count);
         }
