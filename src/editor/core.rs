@@ -60,13 +60,16 @@ impl Core {
         };
         let right = self.newline_indices[n];
         let left = if n == 0 {
-                0
-            } else {
-                self.newline_indices[n - 1] + 1
-            };
-        Some(
-            right.checked_sub(left).expect(&format!("line_width ({}): unexpected error: {} - {}", n, right, left)),
-        )
+            0
+        } else {
+            self.newline_indices[n - 1] + 1
+        };
+        Some(right.checked_sub(left).expect(&format!(
+            "line_width ({}): unexpected error: {} - {}",
+            n,
+            right,
+            left
+        )))
     }
 
     pub fn current_line_width(&self) -> usize {
@@ -329,6 +332,17 @@ mod tests {
             let width = editor.line_width(editor.line()).unwrap();
             editor.move_right(width + 1);
             assert_eq!(editor, Core::new(String::from(buffer), 1, width).unwrap());
+        }
+
+        let buffer = "世界\nabc";
+        let mut editor = Core::new(String::from(buffer), 0, 0).unwrap();
+        let expected = [1, 2, 2];
+        for i in 0..expected.len() {
+            editor.move_right(1);
+            assert_eq!(
+                editor,
+                Core::new(String::from(buffer), 0, expected[i]).unwrap()
+            );
         }
     }
 
