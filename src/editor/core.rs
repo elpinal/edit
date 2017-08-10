@@ -65,12 +65,7 @@ impl Core {
         } else {
             self.newline_indices[n - 1] + 1
         };
-        Some(right.checked_sub(left).expect(&format!(
-            "line_width ({}): unexpected error: {} - {}",
-            n,
-            right,
-            left
-        )))
+        Some(right-left)
     }
 
     pub fn current_line_width(&self) -> usize {
@@ -115,8 +110,9 @@ impl Core {
     }
 
     pub fn move_right(&mut self, n: usize) {
-        if self.column + n >= self.current_line_width() {
-            self.column = self.current_line_width();
+        let width = self.current_line_width();
+        if self.column + n >= width {
+            self.column = width;
             return;
         }
         self.column += n;
