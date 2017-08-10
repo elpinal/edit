@@ -39,8 +39,8 @@ impl Core {
         })
     }
 
-    pub fn buffer(&self) -> Vec<char> {
-        self.buffer.clone()
+    pub fn buffer(&self) -> &[char] {
+        &self.buffer
     }
 
     pub fn line(&self) -> usize {

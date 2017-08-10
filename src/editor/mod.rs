@@ -78,7 +78,7 @@ impl Editor {
     }
 
     /// Shows the content of the buffer.
-    pub fn buffer(&self) -> Vec<char> {
+    pub fn buffer(&self) -> &[char] {
         self.core.buffer()
     }
 
