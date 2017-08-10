@@ -10,8 +10,11 @@ pub struct Core {
 
 impl Core {
     pub fn new(buffer: String, line: usize, column: usize) -> Result<Core, String> {
-        let mut indices: Vec<usize> = buffer.match_indices('\n').map(|(a, _)| a).collect();
-        indices.push(buffer.len());
+        let mut indices: Vec<usize> = buffer
+            .char_indices()
+            .filter_map(|(a, ch)| if ch == '\n' { Some(a) } else { None })
+            .collect();
+        indices.push(buffer.chars().count());
         if indices.len() <= line {
             return Err(format!(
                 "Line {} is out of range [0, {})",
@@ -256,6 +259,11 @@ mod tests {
 
         let editor = Core::new(String::from("aaa bbb"), 0, 0).unwrap();
         assert_eq!(editor.line_width(0), Some(7));
+        assert_eq!(editor.line_width(1), None);
+
+        let buffer = String::from("世界");
+        let editor = Core::new(buffer, 0, 0).unwrap();
+        assert_eq!(editor.line_width(0), Some(2));
         assert_eq!(editor.line_width(1), None);
     }
 
