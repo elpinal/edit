@@ -200,7 +200,13 @@ impl Core {
         let width = self.line_width(line).expect(&format!("width: {}", line));
         let offset = self.offset(line, column)
             .expect(&format!("offset: {} {}", line, column));
-        let ch = self.buffer.remove(offset);
+        let n: usize;
+        if let Some((i, _)) = self.buffer.char_indices().nth(offset) {
+            n = i;
+        } else {
+            return;
+        }
+        let ch = self.buffer.remove(n);
         if ch == '\n' {
             self.newline_indices.remove(line);
         }
@@ -525,6 +531,10 @@ mod tests {
         assert_eq!(editor, Core::new(String::from("abcdef"), 0, 3).unwrap());
         editor.delete_at(0, 1);
         assert_eq!(editor, Core::new(String::from("acdef"), 0, 2).unwrap());
+
+        let mut editor = Core::new(String::from("abc世界"), 0, 3).unwrap();
+        editor.delete_at(0, 4);
+        assert_eq!(editor, Core::new(String::from("abc世"), 0, 3).unwrap());
     }
 
     #[bench]
