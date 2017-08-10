@@ -18,10 +18,5 @@ fn main() {
     let width = editor.line_width(1).unwrap();
     editor.insert_string_at("\nThe 3rd line.", 1, width);
     let buffer: String = editor.buffer().iter().collect();
-    println!(
-        "editor: {} {} {}",
-        buffer,
-        editor.line(),
-        editor.column()
-    )
+    println!("editor: {} {} {}", buffer, editor.line(), editor.column())
 }
