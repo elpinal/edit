@@ -7,12 +7,13 @@
 //! ```
 //! use edit::editor::Editor;
 //!
-//! let mut editor = Editor::new(String::from("abcabc\ndefdef"), 1, 3).unwrap();
+//! let mut editor = Editor::new("abcabc\ndefdef", 1, 3).unwrap();
 //! editor.move_up(1);
 //! editor.move_left(2);
 //! editor.insert_string_at("\nghighi" , 1, 6);
 //!
-//! assert_eq!(editor.buffer(), String::from("abcabc\ndefdef\nghighi"));
+//! let buffer: String = editor.buffer().iter().collect();
+//! assert_eq!(buffer, "abcabc\ndefdef\nghighi");
 //! ```
 
 mod core;
