@@ -185,8 +185,11 @@ impl Core {
         }
         let current_offset = self.current_offset();
         let width = self.line_width(line).expect(&format!("width: {}", line));
-        let offset = self.offset(line, column)
-            .expect(&format!("offset: {} {}", line, column));
+        let offset = self.offset(line, column).expect(&format!(
+            "offset: {} {}",
+            line,
+            column
+        ));
         let ch = self.buffer.remove(offset);
         if ch == '\n' {
             self.newline_indices.remove(line);

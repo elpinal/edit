@@ -9,7 +9,6 @@ mod tests {
     use test::Bencher;
     use edit::editor::*;
 
-
     #[bench]
     fn bench_move_right(b: &mut Bencher) {
         let mut editor = Editor::new(&"abcdef".repeat(10000), 0, 0).unwrap();
