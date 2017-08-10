@@ -189,8 +189,7 @@ impl Core {
         if self.line_count() <= line || line_width < column {
             return;
         }
-        let current_offset = self.offset(self.line, self.column)
-            .expect(&format!("current_offset: {} {}", self.line, self.column));
+        let current_offset = self.current_offset();
         let width = self.line_width(line).expect(&format!("width: {}", line));
         let offset = self.offset(line, column)
             .expect(&format!("offset: {} {}", line, column));
