@@ -112,6 +112,12 @@ impl Editor {
     }
 }
 
+impl Clone for Editor {
+    fn clone(&self) -> Editor {
+        Editor { core: self.core.clone() }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
