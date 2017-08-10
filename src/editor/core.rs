@@ -65,7 +65,7 @@ impl Core {
         } else {
             self.newline_indices[n - 1] + 1
         };
-        Some(right-left)
+        Some(right - left)
     }
 
     pub fn current_line_width(&self) -> usize {
@@ -571,7 +571,7 @@ mod tests {
 
     #[bench]
     fn bench_buffer(b: &mut Bencher) {
-        let buffer = "abcdef".repeat(10000);
+        let buffer: Vec<char> = "abcdef".repeat(10000).chars().collect();
         b.iter(|| {
             let mut buf = buffer.clone();
             buf.insert(3, 'x')
