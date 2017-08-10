@@ -405,7 +405,7 @@ mod tests {
             editor.move_down(count);
             assert_eq!(
                 editor,
-                Core::new(buffer, buffer.match_indices('\n').count(), 1,).unwrap()
+                Core::new(buffer, buffer.match_indices('\n').count(), 1).unwrap()
             );
         }
 
@@ -422,17 +422,17 @@ mod tests {
         editor.insert_at('\n', 0, 6);
         assert_eq!(
             editor,
-            Core::new("Hello,\n world!\nThe 2nd line.\nAAABBBCCC.", 1, 0,).unwrap()
+            Core::new("Hello,\n world!\nThe 2nd line.\nAAABBBCCC.", 1, 0).unwrap()
         );
         editor.insert_at('D', 3, 9);
         assert_eq!(
             editor,
-            Core::new("Hello,\n world!\nThe 2nd line.\nAAABBBCCCD.", 1, 0,).unwrap()
+            Core::new("Hello,\n world!\nThe 2nd line.\nAAABBBCCCD.", 1, 0).unwrap()
         );
         editor.insert_at('a', 1, 0);
         assert_eq!(
             editor,
-            Core::new("Hello,\na world!\nThe 2nd line.\nAAABBBCCCD.", 1, 1,).unwrap()
+            Core::new("Hello,\na world!\nThe 2nd line.\nAAABBBCCCD.", 1, 1).unwrap()
         );
 
         let buffer = "aaa";
@@ -452,7 +452,7 @@ mod tests {
         let buffer = "aaa ccc ddd";
         let mut editor = Core::new(buffer, 0, 7).unwrap();
         editor.insert_string_at("bbb ", 0, 4);
-        assert_eq!(editor, Core::new("aaa bbb ccc ddd", 0, 11,).unwrap());
+        assert_eq!(editor, Core::new("aaa bbb ccc ddd", 0, 11).unwrap());
     }
 
     #[test]
@@ -462,7 +462,7 @@ mod tests {
         editor.delete_at(0, 6);
         assert_eq!(
             editor,
-            Core::new("Hello,world!\nThe 2nd line.\nAAABBBCCC.", 0, 6,).unwrap()
+            Core::new("Hello,world!\nThe 2nd line.\nAAABBBCCC.", 0, 6).unwrap()
         );
         editor.delete_at(0, 12);
         assert_eq!(
