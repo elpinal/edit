@@ -5,7 +5,7 @@ extern crate edit;
 use edit::editor::*;
 
 fn main() {
-    let mut editor = Editor::new(String::from("Hello, world!\nThe 2nd line."), 1, 6).unwrap();
+    let mut editor = Editor::new("Hello, world!\nThe 2nd line.", 1, 6).unwrap();
     editor.move_to_end();
     editor.move_right(1);
     editor.move_left(2);
@@ -17,9 +17,10 @@ fn main() {
     editor.delete_at(0, 13);
     let width = editor.line_width(1).unwrap();
     editor.insert_string_at("\nThe 3rd line.", 1, width);
+    let buffer: String = editor.buffer().iter().collect();
     println!(
         "editor: {} {} {}",
-        editor.buffer(),
+        buffer,
         editor.line(),
         editor.column()
     )
