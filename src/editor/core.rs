@@ -11,10 +11,14 @@ pub struct Core {
 impl Core {
     pub fn new(buffer: String, line: usize, column: usize) -> Result<Core, String> {
         let mut indices: Vec<usize> = buffer
-            .char_indices()
-            .filter_map(|(a, ch)| if ch == '\n' { Some(a) } else { None })
+            .chars()
+            .enumerate()
+            .filter_map(|(i, ch)| if ch == '\n' { Some(i) } else { None })
             .collect();
-        indices.push(buffer.chars().count());
+        let char_count = buffer.chars().count();
+        if indices.last() != Some(&char_count) {
+            indices.push(char_count);
+        }
         if indices.len() <= line {
             return Err(format!(
                 "Line {} is out of range [0, {})",
@@ -54,12 +58,14 @@ impl Core {
         if n >= self.line_count() {
             return None;
         };
-        Some(
-            self.newline_indices[n] - if n == 0 {
+        let right = self.newline_indices[n];
+        let left = if n == 0 {
                 0
             } else {
                 self.newline_indices[n - 1] + 1
-            },
+            };
+        Some(
+            right.checked_sub(left).expect(&format!("line_width ({}): unexpected error: {} - {}", n, right, left)),
         )
     }
 
@@ -294,6 +300,15 @@ mod tests {
         assert_eq!(editor.offset(10, 10), None);
         assert_eq!(editor.offset(0, 7), Some(7));
         assert_eq!(editor.offset(0, 8), None);
+
+        let buffer = String::from("世界\nabc");
+        let editor = Core::new(buffer, 0, 0).unwrap();
+        assert_eq!(editor.offset(0, 0), Some(0));
+        assert_eq!(editor.offset(0, 1), Some(1));
+        assert_eq!(editor.offset(0, 2), Some(2));
+        assert_eq!(editor.offset(1, 0), Some(3));
+        assert_eq!(editor.offset(1, 3), Some(6));
+        assert_eq!(editor.offset(1, 4), None);
     }
 
     #[test]
