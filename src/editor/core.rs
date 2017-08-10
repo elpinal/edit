@@ -2,14 +2,15 @@ extern crate test;
 
 #[derive(PartialEq, Debug)]
 pub struct Core {
-    buffer: String,
+    buffer: Vec<char>,
     newline_indices: Vec<usize>,
     line: usize,
     column: usize,
 }
 
 impl Core {
-    pub fn new(buffer: String, line: usize, column: usize) -> Result<Core, String> {
+    pub fn new(buffer: &str, line: usize, column: usize) -> Result<Core, String> {
+        let chars: Vec<char> = buffer.chars().collect();
         let mut indices: Vec<usize> = buffer
             .chars()
             .enumerate()
@@ -31,14 +32,14 @@ impl Core {
             return Err(format!("Column {} is out of range [0, {}]", column, width));
         }
         Ok(Core {
-            buffer: buffer.clone(),
+            buffer: chars,
             newline_indices: indices,
             line,
             column,
         })
     }
 
-    pub fn buffer(&self) -> String {
+    pub fn buffer(&self) -> Vec<char> {
         self.buffer.clone()
     }
 
@@ -152,14 +153,7 @@ impl Core {
         }
         let i = offset.unwrap();
         let current_offset = self.current_offset();
-        if let Some((n, _)) = self.buffer.char_indices().nth(i) {
-            self.buffer.insert(n, ch);
-        } else if self.buffer.chars().count() == i {
-            let len = self.buffer.len();
-            self.buffer.insert(len, ch);
-        } else {
-            return;
-        }
+        self.buffer.insert(i, ch);
         for x in self.newline_indices.iter_mut() {
             if *x >= i {
                 *x += 1
@@ -200,13 +194,7 @@ impl Core {
         let width = self.line_width(line).expect(&format!("width: {}", line));
         let offset = self.offset(line, column)
             .expect(&format!("offset: {} {}", line, column));
-        let n: usize;
-        if let Some((i, _)) = self.buffer.char_indices().nth(offset) {
-            n = i;
-        } else {
-            return;
-        }
-        let ch = self.buffer.remove(n);
+        let ch = self.buffer.remove(offset);
         if ch == '\n' {
             self.newline_indices.remove(line);
         }
@@ -250,40 +238,40 @@ mod tests {
     #[test]
     fn test_build_editor() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let editor = Core::new(String::from(buffer), 10, 10);
+        let editor = Core::new(buffer, 10, 10);
         assert!(editor.is_err());
     }
 
     #[test]
     fn test_line_count() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let editor = Core::new(String::from(buffer), 0, 0).unwrap();
+        let editor = Core::new(buffer, 0, 0).unwrap();
         assert_eq!(editor.line_count(), 2);
 
-        let editor = Core::new(String::new(), 0, 0).unwrap();
+        let editor = Core::new("", 0, 0).unwrap();
         assert_eq!(editor.line_count(), 1);
 
-        let editor = Core::new(String::from("aaa bbb"), 0, 0).unwrap();
+        let editor = Core::new("aaa bbb", 0, 0).unwrap();
         assert_eq!(editor.line_count(), 1);
     }
 
     #[test]
     fn test_line_width() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let editor = Core::new(String::from(buffer), 0, 0).unwrap();
+        let editor = Core::new(buffer, 0, 0).unwrap();
         assert_eq!(editor.line_width(0), Some(13));
         assert_eq!(editor.line_width(1), Some(13));
         assert_eq!(editor.line_width(2), None);
 
-        let editor = Core::new(String::new(), 0, 0).unwrap();
+        let editor = Core::new("", 0, 0).unwrap();
         assert_eq!(editor.line_width(0), Some(0));
         assert_eq!(editor.line_width(1), None);
 
-        let editor = Core::new(String::from("aaa bbb"), 0, 0).unwrap();
+        let editor = Core::new("aaa bbb", 0, 0).unwrap();
         assert_eq!(editor.line_width(0), Some(7));
         assert_eq!(editor.line_width(1), None);
 
-        let buffer = String::from("世界");
+        let buffer = "世界";
         let editor = Core::new(buffer, 0, 0).unwrap();
         assert_eq!(editor.line_width(0), Some(2));
         assert_eq!(editor.line_width(1), None);
@@ -292,7 +280,7 @@ mod tests {
     #[test]
     fn test_offset() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let editor = Core::new(String::from(buffer), 0, 0).unwrap();
+        let editor = Core::new(buffer, 0, 0).unwrap();
         assert_eq!(editor.offset(0, 0), Some(0));
         assert_eq!(editor.offset(1, 1), Some(15));
         assert_eq!(editor.offset(2, 2), None);
@@ -301,14 +289,14 @@ mod tests {
         assert_eq!(editor.offset(0, 13), Some(13));
         assert_eq!(editor.offset(0, 14), None);
 
-        let editor = Core::new(String::new(), 0, 0).unwrap();
+        let editor = Core::new("", 0, 0).unwrap();
         assert_eq!(editor.offset(0, 0), Some(0));
         assert_eq!(editor.offset(0, 1), None);
         assert_eq!(editor.offset(1, 0), None);
         assert_eq!(editor.offset(1, 1), None);
         assert_eq!(editor.offset(10, 10), None);
 
-        let editor = Core::new(String::from("aaa bbb"), 0, 0).unwrap();
+        let editor = Core::new("aaa bbb", 0, 0).unwrap();
         assert_eq!(editor.offset(0, 0), Some(0));
         assert_eq!(editor.offset(0, 1), Some(1));
         assert_eq!(editor.offset(1, 0), None);
@@ -317,7 +305,7 @@ mod tests {
         assert_eq!(editor.offset(0, 7), Some(7));
         assert_eq!(editor.offset(0, 8), None);
 
-        let buffer = String::from("世界\nabc");
+        let buffer = "世界\nabc";
         let editor = Core::new(buffer, 0, 0).unwrap();
         assert_eq!(editor.offset(0, 0), Some(0));
         assert_eq!(editor.offset(0, 1), Some(1));
@@ -330,31 +318,31 @@ mod tests {
     #[test]
     fn test_move_right() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let mut editor = Core::new(String::from(buffer), 1, 6).unwrap();
+        let mut editor = Core::new(buffer, 1, 6).unwrap();
         let expected = [7, 8, 9, 10, 11, 12, 13, 13];
         for i in 0..expected.len() {
             editor.move_right(1);
             assert_eq!(
                 editor,
-                Core::new(String::from(buffer), 1, expected[i]).unwrap()
+                Core::new(buffer, 1, expected[i]).unwrap()
             );
         }
 
         for i in 0..editor.line_width(editor.line()).unwrap() {
-            let mut editor = Core::new(String::from(buffer), 1, i).unwrap();
+            let mut editor = Core::new(buffer, 1, i).unwrap();
             let width = editor.line_width(editor.line()).unwrap();
             editor.move_right(width + 1);
-            assert_eq!(editor, Core::new(String::from(buffer), 1, width).unwrap());
+            assert_eq!(editor, Core::new(buffer, 1, width).unwrap());
         }
 
         let buffer = "世界\nabc";
-        let mut editor = Core::new(String::from(buffer), 0, 0).unwrap();
+        let mut editor = Core::new(buffer, 0, 0).unwrap();
         let expected = [1, 2, 2];
         for i in 0..expected.len() {
             editor.move_right(1);
             assert_eq!(
                 editor,
-                Core::new(String::from(buffer), 0, expected[i]).unwrap()
+                Core::new(buffer, 0, expected[i]).unwrap()
             );
         }
     }
@@ -362,31 +350,31 @@ mod tests {
     #[test]
     fn test_move_left() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let mut editor = Core::new(String::from(buffer), 1, 6).unwrap();
+        let mut editor = Core::new(buffer, 1, 6).unwrap();
         let expected = [5, 4, 3, 2, 1, 0, 0];
         for i in 0..expected.len() {
             editor.move_left(1);
             assert_eq!(
                 editor,
-                Core::new(String::from(buffer), 1, expected[i]).unwrap()
+                Core::new(buffer, 1, expected[i]).unwrap()
             );
         }
 
         for i in 0..editor.line_width(editor.line()).unwrap() {
-            let mut editor = Core::new(String::from(buffer), 1, i).unwrap();
+            let mut editor = Core::new(buffer, 1, i).unwrap();
             let width = editor.line_width(editor.line()).unwrap();
             editor.move_left(width + 1);
-            assert_eq!(editor, Core::new(String::from(buffer), 1, 0).unwrap());
+            assert_eq!(editor, Core::new(buffer, 1, 0).unwrap());
         }
 
         let buffer = "abc\nHello, 世界\ndef";
-        let mut editor = Core::new(String::from(buffer), 1, 9).unwrap();
+        let mut editor = Core::new(buffer, 1, 9).unwrap();
         let expected = [7, 5, 3, 1, 0, 0];
         for i in 0..expected.len() {
             editor.move_left(2);
             assert_eq!(
                 editor,
-                Core::new(String::from(buffer), 1, expected[i]).unwrap()
+                Core::new(buffer, 1, expected[i]).unwrap()
             );
         }
     }
@@ -394,25 +382,25 @@ mod tests {
     #[test]
     fn test_move_up() {
         let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
-        let mut editor = Core::new(String::from(buffer), 2, 4).unwrap();
+        let mut editor = Core::new(buffer, 2, 4).unwrap();
         let expected = [1, 0, 0];
         for i in 0..expected.len() {
             editor.move_up(1);
             assert_eq!(
                 editor,
-                Core::new(String::from(buffer), expected[i], 4).unwrap()
+                Core::new(buffer, expected[i], 4).unwrap()
             );
         }
 
         for i in 0..editor.line_count() {
-            let mut editor = Core::new(String::from(buffer), i, 1).unwrap();
+            let mut editor = Core::new(buffer, i, 1).unwrap();
             let count = editor.line_count();
             editor.move_up(count);
-            assert_eq!(editor, Core::new(String::from(buffer), 0, 1).unwrap());
+            assert_eq!(editor, Core::new(buffer, 0, 1).unwrap());
         }
 
-        let buffer = String::from("aaa\nbbbb");
-        let mut editor = Core::new(buffer.clone(), 1, 4).unwrap();
+        let buffer = "aaa\nbbbb";
+        let mut editor = Core::new(buffer, 1, 4).unwrap();
         editor.move_up(1);
         assert_eq!(editor, Core::new(buffer, 0, 3).unwrap());
     }
@@ -420,28 +408,28 @@ mod tests {
     #[test]
     fn test_move_down() {
         let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
-        let mut editor = Core::new(String::from(buffer), 0, 4).unwrap();
+        let mut editor = Core::new(buffer, 0, 4).unwrap();
         let expected = [1, 2, 2];
         for i in 0..expected.len() {
             editor.move_down(1);
             assert_eq!(
                 editor,
-                Core::new(String::from(buffer), expected[i], 4).unwrap()
+                Core::new(buffer, expected[i], 4).unwrap()
             );
         }
 
         for i in 0..editor.line_count() {
-            let mut editor = Core::new(String::from(buffer), i, 1).unwrap();
+            let mut editor = Core::new(buffer, i, 1).unwrap();
             let count = editor.line_count();
             editor.move_down(count);
             assert_eq!(
                 editor,
-                Core::new(String::from(buffer), buffer.match_indices('\n').count(), 1,).unwrap()
+                Core::new(buffer, buffer.match_indices('\n').count(), 1,).unwrap()
             );
         }
 
-        let buffer = String::from("aaaa\nbbb");
-        let mut editor = Core::new(buffer.clone(), 0, 4).unwrap();
+        let buffer = "aaaa\nbbb";
+        let mut editor = Core::new(buffer, 0, 4).unwrap();
         editor.move_down(1);
         assert_eq!(editor, Core::new(buffer, 1, 3).unwrap());
     }
@@ -449,12 +437,12 @@ mod tests {
     #[test]
     fn test_insert_at() {
         let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
-        let mut editor = Core::new(String::from(buffer), 0, 6).unwrap();
+        let mut editor = Core::new(buffer, 0, 6).unwrap();
         editor.insert_at('\n', 0, 6);
         assert_eq!(
             editor,
             Core::new(
-                String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCC."),
+                "Hello,\n world!\nThe 2nd line.\nAAABBBCCC.",
                 1,
                 0,
             ).unwrap()
@@ -463,7 +451,7 @@ mod tests {
         assert_eq!(
             editor,
             Core::new(
-                String::from("Hello,\n world!\nThe 2nd line.\nAAABBBCCCD."),
+                "Hello,\n world!\nThe 2nd line.\nAAABBBCCCD.",
                 1,
                 0,
             ).unwrap()
@@ -472,44 +460,44 @@ mod tests {
         assert_eq!(
             editor,
             Core::new(
-                String::from("Hello,\na world!\nThe 2nd line.\nAAABBBCCCD."),
+                "Hello,\na world!\nThe 2nd line.\nAAABBBCCCD.",
                 1,
                 1,
             ).unwrap()
         );
 
-        let buffer = String::from("aaa");
-        let mut editor = Core::new(buffer.clone(), 0, 0).unwrap();
+        let buffer = "aaa";
+        let mut editor = Core::new(buffer, 0, 0).unwrap();
         editor.insert_at('a', 10, 10);
         assert_eq!(editor, Core::new(buffer, 0, 0).unwrap());
 
-        let buffer = String::from("💖a");
+        let buffer = "💖a";
         let mut editor = Core::new(buffer, 0, 0).unwrap();
         editor.insert_at('💖', 0, 2);
-        let want = String::from("💖a💖");
+        let want = "💖a💖";
         assert_eq!(editor, Core::new(want, 0, 0).unwrap());
     }
 
     #[test]
     fn test_insert_string_at() {
         let buffer = "aaa ccc ddd";
-        let mut editor = Core::new(String::from(buffer), 0, 7).unwrap();
+        let mut editor = Core::new(buffer, 0, 7).unwrap();
         editor.insert_string_at("bbb ", 0, 4);
         assert_eq!(
             editor,
-            Core::new(String::from("aaa bbb ccc ddd"), 0, 11,).unwrap()
+            Core::new("aaa bbb ccc ddd", 0, 11,).unwrap()
         );
     }
 
     #[test]
     fn test_delete_at() {
         let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
-        let mut editor = Core::new(String::from(buffer), 0, 6).unwrap();
+        let mut editor = Core::new(buffer, 0, 6).unwrap();
         editor.delete_at(0, 6);
         assert_eq!(
             editor,
             Core::new(
-                String::from("Hello,world!\nThe 2nd line.\nAAABBBCCC."),
+                "Hello,world!\nThe 2nd line.\nAAABBBCCC.",
                 0,
                 6,
             ).unwrap()
@@ -517,36 +505,36 @@ mod tests {
         editor.delete_at(0, 12);
         assert_eq!(
             editor,
-            Core::new(String::from("Hello,world!The 2nd line.\nAAABBBCCC."), 0, 6).unwrap()
+            Core::new("Hello,world!The 2nd line.\nAAABBBCCC.", 0, 6).unwrap()
         );
 
-        let mut editor = Core::new(String::from("abc\ndef"), 0, 3).unwrap();
+        let mut editor = Core::new("abc\ndef", 0, 3).unwrap();
         editor.delete_at(0, 2);
-        assert_eq!(editor, Core::new(String::from("ab\ndef"), 0, 2).unwrap());
+        assert_eq!(editor, Core::new("ab\ndef", 0, 2).unwrap());
 
-        let mut editor = Core::new(String::from("abc\ndef"), 1, 0).unwrap();
+        let mut editor = Core::new("abc\ndef", 1, 0).unwrap();
         editor.delete_at(0, 3);
-        assert_eq!(editor, Core::new(String::from("abcdef"), 0, 3).unwrap());
+        assert_eq!(editor, Core::new("abcdef", 0, 3).unwrap());
         editor.delete_at(10, 10);
-        assert_eq!(editor, Core::new(String::from("abcdef"), 0, 3).unwrap());
+        assert_eq!(editor, Core::new("abcdef", 0, 3).unwrap());
         editor.delete_at(0, 1);
-        assert_eq!(editor, Core::new(String::from("acdef"), 0, 2).unwrap());
+        assert_eq!(editor, Core::new("acdef", 0, 2).unwrap());
 
-        let mut editor = Core::new(String::from("abc世界"), 0, 3).unwrap();
+        let mut editor = Core::new("abc世界", 0, 3).unwrap();
         editor.delete_at(0, 4);
-        assert_eq!(editor, Core::new(String::from("abc世"), 0, 3).unwrap());
+        assert_eq!(editor, Core::new("abc世", 0, 3).unwrap());
     }
 
     #[bench]
     fn bench_move_right(b: &mut Bencher) {
-        let mut editor = Core::new(String::from("abcdef").repeat(10000), 0, 0).unwrap();
+        let mut editor = Core::new(&"abcdef".repeat(10000), 0, 0).unwrap();
         b.iter(|| editor.move_right(10));
     }
 
     #[bench]
     fn bench_insert_at(b: &mut Bencher) {
-        let buffer = String::from("abcdef").repeat(10000);
-        let editor = Core::new(buffer.clone(), 0, 0).unwrap();
+        let buffer = &"abcdef".repeat(10000);
+        let editor = Core::new(buffer, 0, 0).unwrap();
         b.iter(|| {
             let mut ed = editor.clone();
             ed.insert_at('x', 0, 500)
@@ -554,11 +542,11 @@ mod tests {
     }
 
     fn bench_insert_string_at_n(b: &mut Bencher, s: &str, n: usize) {
-        let buffer = String::from("abcdef").repeat(10000);
+        let buffer = &"abcdef".repeat(10000);
         let editor = Core::new(buffer, 0, 0).unwrap();
         b.iter(|| {
             let mut ed = editor.clone();
-            ed.insert_string_at(String::from(s).repeat(n).as_str(), 0, 500)
+            ed.insert_string_at(&s.repeat(n), 0, 500)
         });
     }
 
@@ -625,7 +613,7 @@ mod tests {
 
     #[bench]
     fn bench_buffer(b: &mut Bencher) {
-        let buffer = String::from("abcdef").repeat(10000);
+        let buffer = "abcdef".repeat(10000);
         b.iter(|| {
             let mut buf = buffer.clone();
             buf.insert(3, 'x')

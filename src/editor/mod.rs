@@ -26,7 +26,7 @@ pub struct Editor {
 
 impl Editor {
     /// Creates a new `Editor` which has a buffer and a position of the cursor.
-    pub fn new(buffer: String, line: usize, column: usize) -> Result<Editor, String> {
+    pub fn new(buffer: &str, line: usize, column: usize) -> Result<Editor, String> {
         Core::new(buffer, line, column).and_then(|core| Ok(Editor { core }))
     }
 
@@ -78,7 +78,7 @@ impl Editor {
     }
 
     /// Shows the content of the buffer.
-    pub fn buffer(&self) -> String {
+    pub fn buffer(&self) -> Vec<char> {
         self.core.buffer()
     }
 
@@ -118,12 +118,12 @@ mod tests {
     #[test]
     fn test_move_to_beginning() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let mut editor = Editor::new(String::from(buffer), 1, 8).unwrap();
+        let mut editor = Editor::new(buffer, 1, 8).unwrap();
         editor.move_to_beginning();
         assert_eq!(editor.line(), 1);
         assert_eq!(editor.column(), 0);
 
-        let mut editor = Editor::new(String::from(buffer), 0, 7).unwrap();
+        let mut editor = Editor::new(buffer, 0, 7).unwrap();
         editor.move_to_beginning();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 0);
@@ -132,12 +132,12 @@ mod tests {
     #[test]
     fn test_move_to_end() {
         let buffer = "Hello, world!\nThe 2nd line.";
-        let mut editor = Editor::new(String::from(buffer), 1, 8).unwrap();
+        let mut editor = Editor::new(buffer, 1, 8).unwrap();
         editor.move_to_end();
         assert_eq!(editor.line(), 1);
         assert_eq!(editor.column(), 13);
 
-        let mut editor = Editor::new(String::from(buffer), 0, 7).unwrap();
+        let mut editor = Editor::new(buffer, 0, 7).unwrap();
         editor.move_to_end();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 13);
