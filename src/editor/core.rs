@@ -58,7 +58,7 @@ impl Core {
     pub fn line_width(&self, n: usize) -> Option<usize> {
         if n >= self.line_count() {
             return None;
-        };
+        }
         let right = self.newline_indices[n];
         let left = if n == 0 {
             0
@@ -322,10 +322,7 @@ mod tests {
         let expected = [7, 8, 9, 10, 11, 12, 13, 13];
         for i in 0..expected.len() {
             editor.move_right(1);
-            assert_eq!(
-                editor,
-                Core::new(buffer, 1, expected[i]).unwrap()
-            );
+            assert_eq!(editor, Core::new(buffer, 1, expected[i]).unwrap());
         }
 
         for i in 0..editor.line_width(editor.line()).unwrap() {
@@ -340,10 +337,7 @@ mod tests {
         let expected = [1, 2, 2];
         for i in 0..expected.len() {
             editor.move_right(1);
-            assert_eq!(
-                editor,
-                Core::new(buffer, 0, expected[i]).unwrap()
-            );
+            assert_eq!(editor, Core::new(buffer, 0, expected[i]).unwrap());
         }
     }
 
@@ -354,10 +348,7 @@ mod tests {
         let expected = [5, 4, 3, 2, 1, 0, 0];
         for i in 0..expected.len() {
             editor.move_left(1);
-            assert_eq!(
-                editor,
-                Core::new(buffer, 1, expected[i]).unwrap()
-            );
+            assert_eq!(editor, Core::new(buffer, 1, expected[i]).unwrap());
         }
 
         for i in 0..editor.line_width(editor.line()).unwrap() {
@@ -372,10 +363,7 @@ mod tests {
         let expected = [7, 5, 3, 1, 0, 0];
         for i in 0..expected.len() {
             editor.move_left(2);
-            assert_eq!(
-                editor,
-                Core::new(buffer, 1, expected[i]).unwrap()
-            );
+            assert_eq!(editor, Core::new(buffer, 1, expected[i]).unwrap());
         }
     }
 
@@ -386,10 +374,7 @@ mod tests {
         let expected = [1, 0, 0];
         for i in 0..expected.len() {
             editor.move_up(1);
-            assert_eq!(
-                editor,
-                Core::new(buffer, expected[i], 4).unwrap()
-            );
+            assert_eq!(editor, Core::new(buffer, expected[i], 4).unwrap());
         }
 
         for i in 0..editor.line_count() {
@@ -412,10 +397,7 @@ mod tests {
         let expected = [1, 2, 2];
         for i in 0..expected.len() {
             editor.move_down(1);
-            assert_eq!(
-                editor,
-                Core::new(buffer, expected[i], 4).unwrap()
-            );
+            assert_eq!(editor, Core::new(buffer, expected[i], 4).unwrap());
         }
 
         for i in 0..editor.line_count() {
@@ -441,29 +423,17 @@ mod tests {
         editor.insert_at('\n', 0, 6);
         assert_eq!(
             editor,
-            Core::new(
-                "Hello,\n world!\nThe 2nd line.\nAAABBBCCC.",
-                1,
-                0,
-            ).unwrap()
+            Core::new("Hello,\n world!\nThe 2nd line.\nAAABBBCCC.", 1, 0,).unwrap()
         );
         editor.insert_at('D', 3, 9);
         assert_eq!(
             editor,
-            Core::new(
-                "Hello,\n world!\nThe 2nd line.\nAAABBBCCCD.",
-                1,
-                0,
-            ).unwrap()
+            Core::new("Hello,\n world!\nThe 2nd line.\nAAABBBCCCD.", 1, 0,).unwrap()
         );
         editor.insert_at('a', 1, 0);
         assert_eq!(
             editor,
-            Core::new(
-                "Hello,\na world!\nThe 2nd line.\nAAABBBCCCD.",
-                1,
-                1,
-            ).unwrap()
+            Core::new("Hello,\na world!\nThe 2nd line.\nAAABBBCCCD.", 1, 1,).unwrap()
         );
 
         let buffer = "aaa";
@@ -483,10 +453,7 @@ mod tests {
         let buffer = "aaa ccc ddd";
         let mut editor = Core::new(buffer, 0, 7).unwrap();
         editor.insert_string_at("bbb ", 0, 4);
-        assert_eq!(
-            editor,
-            Core::new("aaa bbb ccc ddd", 0, 11,).unwrap()
-        );
+        assert_eq!(editor, Core::new("aaa bbb ccc ddd", 0, 11,).unwrap());
     }
 
     #[test]
@@ -496,11 +463,7 @@ mod tests {
         editor.delete_at(0, 6);
         assert_eq!(
             editor,
-            Core::new(
-                "Hello,world!\nThe 2nd line.\nAAABBBCCC.",
-                0,
-                6,
-            ).unwrap()
+            Core::new("Hello,world!\nThe 2nd line.\nAAABBBCCC.", 0, 6,).unwrap()
         );
         editor.delete_at(0, 12);
         assert_eq!(
