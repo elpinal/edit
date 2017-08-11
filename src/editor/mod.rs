@@ -125,6 +125,7 @@ impl Editor {
     }
 
     /// Moves a cursor to the beginning of the middle line.
+    /// If the number of the lines is even, the upper line is selected.
     pub fn move_to_beginning_of_middle_line(&mut self) {
         self.core.set_column(0);
         let mut lines = self.core.line_count();
@@ -212,6 +213,18 @@ mod tests {
         let mut editor = Editor::new(buffer, 3, 2).unwrap();
         editor.move_to_beginning_of_middle_line();
         assert_eq!(editor.line(), 1);
+        assert_eq!(editor.column(), 0);
+
+        let buffer = "aaa\nbbb\nccc";
+        let mut editor = Editor::new(buffer, 1, 3).unwrap();
+        editor.move_to_beginning_of_middle_line();
+        assert_eq!(editor.line(), 1);
+        assert_eq!(editor.column(), 0);
+
+        let buffer = "aaa";
+        let mut editor = Editor::new(buffer, 0, 2).unwrap();
+        editor.move_to_beginning_of_middle_line();
+        assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 0);
     }
 }
