@@ -202,15 +202,19 @@ impl Editor {
         self.core.set_column(pos.unwrap());
     }
 
+    pub fn set_column(&mut self, n: usize) {
+        return self.core.set_column(n)
+    }
+
     /// Moves a cursor to the beginning of the upper line.
     pub fn move_to_beginning_of_upper_line(&mut self) {
-        self.core.set_column(0);
+        self.set_column(0);
         self.move_down(1);
     }
 
     /// Moves a cursor to the beginning of the lower line.
     pub fn move_to_beginning_of_lower_line(&mut self) {
-        self.core.set_column(0);
+        self.set_column(0);
         self.move_up(1);
     }
 }
