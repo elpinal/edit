@@ -154,6 +154,34 @@ impl Editor {
         }
         return None;
     }
+
+    fn current_line_buffer(&self) -> &[char] {
+        let buffer = self.core.buffer();
+        let beginning = self.core.offset(self.line(), 0).unwrap();
+        let end = self.core
+            .offset(self.line(), self.core.current_line_width())
+            .unwrap();
+        &buffer[beginning..end]
+    }
+
+    /// Moves a cursor to the first non-blank character.
+    pub fn move_to_beginning_of_non_blank(&mut self) {
+        let pos = self.first_non_blank();
+        if pos.is_none() {
+            return;
+        }
+        self.core.set_column(pos.unwrap());
+    }
+
+    fn first_non_blank(&self) -> Option<usize> {
+        let line = self.current_line_buffer();
+        for (i, ch) in line.iter().enumerate() {
+            if !ch.is_whitespace() {
+                return Some(i);
+            }
+        }
+        return None;
+    }
 }
 
 impl Clone for Editor {
@@ -253,6 +281,15 @@ mod tests {
         let buffer = "  aaa  ";
         let mut editor = Editor::new(buffer, 0, 0).unwrap();
         editor.move_to_beginning_of_next_keyword();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 2);
+    }
+
+    #[test]
+    fn test_move_to_beginning_of_non_blank() {
+        let buffer = "  aaa  ";
+        let mut editor = Editor::new(buffer, 0, 6).unwrap();
+        editor.move_to_beginning_of_non_blank();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 2);
     }
