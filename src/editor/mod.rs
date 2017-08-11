@@ -123,6 +123,16 @@ impl Editor {
         let lines = self.core.line_count();
         self.core.set_line(lines - 1);
     }
+
+    /// Moves a cursor to the beginning of the middle line.
+    pub fn move_to_beginning_of_middle_line(&mut self) {
+        self.core.set_column(0);
+        let mut lines = self.core.line_count();
+        if lines % 2 == 0 {
+            lines -= 1;
+        }
+        self.core.set_line(lines / 2);
+    }
 }
 
 impl Clone for Editor {
@@ -188,6 +198,20 @@ mod tests {
         let mut editor = Editor::new(buffer, 3, 2).unwrap();
         editor.move_to_beginning_of_last_line();
         assert_eq!(editor.line(), 3);
+        assert_eq!(editor.column(), 0);
+    }
+
+    #[test]
+    fn test_move_to_beginning_of_middle_line() {
+        let buffer = "aaa\nbbb\nccc\ndd";
+        let mut editor = Editor::new(buffer, 1, 3).unwrap();
+        editor.move_to_beginning_of_middle_line();
+        assert_eq!(editor.line(), 1);
+        assert_eq!(editor.column(), 0);
+
+        let mut editor = Editor::new(buffer, 3, 2).unwrap();
+        editor.move_to_beginning_of_middle_line();
+        assert_eq!(editor.line(), 1);
         assert_eq!(editor.column(), 0);
     }
 }
