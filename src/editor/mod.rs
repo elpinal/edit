@@ -110,6 +110,13 @@ impl Editor {
         let width = self.line_width(self.line()).unwrap();
         self.core.set_column(width);
     }
+
+    /// Moves a cursor to the beginning of the last line.
+    pub fn move_to_beginning_of_last_line(&mut self) {
+        self.core.set_column(0);
+        let lines = self.core.line_count();
+        self.core.set_line(lines - 1);
+    }
 }
 
 impl Clone for Editor {
@@ -148,5 +155,19 @@ mod tests {
         editor.move_to_end();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 13);
+    }
+
+    #[test]
+    fn test_move_to_beginning_of_last_line() {
+        let buffer = "aaa\nbbb\nccc\ndd";
+        let mut editor = Editor::new(buffer, 1, 3).unwrap();
+        editor.move_to_beginning_of_last_line();
+        assert_eq!(editor.line(), 3);
+        assert_eq!(editor.column(), 0);
+
+        let mut editor = Editor::new(buffer, 3, 2).unwrap();
+        editor.move_to_beginning_of_last_line();
+        assert_eq!(editor.line(), 3);
+        assert_eq!(editor.column(), 0);
     }
 }

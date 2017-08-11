@@ -99,6 +99,12 @@ impl Core {
         }
     }
 
+    pub fn set_line(&mut self, n: usize) {
+        if n < self.line_count() {
+            self.line = n;
+        }
+    }
+
     pub fn move_left(&mut self, n: usize) {
         if self.column < n {
             self.column = 0;
