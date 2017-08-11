@@ -111,6 +111,12 @@ impl Editor {
         self.core.set_column(width);
     }
 
+    /// Moves a cursor to the beginning of the first line.
+    pub fn move_to_beginning_of_first_line(&mut self) {
+        self.core.set_column(0);
+        self.core.set_line(0);
+    }
+
     /// Moves a cursor to the beginning of the last line.
     pub fn move_to_beginning_of_last_line(&mut self) {
         self.core.set_column(0);
@@ -155,6 +161,20 @@ mod tests {
         editor.move_to_end();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 13);
+    }
+
+    #[test]
+    fn test_move_to_beginning_of_first_line() {
+        let buffer = "aaa\nbbb\nccc\ndd";
+        let mut editor = Editor::new(buffer, 1, 3).unwrap();
+        editor.move_to_beginning_of_first_line();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 0);
+
+        let mut editor = Editor::new(buffer, 3, 0).unwrap();
+        editor.move_to_beginning_of_first_line();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 0);
     }
 
     #[test]
