@@ -164,15 +164,6 @@ impl Editor {
         &buffer[beginning..end]
     }
 
-    /// Moves a cursor to the first non-blank character.
-    pub fn move_to_beginning_of_non_blank(&mut self) {
-        let pos = self.first_non_blank();
-        if pos.is_none() {
-            return;
-        }
-        self.core.set_column(pos.unwrap());
-    }
-
     fn first_non_blank(&self) -> Option<usize> {
         let line = self.current_line_buffer();
         for (i, ch) in line.iter().enumerate() {
@@ -181,6 +172,15 @@ impl Editor {
             }
         }
         return None;
+    }
+
+    /// Moves a cursor to the first non-blank character.
+    pub fn move_to_beginning_of_non_blank(&mut self) {
+        let pos = self.first_non_blank();
+        if pos.is_none() {
+            return;
+        }
+        self.core.set_column(pos.unwrap());
     }
 
     /// Moves a cursor to the beginning of the upper line.
