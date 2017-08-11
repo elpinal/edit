@@ -202,6 +202,10 @@ impl Editor {
         self.core.set_column(pos.unwrap());
     }
 
+    pub fn set_line(&mut self, n: usize) {
+        return self.core.set_line(n)
+    }
+
     pub fn set_column(&mut self, n: usize) {
         return self.core.set_column(n)
     }
