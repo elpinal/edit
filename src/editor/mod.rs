@@ -188,6 +188,12 @@ impl Editor {
         self.core.set_column(0);
         self.move_down(1);
     }
+
+    /// Moves a cursor to the beginning of the lower line.
+    pub fn move_to_beginning_of_lower_line(&mut self) {
+        self.core.set_column(0);
+        self.move_up(1);
+    }
 }
 
 impl Clone for Editor {
@@ -314,6 +320,23 @@ mod tests {
 
         editor.move_to_beginning_of_upper_line();
         assert_eq!(editor.line(), 2);
+        assert_eq!(editor.column(), 0);
+    }
+
+    #[test]
+    fn test_move_to_beginning_of_lower_line() {
+        let buffer = "aaa\nbbb\nccc";
+        let mut editor = Editor::new(buffer, 2, 3).unwrap();
+        editor.move_to_beginning_of_lower_line();
+        assert_eq!(editor.line(), 1);
+        assert_eq!(editor.column(), 0);
+
+        editor.move_to_beginning_of_lower_line();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 0);
+
+        editor.move_to_beginning_of_lower_line();
+        assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 0);
     }
 }
