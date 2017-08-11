@@ -134,6 +134,26 @@ impl Editor {
         }
         self.core.set_line(lines / 2);
     }
+
+    /// Moves a cursor to the beginning of a next keyword.
+    pub fn move_to_beginning_of_next_keyword(&mut self) {
+        let pos = self.next_word_position();
+        if pos.is_none() {
+            return;
+        }
+        self.core.set_column(pos.unwrap());
+    }
+
+    fn next_word_position(&self) -> Option<usize> {
+        let off = self.core.current_offset();
+        let buffer = self.core.buffer();
+        for (i, ch) in buffer[off..].iter().enumerate() {
+            if ch.is_alphabetic() {
+                return Some(i);
+            }
+        }
+        return None;
+    }
 }
 
 impl Clone for Editor {
@@ -226,5 +246,14 @@ mod tests {
         editor.move_to_beginning_of_middle_line();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 0);
+    }
+
+    #[test]
+    fn test_move_to_beginning_of_next_keyword() {
+        let buffer = "  aaa  ";
+        let mut editor = Editor::new(buffer, 0, 0).unwrap();
+        editor.move_to_beginning_of_next_keyword();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 2);
     }
 }
