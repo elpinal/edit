@@ -127,12 +127,12 @@ impl Editor {
     /// Moves a cursor to the beginning of the middle line.
     /// If the number of the lines is even, the upper line is selected.
     pub fn move_to_beginning_of_middle_line(&mut self) {
-        self.core.set_column(0);
+        self.set_column(0);
         let mut lines = self.core.line_count();
         if lines % 2 == 0 {
             lines -= 1;
         }
-        self.core.set_line(lines / 2);
+        self.set_line(lines / 2);
     }
 
     /// Moves a cursor to the beginning of a next keyword.
@@ -141,7 +141,7 @@ impl Editor {
         if pos.is_none() {
             return;
         }
-        self.core.set_column(pos.unwrap());
+        self.set_column(pos.unwrap());
     }
 
     fn next_word_position(&self) -> Option<usize> {
@@ -180,7 +180,7 @@ impl Editor {
         if pos.is_none() {
             return;
         }
-        self.core.set_column(pos.unwrap());
+        self.set_column(pos.unwrap());
     }
 
     fn last_non_blank(&self) -> Option<usize> {
@@ -199,7 +199,7 @@ impl Editor {
         if pos.is_none() {
             return;
         }
-        self.core.set_column(pos.unwrap());
+        self.set_column(pos.unwrap());
     }
 
     pub fn set_line(&mut self, n: usize) {
