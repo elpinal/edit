@@ -183,6 +183,25 @@ impl Editor {
         self.core.set_column(pos.unwrap());
     }
 
+    fn last_non_blank(&self) -> Option<usize> {
+        let line = self.current_line_buffer();
+        for (i, ch) in line.iter().enumerate().rev() {
+            if !ch.is_whitespace() {
+                return Some(i + 1);
+            }
+        }
+        return None;
+    }
+
+    /// Moves a cursor to the last non-blank character.
+    pub fn move_to_end_of_non_blank(&mut self) {
+        let pos = self.last_non_blank();
+        if pos.is_none() {
+            return;
+        }
+        self.core.set_column(pos.unwrap());
+    }
+
     /// Moves a cursor to the beginning of the upper line.
     pub fn move_to_beginning_of_upper_line(&mut self) {
         self.core.set_column(0);
@@ -304,6 +323,15 @@ mod tests {
         editor.move_to_beginning_of_non_blank();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 2);
+    }
+
+    #[test]
+    fn test_move_to_end_of_non_blank() {
+        let buffer = "  aaa  ";
+        let mut editor = Editor::new(buffer, 0, 2).unwrap();
+        editor.move_to_end_of_non_blank();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 5);
     }
 
     #[test]
