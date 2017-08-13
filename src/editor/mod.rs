@@ -202,10 +202,16 @@ impl Editor {
         self.set_column(pos.unwrap());
     }
 
+    /// Moves a cursor to a line.
+    ///
+    /// If a position is out of the range, nothing happens.
     pub fn set_line(&mut self, n: usize) {
         return self.core.set_line(n);
     }
 
+    /// Moves a cursor to a column.
+    ///
+    /// If a position is out of the range, nothing happens.
     pub fn set_column(&mut self, n: usize) {
         return self.core.set_column(n);
     }
