@@ -149,7 +149,7 @@ impl Editor {
         let buffer = self.core.buffer();
         for (i, ch) in buffer[off..].iter().enumerate() {
             if ch.is_alphabetic() {
-                return Some(i);
+                return Some(self.column() + i);
             }
         }
         return None;
@@ -203,11 +203,11 @@ impl Editor {
     }
 
     pub fn set_line(&mut self, n: usize) {
-        return self.core.set_line(n)
+        return self.core.set_line(n);
     }
 
     pub fn set_column(&mut self, n: usize) {
-        return self.core.set_column(n)
+        return self.core.set_column(n);
     }
 
     /// Moves a cursor to the beginning of the upper line.
@@ -318,7 +318,7 @@ mod tests {
     #[test]
     fn test_move_to_beginning_of_next_keyword() {
         let buffer = "  aaa  ";
-        let mut editor = Editor::new(buffer, 0, 0).unwrap();
+        let mut editor = Editor::new(buffer, 0, 1).unwrap();
         editor.move_to_beginning_of_next_keyword();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 2);
