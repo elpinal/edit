@@ -141,15 +141,23 @@ impl Editor {
         if pos.is_none() {
             return;
         }
-        self.set_column(pos.unwrap());
+        self.set_line(pos.unwrap().0);
+        self.set_column(pos.unwrap().1);
     }
 
-    fn next_word_position(&self) -> Option<usize> {
+    fn next_word_position(&self) -> Option<(usize, usize)> {
         let off = self.core.current_offset();
         let buffer = self.core.buffer();
-        for (i, ch) in buffer[off..].iter().enumerate() {
-            if ch.is_alphabetic() {
-                return Some(self.column() + i);
+        let mut line = self.line();
+        let mut i = self.column();
+        for ch in buffer[off..].iter() {
+            if *ch == '\n' {
+                line += 1;
+                i = 0;
+            } else if ch.is_alphabetic() {
+                return Some((line, i));
+            } else {
+                i += 1;
             }
         }
         return None;
@@ -328,6 +336,12 @@ mod tests {
         editor.move_to_beginning_of_next_keyword();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 2);
+
+        let buffer = "  aaa \n    bbb  ";
+        let mut editor = Editor::new(buffer, 0, 5).unwrap();
+        editor.move_to_beginning_of_next_keyword();
+        assert_eq!(editor.line(), 1);
+        assert_eq!(editor.column(), 4);
     }
 
     #[test]
