@@ -255,11 +255,12 @@ impl Editor {
         if pos.is_none() {
             return;
         }
-        self.set_line(pos.unwrap().0);
-        self.set_column(pos.unwrap().1);
+        let pos = pos.unwrap();
+        self.set_line(pos.line);
+        self.set_column(pos.column);
     }
 
-    fn next_word_position(&self) -> Option<(usize, usize)> {
+    fn next_word_position(&self) -> Option<Position> {
         let off = self.core.current_offset();
         let buffer = self.core.buffer();
         let mut line = self.line();
@@ -269,7 +270,10 @@ impl Editor {
                 line += 1;
                 i = 0;
             } else if ch.is_alphabetic() {
-                return Some((line, i));
+                return Some(Position {
+                    line: line,
+                    column: i,
+                });
             } else {
                 i += 1;
             }
