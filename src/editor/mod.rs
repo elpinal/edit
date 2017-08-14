@@ -120,6 +120,17 @@ impl Editor {
     /// Inserts a character into the buffer at a character position.
     ///
     /// If a position is out of the range, nothing happens.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("insert on character", 0, 0).unwrap();
+    /// editor.insert_at('e', 0, 9);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "insert one character");
+    /// ```
     pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
         self.core.insert_at(ch, line, column);
     }
@@ -127,16 +138,52 @@ impl Editor {
     /// Inserts a string into the buffer at a character position.
     ///
     /// If a position is out of the range, nothing happens.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("insert", 0, 0).unwrap();
+    /// editor.insert_string_at(" string", 0, 6);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "insert string");
+    /// ```
     pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) {
         self.core.insert_string_at(s, line, column);
     }
 
     /// Deletes a `char` from the buffer at a character position.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("abc", 0, 3).unwrap();
+    /// editor.delete_at(0, 1);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "ac");
+    ///
+    /// assert_eq!(editor.column(), 2);
+    /// ```
     pub fn delete_at(&mut self, line: usize, column: usize) {
         self.core.delete_at(line, column);
     }
 
     /// Deletes characters from the buffer in a character range.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let mut editor = Editor::new("abcdefg \n hijk", 0, 3).unwrap();
+    /// editor.delete_range(Position { line: 0, column: 4 }..Position { line: 1, column: 3 });
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "abcdjk");
+    /// ```
     pub fn delete_range(&mut self, range: Range<Position>) {
         self.core.delete_range(range);
     }
