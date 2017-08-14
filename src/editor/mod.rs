@@ -36,6 +36,10 @@ impl Editor {
     /// ```
     /// # use edit::editor::Editor;
     /// let editor = Editor::new("edit here", 0, 4).unwrap();
+    ///
+    /// let editor = Editor::new("edit here", 1, 0);
+    /// // invalid position!
+    /// assert!(editor.is_err());
     /// ```
     pub fn new(buffer: &str, line: usize, column: usize) -> Result<Editor, String> {
         Core::new(buffer, line, column).and_then(|core| Ok(Editor { core }))
