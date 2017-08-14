@@ -251,7 +251,7 @@ impl Editor {
 
     /// Moves a cursor to the beginning of a next keyword.
     pub fn move_to_beginning_of_next_keyword(&mut self) {
-        let pos = self.next_word_position();
+        let pos = self.next_keyword_position();
         if pos.is_none() {
             return;
         }
@@ -260,7 +260,7 @@ impl Editor {
         self.set_column(pos.column);
     }
 
-    fn next_word_position(&self) -> Option<Position> {
+    fn next_keyword_position(&self) -> Option<Position> {
         let off = self.core.current_offset();
         let buffer = self.core.buffer();
         let mut line = self.line();
