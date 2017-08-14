@@ -368,12 +368,10 @@ impl Editor {
 
     fn first_non_blank(&self) -> Option<usize> {
         let line = self.current_line_buffer();
-        for (i, ch) in line.iter().enumerate() {
-            if !ch.is_whitespace() {
-                return Some(i);
-            }
-        }
-        return None;
+        line.iter()
+            .enumerate()
+            .find(|&(_, ch)| !ch.is_whitespace())
+            .map(|(i, _)| i)
     }
 
     fn current_line_buffer(&self) -> &[char] {
