@@ -193,16 +193,42 @@ impl Editor {
     }
 
     /// Shows the content of the buffer.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("abc", 0, 0).unwrap();
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "abc");
+    /// ```
     pub fn buffer(&self) -> &[char] {
         self.core.buffer()
     }
 
     /// Returns the line of the position.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("A\nA\nA\nA\nA", 3, 0).unwrap();
+    /// assert_eq!(editor.line(), 3);
+    /// ```
     pub fn line(&self) -> usize {
         self.core.line()
     }
 
     /// Returns the column of the position.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("A\nA\nAAAAA\nA\nA", 2, 4).unwrap();
+    /// assert_eq!(editor.column(), 4);
+    /// ```
     pub fn column(&self) -> usize {
         self.core.column()
     }
@@ -210,6 +236,17 @@ impl Editor {
     /// Returns the count of characters of line `n`.
     ///
     /// Returns `None` if `n` is out of the range.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("A\nA\nAAAAA\nA\nA", 2, 4).unwrap();
+    /// assert_eq!(editor.line_width(0), Some(1));
+    /// assert_eq!(editor.line_width(2), Some(5));
+    /// assert_eq!(editor.line_width(4), Some(1));
+    /// assert_eq!(editor.line_width(5), None);
+    /// ```
     pub fn line_width(&self, n: usize) -> Option<usize> {
         self.core.line_width(n)
     }
