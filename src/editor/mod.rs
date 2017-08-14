@@ -281,13 +281,13 @@ impl Editor {
         return None;
     }
 
-    fn current_line_buffer(&self) -> &[char] {
-        let buffer = self.core.buffer();
-        let beginning = self.core.offset(self.line(), 0).unwrap();
-        let end = self.core
-            .offset(self.line(), self.core.current_line_width())
-            .unwrap();
-        &buffer[beginning..end]
+    /// Moves a cursor to the first non-blank character.
+    pub fn move_to_beginning_of_non_blank(&mut self) {
+        let pos = self.first_non_blank();
+        if pos.is_none() {
+            return;
+        }
+        self.set_column(pos.unwrap());
     }
 
     fn first_non_blank(&self) -> Option<usize> {
@@ -300,9 +300,18 @@ impl Editor {
         return None;
     }
 
-    /// Moves a cursor to the first non-blank character.
-    pub fn move_to_beginning_of_non_blank(&mut self) {
-        let pos = self.first_non_blank();
+    fn current_line_buffer(&self) -> &[char] {
+        let buffer = self.core.buffer();
+        let beginning = self.core.offset(self.line(), 0).unwrap();
+        let end = self.core
+            .offset(self.line(), self.core.current_line_width())
+            .unwrap();
+        &buffer[beginning..end]
+    }
+
+    /// Moves a cursor to the last non-blank character.
+    pub fn move_to_end_of_non_blank(&mut self) {
+        let pos = self.last_non_blank();
         if pos.is_none() {
             return;
         }
@@ -317,15 +326,6 @@ impl Editor {
             }
         }
         return None;
-    }
-
-    /// Moves a cursor to the last non-blank character.
-    pub fn move_to_end_of_non_blank(&mut self) {
-        let pos = self.last_non_blank();
-        if pos.is_none() {
-            return;
-        }
-        self.set_column(pos.unwrap());
     }
 
     /// Moves a cursor to a line.
