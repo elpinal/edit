@@ -34,14 +34,14 @@ impl Editor {
         Core::new(buffer, line, column).and_then(|core| Ok(Editor { core }))
     }
 
-    /// Moves a cursor by `n` bytes rightward.
+    /// Moves a cursor by `n` characters rightward.
     ///
     /// If the cursor will be out of the range, it is moved to the rightmost column.
     pub fn move_right(&mut self, n: usize) {
         self.core.move_right(n);
     }
 
-    /// Moves a cursor by `n` bytes leftward.
+    /// Moves a cursor by `n` characters leftward.
     ///
     /// If the cursor will be out of the range, it is moved to the leftmost column.
     pub fn move_left(&mut self, n: usize) {
@@ -62,21 +62,21 @@ impl Editor {
         self.core.move_down(n);
     }
 
-    /// Inserts a character into the buffer at a byte position.
+    /// Inserts a character into the buffer at a character position.
     ///
     /// If a position is out of the range, nothing happens.
     pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
         self.core.insert_at(ch, line, column);
     }
 
-    /// Inserts a string into the buffer at a byte position.
+    /// Inserts a string into the buffer at a character position.
     ///
     /// If a position is out of the range, nothing happens.
     pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) {
         self.core.insert_string_at(s, line, column);
     }
 
-    /// Deletes a `char` from the buffer at a byte position.
+    /// Deletes a `char` from the buffer at a character position.
     pub fn delete_at(&mut self, line: usize, column: usize) {
         self.core.delete_at(line, column);
     }
@@ -101,7 +101,7 @@ impl Editor {
         self.core.column()
     }
 
-    /// Returns the count of bytes of line `n`.
+    /// Returns the count of characters of line `n`.
     ///
     /// Returns `None` if `n` is out of the range.
     pub fn line_width(&self, n: usize) -> Option<usize> {
