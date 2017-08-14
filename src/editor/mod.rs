@@ -30,6 +30,13 @@ pub struct Editor {
 
 impl Editor {
     /// Creates a new `Editor` which has a buffer and a position of the cursor.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("edit here", 0, 4).unwrap();
+    /// ```
     pub fn new(buffer: &str, line: usize, column: usize) -> Result<Editor, String> {
         Core::new(buffer, line, column).and_then(|core| Ok(Editor { core }))
     }
@@ -37,6 +44,18 @@ impl Editor {
     /// Moves a cursor by `n` characters rightward.
     ///
     /// If the cursor will be out of the range, it is moved to the rightmost column.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("edit here", 0, 4).unwrap();
+    /// editor.move_right(1);
+    /// assert_eq!(editor.column(), 5);
+    ///
+    /// editor.move_right(1000);
+    /// assert_eq!(editor.column(), 9);
+    /// ```
     pub fn move_right(&mut self, n: usize) {
         self.core.move_right(n);
     }
@@ -44,6 +63,18 @@ impl Editor {
     /// Moves a cursor by `n` characters leftward.
     ///
     /// If the cursor will be out of the range, it is moved to the leftmost column.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("edit here", 0, 4).unwrap();
+    /// editor.move_left(1);
+    /// assert_eq!(editor.column(), 3);
+    ///
+    /// editor.move_left(1000);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
     pub fn move_left(&mut self, n: usize) {
         self.core.move_left(n);
     }
