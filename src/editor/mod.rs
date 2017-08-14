@@ -540,11 +540,11 @@ mod tests {
 
     #[test]
     fn test_move_to_beginning_of_previous_keyword() {
-        //let buffer = "  aaa  ";
-        //let mut editor = Editor::new(buffer, 0, 3).unwrap();
-        //editor.move_to_beginning_of_previous_keyword();
-        //assert_eq!(editor.line(), 0);
-        //assert_eq!(editor.column(), 2);
+        let buffer = "  aaa  ";
+        let mut editor = Editor::new(buffer, 0, 3).unwrap();
+        editor.move_to_beginning_of_previous_keyword();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 2);
 
         let buffer = "  aaa \n    bbb  ";
         let mut editor = Editor::new(buffer, 1, 3).unwrap();
