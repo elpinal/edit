@@ -281,6 +281,38 @@ impl Editor {
         return None;
     }
 
+    /// Moves a cursor to the beginning of a previous keyword.
+    pub fn move_to_beginning_of_previous_keyword(&mut self) {
+        let pos = self.previous_keyword_position();
+        if pos.is_none() {
+            return;
+        }
+        let pos = pos.unwrap();
+        self.set_line(pos.line);
+        self.set_column(pos.column);
+    }
+
+    fn previous_keyword_position(&self) -> Option<Position> {
+        let off = self.core.current_offset();
+        let buffer = self.core.buffer();
+        let mut line = self.line();
+        let mut i = self.column();
+        for ch in buffer[..off].iter().rev() {
+            if *ch == '\n' {
+                line -= 1;
+                i = self.line_width(line).unwrap();
+            } else if ch.is_alphabetic() {
+                return Some(Position {
+                    line: line,
+                    column: i,
+                });
+            } else {
+                i -= 1;
+            }
+        }
+        return None;
+    }
+
     /// Moves a cursor to the first non-blank character.
     pub fn move_to_beginning_of_non_blank(&mut self) {
         let pos = self.first_non_blank();
