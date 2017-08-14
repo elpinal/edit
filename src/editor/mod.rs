@@ -82,6 +82,18 @@ impl Editor {
     /// Moves a cursor by `n` lines upward.
     ///
     /// If the cursor will be out of the range, it is moved to the uppermost line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new(" 1 \n 2 \n 3 \n 4 ", 3, 0).unwrap();
+    /// editor.move_up(1);
+    /// assert_eq!(editor.line(), 2);
+    ///
+    /// editor.move_up(1000);
+    /// assert_eq!(editor.line(), 0);
+    /// ```
     pub fn move_up(&mut self, n: usize) {
         self.core.move_up(n);
     }
@@ -89,6 +101,18 @@ impl Editor {
     /// Moves a cursor by `n` lines downward.
     ///
     /// If the cursor will be out of the range, it is moved to the downmost line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new(" 1 \n 2 \n 3 \n 4 ", 0, 0).unwrap();
+    /// editor.move_down(1);
+    /// assert_eq!(editor.line(), 1);
+    ///
+    /// editor.move_down(1000);
+    /// assert_eq!(editor.line(), 3);
+    /// ```
     pub fn move_down(&mut self, n: usize) {
         self.core.move_down(n);
     }
