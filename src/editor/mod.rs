@@ -297,15 +297,22 @@ impl Editor {
         let buffer = self.core.buffer();
         let mut line = self.line();
         let mut i = self.column();
+        let mut on_keyword = false;
         for ch in buffer[..off].iter().rev() {
-            if *ch == '\n' {
-                line -= 1;
-                i = self.line_width(line).unwrap();
-            } else if ch.is_alphabetic() {
+            if ch.is_alphabetic() {
+                on_keyword = true;
+                i -= 1;
+                continue;
+            }
+            if on_keyword {
                 return Some(Position {
                     line: line,
                     column: i,
                 });
+            }
+            if *ch == '\n' {
+                line -= 1;
+                i = self.line_width(line).unwrap();
             } else {
                 i -= 1;
             }
@@ -492,6 +499,21 @@ mod tests {
         editor.move_to_beginning_of_next_keyword();
         assert_eq!(editor.line(), 1);
         assert_eq!(editor.column(), 4);
+    }
+
+    #[test]
+    fn test_move_to_beginning_of_previous_keyword() {
+        //let buffer = "  aaa  ";
+        //let mut editor = Editor::new(buffer, 0, 3).unwrap();
+        //editor.move_to_beginning_of_previous_keyword();
+        //assert_eq!(editor.line(), 0);
+        //assert_eq!(editor.column(), 2);
+
+        let buffer = "  aaa \n    bbb  ";
+        let mut editor = Editor::new(buffer, 1, 3).unwrap();
+        editor.move_to_beginning_of_previous_keyword();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 2);
     }
 
     #[test]
