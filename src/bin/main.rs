@@ -15,7 +15,13 @@ fn main() {
     editor.insert_at('4', 1, 4);
     editor.insert_at('4', 0, 0);
     editor.delete_at(0, 13);
-    let width = editor.line_width(1).unwrap();
+    editor.delete_range(
+        Position {
+            line: 0,
+            column: 13,
+        }..Position { line: 1, column: 2 },
+    );
+    let width = editor.line_width(0).unwrap();
     editor.insert_string_at("\nThe 3rd line.", 1, width);
     let buffer: String = editor.buffer().iter().collect();
     println!("editor: {} {} {}", buffer, editor.line(), editor.column())

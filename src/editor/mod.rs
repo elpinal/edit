@@ -19,6 +19,9 @@
 mod core;
 
 use editor::core::Core;
+pub use editor::core::Position;
+
+use std::ops::Range;
 
 /// A fundamental two-dimensional editor which has text as its buffer.
 pub struct Editor {
@@ -76,6 +79,11 @@ impl Editor {
     /// Deletes a `char` from the buffer at a byte position.
     pub fn delete_at(&mut self, line: usize, column: usize) {
         self.core.delete_at(line, column);
+    }
+
+    /// Deletes characters from the buffer in a character range.
+    pub fn delete_range(&mut self, range: Range<Position>) {
+        self.core.delete_range(range);
     }
 
     /// Shows the content of the buffer.

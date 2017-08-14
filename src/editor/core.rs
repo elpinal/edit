@@ -1,3 +1,25 @@
+use std::cmp::Ordering;
+use std::ops::Range;
+
+/// `Position` represents a two-dimensional position which has line and column.
+#[derive(PartialEq, Debug)]
+pub struct Position {
+    /// A line number. It is in a range [0, _the number of lines_).
+    pub line: usize,
+    /// A column number. It is in a range [0, _length at `line`_).
+    pub column: usize,
+}
+
+impl PartialOrd for Position {
+    fn partial_cmp(&self, other: &Position) -> Option<Ordering> {
+        let lc = self.line.partial_cmp(&other.line);
+        if lc != Some(Ordering::Equal) {
+            return lc;
+        }
+        self.column.partial_cmp(&other.column)
+    }
+}
+
 #[derive(PartialEq, Debug)]
 pub struct Core {
     buffer: Vec<char>,
@@ -205,7 +227,7 @@ impl Core {
                 *x -= 1
             }
         }
-        if ch == '\n' && offset <= current_offset {
+        if ch == '\n' && offset < current_offset {
             self.line -= 1;
             if self.line == line {
                 self.column = width + current_offset - offset - 1;
@@ -217,6 +239,25 @@ impl Core {
         }
         if column < self.column {
             self.column -= 1;
+        }
+    }
+
+    pub fn delete_range(&mut self, range: Range<Position>) {
+        let start = self.offset(range.start.line, range.start.column).expect(
+            &format!(
+                "out of range: {:?}",
+                range
+                    .start
+            ),
+        );
+        let n = self.offset(range.end.line, range.end.column).expect(
+            &format!(
+                "out of range: {:?}",
+                range.end
+            ),
+        ) - start;
+        for _ in 0..n {
+            self.delete_at(range.start.line, range.start.column)
         }
     }
 }
@@ -487,5 +528,18 @@ mod tests {
         let mut editor = Core::new("abc世界", 0, 3).unwrap();
         editor.delete_at(0, 4);
         assert_eq!(editor, Core::new("abc世", 0, 3).unwrap());
+    }
+
+    #[test]
+    fn test_delete_range() {
+        let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
+        let mut editor = Core::new(buffer, 0, 6).unwrap();
+        editor.delete_range(
+            Position { line: 0, column: 6 }..Position { line: 1, column: 5 },
+        );
+        assert_eq!(
+            editor,
+            Core::new("Hello,nd line.\nAAABBBCCC.", 0, 6).unwrap()
+        );
     }
 }
