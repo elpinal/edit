@@ -261,11 +261,10 @@ impl Core {
 
     pub fn next_keyword_position(&self) -> Option<Position> {
         let off = self.current_offset();
-        let buffer = self.buffer();
-        let line = self.line();
-        let column = self.column();
+        let line = self.line;
+        let column = self.column;
         let indices = &self.newline_indices[line..];
-        buffer[off..]
+        self.buffer[off..]
             .iter()
             .position(|ch| ch.is_alphabetic())
             .map(|n| n + off)
