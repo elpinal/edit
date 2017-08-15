@@ -469,6 +469,22 @@ impl Editor {
         let line = self.current_line_buffer();
         line[self.column()..].iter().position(|&x| x == ch).map(|n| n + self.column())
     }
+
+    /// Searches for a character after the cursor in the current line, returning its index.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("a b c d\n\
+    ///                           x", 0, 3).unwrap();
+    /// assert_eq!(editor.rsearch_character('b'), Some(2));
+    /// assert_eq!(editor.rsearch_character('x'), None);
+    /// ```
+    pub fn rsearch_character(&self, ch: char) -> Option<usize> {
+        let line = self.current_line_buffer();
+        line[..self.column()].iter().rposition(|&x| x == ch).map(|n| n)
+    }
 }
 
 impl Clone for Editor {
