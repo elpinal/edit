@@ -252,23 +252,63 @@ impl Editor {
     }
 
     /// Moves a cursor to the beginning of the current line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\nbbb", 1, 2).unwrap();
+    /// editor.move_to_beginning();
+    /// assert_eq!(editor.line(), 1);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
     pub fn move_to_beginning(&mut self) {
         self.set_column(0);
     }
 
     /// Moves a cursor to the end of the current line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\nbbb", 1, 2).unwrap();
+    /// editor.move_to_end();
+    /// assert_eq!(editor.line(), 1);
+    /// assert_eq!(editor.column(), 3);
+    /// ```
     pub fn move_to_end(&mut self) {
         let width = self.core.current_line_width();
         self.set_column(width);
     }
 
     /// Moves a cursor to the beginning of the first line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\nbbb", 1, 2).unwrap();
+    /// editor.move_to_beginning_of_first_line();
+    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
     pub fn move_to_beginning_of_first_line(&mut self) {
         self.set_column(0);
         self.set_line(0);
     }
 
     /// Moves a cursor to the beginning of the last line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\nbbb", 0, 2).unwrap();
+    /// editor.move_to_beginning_of_last_line();
+    /// assert_eq!(editor.line(), 1);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
     pub fn move_to_beginning_of_last_line(&mut self) {
         self.set_column(0);
         let lines = self.core.line_count();
@@ -277,6 +317,25 @@ impl Editor {
 
     /// Moves a cursor to the beginning of the middle line.
     /// If the number of the lines is even, the upper line is selected.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\nbbb", 0, 2).unwrap();
+    /// editor.move_to_beginning_of_middle_line();
+    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.column(), 0);
+    ///
+    /// let mut editor = Editor::new("aaa\n\
+    ///                               bbb\n\
+    ///                               ccc\n\
+    ///                               ddd\n\
+    ///                               eee", 0, 2).unwrap();
+    /// editor.move_to_beginning_of_middle_line();
+    /// assert_eq!(editor.line(), 2);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
     pub fn move_to_beginning_of_middle_line(&mut self) {
         self.set_column(0);
         let mut lines = self.core.line_count();
