@@ -208,9 +208,6 @@ impl Editor {
     /// assert_eq!(editor.column(), 3);
     /// ```
     pub fn delete_line(&mut self, line: usize) {
-        //let column = self.line_width(line).expect(
-        //    &format!("line {}: out of range", line),
-        //);
         self.delete_range(
             Position { line, column: 0 }..
                 Position { line: line + 1, column: 0 },
