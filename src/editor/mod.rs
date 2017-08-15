@@ -253,26 +253,26 @@ impl Editor {
 
     /// Moves a cursor to the beginning of the current line.
     pub fn move_to_beginning(&mut self) {
-        self.core.set_column(0);
+        self.set_column(0);
     }
 
     /// Moves a cursor to the end of the current line.
     pub fn move_to_end(&mut self) {
-        let width = self.line_width(self.line()).unwrap();
-        self.core.set_column(width);
+        let width = self.core.current_line_width();
+        self.set_column(width);
     }
 
     /// Moves a cursor to the beginning of the first line.
     pub fn move_to_beginning_of_first_line(&mut self) {
-        self.core.set_column(0);
-        self.core.set_line(0);
+        self.set_column(0);
+        self.set_line(0);
     }
 
     /// Moves a cursor to the beginning of the last line.
     pub fn move_to_beginning_of_last_line(&mut self) {
-        self.core.set_column(0);
+        self.set_column(0);
         let lines = self.core.line_count();
-        self.core.set_line(lines - 1);
+        self.set_line(lines - 1);
     }
 
     /// Moves a cursor to the beginning of the middle line.
@@ -296,7 +296,7 @@ impl Editor {
 
     fn next_keyword_position(&self) -> Option<Position> {
         let off = self.core.current_offset();
-        let buffer = self.core.buffer();
+        let buffer = self.buffer();
         let mut line = self.line();
         let mut i = self.column();
         for ch in buffer[off..].iter() {
@@ -325,7 +325,7 @@ impl Editor {
 
     fn previous_keyword_position(&self) -> Option<Position> {
         let off = self.core.current_offset();
-        let buffer = self.core.buffer();
+        let buffer = self.buffer();
         let mut line = self.line();
         let mut i = self.column();
         let mut on_keyword = false;
@@ -367,7 +367,7 @@ impl Editor {
     }
 
     fn current_line_buffer(&self) -> &[char] {
-        let buffer = self.core.buffer();
+        let buffer = self.buffer();
         let beginning = self.core.offset(self.line(), 0).unwrap();
         let end = self.core
             .offset(self.line(), self.core.current_line_width())
