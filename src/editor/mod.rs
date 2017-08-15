@@ -431,6 +431,18 @@ impl Editor {
     /// Moves a cursor to a line.
     ///
     /// If a position is out of the range, nothing happens.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a\n\
+    ///                               b b b b\n\
+    ///                               c", 1, 6).unwrap();
+    /// editor.set_line(2);
+    /// assert_eq!(editor.line(), 2);
+    /// assert_eq!(editor.column(), 1);
+    /// ```
     pub fn set_line(&mut self, n: usize) {
         return self.core.set_line(n);
     }
@@ -438,17 +450,53 @@ impl Editor {
     /// Moves a cursor to a column.
     ///
     /// If a position is out of the range, nothing happens.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a\n\
+    ///                               b b b b\n\
+    ///                               c", 1, 1).unwrap();
+    /// editor.set_column(5);
+    /// assert_eq!(editor.line(), 1);
+    /// assert_eq!(editor.column(), 5);
+    /// ```
     pub fn set_column(&mut self, n: usize) {
         return self.core.set_column(n);
     }
 
     /// Moves a cursor to the beginning of the upper line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a\n\
+    ///                               b\n\
+    ///                               c", 1, 1).unwrap();
+    /// editor.move_to_beginning_of_upper_line();
+    /// assert_eq!(editor.line(), 2);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
     pub fn move_to_beginning_of_upper_line(&mut self) {
         self.set_column(0);
         self.move_down(1);
     }
 
     /// Moves a cursor to the beginning of the lower line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a\n\
+    ///                               b\n\
+    ///                               c", 2, 1).unwrap();
+    /// editor.move_to_beginning_of_lower_line();
+    /// assert_eq!(editor.line(), 1);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
     pub fn move_to_beginning_of_lower_line(&mut self) {
         self.set_column(0);
         self.move_up(1);
