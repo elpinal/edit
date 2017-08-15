@@ -288,13 +288,10 @@ impl Editor {
 
     /// Moves a cursor to the beginning of a next keyword.
     pub fn move_to_beginning_of_next_keyword(&mut self) {
-        let pos = self.next_keyword_position();
-        if pos.is_none() {
-            return;
+        if let Some(pos) = self.next_keyword_position() {
+            self.set_line(pos.line);
+            self.set_column(pos.column);
         }
-        let pos = pos.unwrap();
-        self.set_line(pos.line);
-        self.set_column(pos.column);
     }
 
     fn next_keyword_position(&self) -> Option<Position> {
@@ -320,13 +317,10 @@ impl Editor {
 
     /// Moves a cursor to the beginning of a previous keyword.
     pub fn move_to_beginning_of_previous_keyword(&mut self) {
-        let pos = self.previous_keyword_position();
-        if pos.is_none() {
-            return;
+        if let Some(pos) = self.previous_keyword_position() {
+            self.set_line(pos.line);
+            self.set_column(pos.column);
         }
-        let pos = pos.unwrap();
-        self.set_line(pos.line);
-        self.set_column(pos.column);
     }
 
     fn previous_keyword_position(&self) -> Option<Position> {
@@ -359,11 +353,9 @@ impl Editor {
 
     /// Moves a cursor to the first non-blank character.
     pub fn move_to_beginning_of_non_blank(&mut self) {
-        let pos = self.first_non_blank();
-        if pos.is_none() {
-            return;
+        if let Some(pos) = self.first_non_blank() {
+            self.set_column(pos);
         }
-        self.set_column(pos.unwrap());
     }
 
     fn first_non_blank(&self) -> Option<usize> {
@@ -385,11 +377,9 @@ impl Editor {
 
     /// Moves a cursor to the last non-blank character.
     pub fn move_to_end_of_non_blank(&mut self) {
-        let pos = self.last_non_blank();
-        if pos.is_none() {
-            return;
+        if let Some(pos) = self.last_non_blank() {
+            self.set_column(pos);
         }
-        self.set_column(pos.unwrap());
     }
 
     fn last_non_blank(&self) -> Option<usize> {
