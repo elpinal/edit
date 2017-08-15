@@ -565,7 +565,7 @@ impl Editor {
         )
     }
 
-    /// Searches for a character after the cursor in the current line, returning its index.
+    /// Join a line and next line.
     ///
     /// # Examples
     ///
