@@ -103,4 +103,14 @@ mod tests {
             buf.insert(3, 'x')
         });
     }
+
+    #[bench]
+    fn bench_move_to_beginning_of_next_keyword(b: &mut Bencher) {
+        let buffer = "  aaa \n    bbb  ";
+        let editor = Editor::new(buffer, 0, 5).unwrap();
+        b.iter(|| {
+            let mut editor = editor.clone();
+            editor.move_to_beginning_of_next_keyword();
+        });
+    }
 }
