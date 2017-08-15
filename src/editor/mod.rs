@@ -360,10 +360,7 @@ impl Editor {
 
     fn first_non_blank(&self) -> Option<usize> {
         let line = self.current_line_buffer();
-        line.iter()
-            .enumerate()
-            .find(|&(_, ch)| !ch.is_whitespace())
-            .map(|(i, _)| i)
+        line.iter().position(|ch| !ch.is_whitespace())
     }
 
     fn current_line_buffer(&self) -> &[char] {
@@ -384,12 +381,9 @@ impl Editor {
 
     fn last_non_blank(&self) -> Option<usize> {
         let line = self.current_line_buffer();
-        for (i, ch) in line.iter().enumerate().rev() {
-            if !ch.is_whitespace() {
-                return Some(i + 1);
-            }
-        }
-        return None;
+        line.iter().rposition(|ch| !ch.is_whitespace()).map(
+            |i| i + 1,
+        )
     }
 
     /// Moves a cursor to a line.
