@@ -584,6 +584,22 @@ impl Editor {
         self.delete_at(line, c);
         self.insert_at(' ', line, c);
     }
+
+    /// Match parentheses.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("a ( b ) c", 0, 2).unwrap();
+    /// assert_eq!(editor.match_paren(), Some(6));
+    /// ```
+    pub fn match_paren(&self) -> Option<usize> {
+        let n = self.core.current_offset();
+        self.buffer()[n..].iter()
+            .position(|&c| c == ')')
+            .map(|i| i + n)
+    }
 }
 
 impl Clone for Editor {
