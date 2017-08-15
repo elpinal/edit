@@ -123,6 +123,10 @@ impl Core {
         if n < self.line_count() {
             self.line = n;
         }
+        let width = self.current_line_width();
+        if width < self.column {
+            self.column = width;
+        }
     }
 
     pub fn move_left(&mut self, n: usize) {
