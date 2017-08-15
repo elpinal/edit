@@ -593,12 +593,25 @@ impl Editor {
     /// # use edit::editor::Editor;
     /// let editor = Editor::new("a ( b ) c", 0, 2).unwrap();
     /// assert_eq!(editor.match_paren(), Some(6));
+    ///
+    /// let editor = Editor::new("a ( b ) c", 0, 6).unwrap();
+    /// assert_eq!(editor.match_paren(), Some(2));
+    ///
     /// ```
     pub fn match_paren(&self) -> Option<usize> {
         let n = self.core.current_offset();
-        self.buffer()[n..].iter()
-            .position(|&c| c == ')')
-            .map(|i| i + n)
+        match self.buffer()[n] {
+            '(' => {
+                self.buffer()[n..].iter()
+                    .position(|&c| c == ')')
+                    .map(|i| i + n)
+            },
+            ')' => {
+                self.buffer()[..n].iter()
+                    .rposition(|&c| c == '(')
+            },
+            _ => None,
+        }
     }
 }
 
