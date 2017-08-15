@@ -295,24 +295,7 @@ impl Editor {
     }
 
     fn next_keyword_position(&self) -> Option<Position> {
-        let off = self.core.current_offset();
-        let buffer = self.buffer();
-        let mut line = self.line();
-        let mut i = self.column();
-        for ch in buffer[off..].iter() {
-            if *ch == '\n' {
-                line += 1;
-                i = 0;
-            } else if ch.is_alphabetic() {
-                return Some(Position {
-                    line: line,
-                    column: i,
-                });
-            } else {
-                i += 1;
-            }
-        }
-        return None;
+        self.core.next_keyword_position()
     }
 
     /// Moves a cursor to the beginning of a previous keyword.

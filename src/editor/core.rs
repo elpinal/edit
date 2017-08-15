@@ -258,6 +258,33 @@ impl Core {
             self.delete_at(range.start.line, range.start.column)
         }
     }
+
+    pub fn next_keyword_position(&self) -> Option<Position> {
+        let off = self.current_offset();
+        let buffer = self.buffer();
+        let line = self.line();
+        let column = self.column();
+        let indices = &self.newline_indices[line..];
+        buffer[off..]
+            .iter()
+            .position(|ch| ch.is_alphabetic())
+            .map(|n| n + off)
+            .map(|n| {
+                let i = indices.iter().position(|&x| n < x).expect(
+                    "next_keyword_position: unexpected error",
+                );
+                if i == 0 {
+                    return Position {
+                        line: line + i,
+                        column: column + n - off,
+                    };
+                }
+                Position {
+                    line: line + i,
+                    column: n - self.newline_indices[line + i - 1] - 1,
+                }
+            })
+    }
 }
 
 impl Clone for Core {
