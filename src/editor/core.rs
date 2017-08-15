@@ -80,11 +80,10 @@ impl Core {
             return None;
         }
         let right = self.newline_indices[n];
-        let left = if n == 0 {
-            0
-        } else {
-            self.newline_indices[n - 1] + 1
-        };
+        if n == 0 {
+            return Some(right);
+        }
+        let left = self.newline_indices[n - 1] + 1;
         Some(right - left)
     }
 
@@ -98,12 +97,11 @@ impl Core {
     pub fn offset(&self, line: usize, column: usize) -> Option<usize> {
         if line >= self.line_count() || self.line_width(line).unwrap() < column {
             return None;
-        };
-        let line_offset = if line == 0 {
-            0
-        } else {
-            self.newline_indices[(line - 1)] + 1
-        };
+        }
+        if line == 0 {
+            return Some(column);
+        }
+        let line_offset = self.newline_indices[line - 1] + 1;
         Some(line_offset + column)
     }
 
