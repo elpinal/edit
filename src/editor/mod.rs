@@ -192,6 +192,31 @@ impl Editor {
         self.core.delete_range(range);
     }
 
+    /// Deletes a line from the buffer.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a a\n\
+    ///                               b b b", 1, 3).unwrap();
+    /// editor.delete_line(0);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "b b b");
+    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.column(), 3);
+    /// ```
+    pub fn delete_line(&mut self, line: usize) {
+        //let column = self.line_width(line).expect(
+        //    &format!("line {}: out of range", line),
+        //);
+        self.delete_range(
+            Position { line, column: 0 }..
+                Position { line: line + 1, column: 0 },
+        );
+    }
+
     /// Shows the content of the buffer.
     ///
     /// # Examples
@@ -515,7 +540,11 @@ impl Editor {
     /// ```
     pub fn search_character(&self, ch: char) -> Option<usize> {
         let line = self.current_line_buffer();
-        line[self.column()..].iter().position(|&x| x == ch).map(|n| n + self.column())
+        line[self.column()..].iter().position(|&x| x == ch).map(
+            |n| {
+                n + self.column()
+            },
+        )
     }
 
     /// Searches for a character after the cursor in the current line, returning its index.
@@ -531,7 +560,9 @@ impl Editor {
     /// ```
     pub fn rsearch_character(&self, ch: char) -> Option<usize> {
         let line = self.current_line_buffer();
-        line[..self.column()].iter().rposition(|&x| x == ch).map(|n| n)
+        line[..self.column()].iter().rposition(|&x| x == ch).map(
+            |n| n,
+        )
     }
 }
 
