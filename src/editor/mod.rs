@@ -210,7 +210,10 @@ impl Editor {
     pub fn delete_line(&mut self, line: usize) {
         self.delete_range(
             Position { line, column: 0 }..
-                Position { line: line + 1, column: 0 },
+                Position {
+                    line: line + 1,
+                    column: 0,
+                },
         );
     }
 
@@ -560,6 +563,26 @@ impl Editor {
         line[..self.column()].iter().rposition(|&x| x == ch).map(
             |n| n,
         )
+    }
+
+    /// Searches for a character after the cursor in the current line, returning its index.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a b c d\n\
+    ///                           x", 0, 3).unwrap();
+    /// editor.join(0);
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "a b c d x");
+    /// ```
+    pub fn join(&mut self, line: usize) {
+        let c = self.line_width(line).expect(
+            &format!("line {}: out of range", line),
+        );
+        self.delete_at(line, c);
+        self.insert_at(' ', line, c);
     }
 }
 
