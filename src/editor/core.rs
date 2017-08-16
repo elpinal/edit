@@ -279,9 +279,7 @@ impl Core {
 
     pub fn next_keyword_position(&self) -> Option<Position> {
         let off = self.current_offset();
-        let line = self.line;
-        let column = self.column;
-        let indices = &self.newline_indices[line..];
+        let indices = &self.newline_indices[self.line..];
         self.buffer[off..]
             .iter()
             .position(|ch| ch.is_alphabetic())
@@ -289,9 +287,9 @@ impl Core {
             .map(|n| {
                 let i = indices.iter().position(|&x| n < x).expect(
                     "next_keyword_position: unexpected error",
-                ) + line;
-                if i == line {
-                    return Position::new(i, column + n - off);
+                ) + self.line;
+                if i == self.line {
+                    return Position::new(i, self.column + n - off);
                 }
                 Position::new(i, n - self.newline_indices[i - 1] - 1)
             })
