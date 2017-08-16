@@ -10,6 +10,12 @@ pub struct Position {
     pub column: usize,
 }
 
+impl Position {
+    pub fn new(line: usize, column: usize) -> Position {
+        Position { line, column }
+    }
+}
+
 impl PartialOrd for Position {
     fn partial_cmp(&self, other: &Position) -> Option<Ordering> {
         let lc = self.line.partial_cmp(&other.line);
