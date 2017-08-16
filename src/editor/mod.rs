@@ -25,7 +25,9 @@ use std::ops::Range;
 
 /// A pair of parentheses.
 pub struct Paren {
+    /// A character which is a open parenthesis.
     pub open: char,
+    /// A character which is a close parenthesis.
     pub close: char,
 }
 
