@@ -231,12 +231,16 @@ impl Editor {
     /// assert_eq!(editor.column(), 0);
     /// ```
     pub fn delete_line(&mut self, line: usize) {
-        let end = if line == self.core.line_count() - 1 {
+        let end = if self.is_last_line(line) {
             Position::new(line, self.line_width(line).unwrap())
         } else {
             Position::new(line + 1, 0)
         };
         self.delete_range(Position::new(line, 0)..end);
+    }
+
+    fn is_last_line(&self, line: usize) -> bool {
+        line == self.core.line_count() - 1
     }
 
     /// Shows the content of the buffer.
