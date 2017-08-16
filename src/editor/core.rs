@@ -291,15 +291,9 @@ impl Core {
                     "next_keyword_position: unexpected error",
                 );
                 if i == 0 {
-                    return Position {
-                        line: line + i,
-                        column: column + n - off,
-                    };
+                    return Position::new(line + i, column + n - off);
                 }
-                Position {
-                    line: line + i,
-                    column: n - self.newline_indices[line + i - 1] - 1,
-                }
+                Position::new(line + i, n - self.newline_indices[line + i - 1] - 1)
             })
     }
 }
@@ -576,9 +570,7 @@ mod tests {
     fn test_delete_range() {
         let buffer = "Hello, world!\nThe 2nd line.\nAAABBBCCC.";
         let mut editor = Core::new(buffer, 0, 6).unwrap();
-        editor.delete_range(
-            Position { line: 0, column: 6 }..Position { line: 1, column: 5 },
-        );
+        editor.delete_range(Position::new(0, 6)..Position::new(1, 5));
         assert_eq!(
             editor,
             Core::new("Hello,nd line.\nAAABBBCCC.", 0, 6).unwrap()
