@@ -412,6 +412,15 @@ impl Editor {
     }
 
     /// Moves a cursor to the beginning of a previous keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\n bbb", 1, 3).unwrap();
+    /// editor.move_to_beginning_of_previous_keyword();
+    /// assert_eq!(editor.column(), 1);
+    /// ```
     pub fn move_to_beginning_of_previous_keyword(&mut self) {
         if let Some(pos) = self.previous_keyword_position() {
             self.set_line(pos.line);
