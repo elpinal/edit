@@ -448,6 +448,15 @@ impl Editor {
     }
 
     /// Moves a cursor to the first non-blank character.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\n bbb", 1, 3).unwrap();
+    /// editor.move_to_beginning_of_non_blank();
+    /// assert_eq!(editor.column(), 1);
+    /// ```
     pub fn move_to_beginning_of_non_blank(&mut self) {
         if let Some(pos) = self.first_non_blank() {
             self.set_column(pos);
