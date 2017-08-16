@@ -206,15 +206,36 @@ impl Editor {
     /// assert_eq!(buf, "b b b");
     /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 3);
+    ///
+    /// editor.delete_line(0);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "");
+    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.column(), 0);
+    ///
+    /// let mut editor = Editor::new("a b", 0, 2).unwrap();
+    /// editor.delete_line(0);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "");
+    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.column(), 0);
     /// ```
     pub fn delete_line(&mut self, line: usize) {
-        self.delete_range(
-            Position { line, column: 0 }..
-                Position {
-                    line: line + 1,
-                    column: 0,
-                },
-        );
+        let end: Position;
+        if line == self.core.line_count() - 1 {
+            end = Position {
+                line,
+                column: self.line_width(line).unwrap(),
+            }
+        } else {
+            end = Position {
+                line: line + 1,
+                column: 0,
+            }
+        }
+        self.delete_range(Position { line, column: 0 }..end);
     }
 
     /// Shows the content of the buffer.
