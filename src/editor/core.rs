@@ -12,6 +12,13 @@ pub struct Position {
 
 impl Position {
     /// Creates a new `Position`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Position;
+    /// let p = Position::new(1, 2);
+    /// ```
     pub fn new(line: usize, column: usize) -> Position {
         Position { line, column }
     }
