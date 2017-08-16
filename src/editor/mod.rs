@@ -492,6 +492,15 @@ impl Editor {
     }
 
     /// Moves a cursor to the last non-blank character.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("aaa\nbbb ", 1, 1).unwrap();
+    /// editor.move_to_end_of_non_blank();
+    /// assert_eq!(editor.column(), 3);
+    /// ```
     pub fn move_to_end_of_non_blank(&mut self) {
         if let Some(pos) = self.last_non_blank() {
             self.set_column(pos);
