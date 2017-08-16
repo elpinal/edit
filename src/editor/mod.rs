@@ -460,6 +460,29 @@ impl Editor {
         &buffer[beginning..end]
     }
 
+    /// Returns a line of the buffer.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a\n\
+    ///                               b b b b\n\
+    ///                               c", 1, 6).unwrap();
+    /// assert_eq!(editor.line_buffer(2), Some(&['c'][..]));
+    /// ```
+    pub fn line_buffer(&self, line: usize) -> Option<&[char]> {
+        if self.core.line_count() <= line {
+            return None;
+        }
+        let buffer = self.buffer();
+        let beginning = self.core.offset(line, 0).unwrap();
+        let end = self.core
+            .offset(line, self.core.line_width(line).unwrap())
+            .unwrap();
+        Some(&buffer[beginning..end])
+    }
+
     /// Moves a cursor to the last non-blank character.
     pub fn move_to_end_of_non_blank(&mut self) {
         if let Some(pos) = self.last_non_blank() {
