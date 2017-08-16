@@ -400,6 +400,15 @@ impl Editor {
     }
 
     /// Moves a cursor to the beginning of a next keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("   bbb", 0, 2).unwrap();
+    /// editor.move_to_beginning_of_next_keyword();
+    /// assert_eq!(editor.column(), 3);
+    /// ```
     pub fn move_to_beginning_of_next_keyword(&mut self) {
         if let Some(pos) = self.next_keyword_position() {
             self.set_line(pos.line);
