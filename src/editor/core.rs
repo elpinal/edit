@@ -11,6 +11,7 @@ pub struct Position {
 }
 
 impl Position {
+    /// Creates a new `Position`.
     pub fn new(line: usize, column: usize) -> Position {
         Position { line, column }
     }
