@@ -191,7 +191,7 @@ impl Editor {
     /// # use edit::editor::Editor;
     /// use edit::editor::Position;
     /// let mut editor = Editor::new("abcdefg \n hijk", 0, 3).unwrap();
-    /// editor.delete_range(Position { line: 0, column: 4 }..Position { line: 1, column: 3 });
+    /// editor.delete_range(Position::new(0, 4)..Position::new(1, 3));
     ///
     /// let buf: String = editor.buffer().iter().collect();
     /// assert_eq!(buf, "abcdjk");
