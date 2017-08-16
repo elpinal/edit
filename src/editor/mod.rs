@@ -232,17 +232,11 @@ impl Editor {
     /// ```
     pub fn delete_line(&mut self, line: usize) {
         let end = if line == self.core.line_count() - 1 {
-            Position {
-                line,
-                column: self.line_width(line).unwrap(),
-            }
+            Position::new(line, self.line_width(line).unwrap())
         } else {
-            Position {
-                line: line + 1,
-                column: 0,
-            }
+            Position::new(line + 1, 0)
         };
-        self.delete_range(Position { line, column: 0 }..end);
+        self.delete_range(Position::new(line, 0)..end);
     }
 
     /// Shows the content of the buffer.
@@ -449,10 +443,7 @@ impl Editor {
                 continue;
             }
             if on_keyword {
-                return Some(Position {
-                    line: line,
-                    column: i,
-                });
+                return Some(Position::new(line, i));
             }
             if *ch == '\n' {
                 line -= 1;
