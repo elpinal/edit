@@ -23,6 +23,12 @@ pub use editor::core::Position;
 
 use std::ops::Range;
 
+/// A pair of parentheses.
+pub struct Paren {
+    open: char,
+    close: char,
+}
+
 /// A fundamental two-dimensional editor which has text as its buffer.
 pub struct Editor {
     core: Core,
@@ -690,6 +696,49 @@ impl Editor {
                 })
             }
             _ => None,
+        }
+    }
+
+    /// Matches a pair of parentheses.
+    pub fn match_pair(&self, p: Paren) -> Option<usize> {
+        let n = self.core.current_offset();
+        let mut level: usize = 0;
+        let x = self.buffer()[n];
+        if x == p.open {
+            self.buffer()[n + 1..]
+                .iter()
+                .position(|&c| {
+                    if c == p.open {
+                        level += 1;
+                        return false;
+                    }
+                    if c != p.close {
+                        return false;
+                    }
+                    if level == 0 {
+                        return true;
+                    }
+                    level -= 1;
+                    false
+                })
+                .map(|i| i + n + 1)
+        } else if x == p.close {
+            self.buffer()[..n].iter().rposition(|&c| {
+                if c == p.close {
+                    level += 1;
+                    return false;
+                }
+                if c != p.open {
+                    return false;
+                }
+                if level == 0 {
+                    return true;
+                }
+                level -= 1;
+                false
+            })
+        } else {
+            None
         }
     }
 }
