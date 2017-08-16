@@ -25,8 +25,8 @@ use std::ops::Range;
 
 /// A pair of parentheses.
 pub struct Paren {
-    open: char,
-    close: char,
+    pub open: char,
+    pub close: char,
 }
 
 /// A fundamental two-dimensional editor which has text as its buffer.
@@ -700,6 +700,15 @@ impl Editor {
     }
 
     /// Matches a pair of parentheses.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Paren;
+    /// let editor = Editor::new("a { b } c", 0, 2).unwrap();
+    /// assert_eq!(editor.match_pair(Paren {open: '{', close: '}'}), Some(6));
+    /// ```
     pub fn match_pair(&self, p: Paren) -> Option<usize> {
         let n = self.core.current_offset();
         let mut level: usize = 0;
