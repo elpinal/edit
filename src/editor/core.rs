@@ -289,11 +289,11 @@ impl Core {
             .map(|n| {
                 let i = indices.iter().position(|&x| n < x).expect(
                     "next_keyword_position: unexpected error",
-                );
-                if i == 0 {
-                    return Position::new(line + i, column + n - off);
+                ) + line;
+                if i == line {
+                    return Position::new(i, column + n - off);
                 }
-                Position::new(line + i, n - self.newline_indices[line + i - 1] - 1)
+                Position::new(i, n - self.newline_indices[i - 1] - 1)
             })
     }
 }
