@@ -710,6 +710,9 @@ impl Editor {
     /// use edit::editor::Paren;
     /// let editor = Editor::new("a { b } c", 0, 2).unwrap();
     /// assert_eq!(editor.match_pair(Paren {open: '{', close: '}'}), Some(6));
+    ///
+    /// let editor = Editor::new(" [1, 3) ", 0, 1).unwrap();
+    /// assert_eq!(editor.match_pair(Paren {open: '[', close: ')'}), Some(6));
     /// ```
     pub fn match_pair(&self, p: Paren) -> Option<usize> {
         let n = self.core.current_offset();
