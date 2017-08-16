@@ -231,18 +231,17 @@ impl Editor {
     /// assert_eq!(editor.column(), 0);
     /// ```
     pub fn delete_line(&mut self, line: usize) {
-        let end: Position;
-        if line == self.core.line_count() - 1 {
-            end = Position {
+        let end = if line == self.core.line_count() - 1 {
+            Position {
                 line,
                 column: self.line_width(line).unwrap(),
             }
         } else {
-            end = Position {
+            Position {
                 line: line + 1,
                 column: 0,
             }
-        }
+        };
         self.delete_range(Position { line, column: 0 }..end);
     }
 
