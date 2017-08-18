@@ -286,8 +286,9 @@ impl Core {
             return None;
         }
         let p = p.unwrap();
-        it.position(|ch| ch.is_alphabetic()).map(|n| n + off + p).map(
-            |n| {
+        it.position(|ch| ch.is_alphabetic())
+            .map(|n| n + off + p)
+            .map(|n| {
                 let i = indices.iter().position(|&x| n < x).expect(
                     "next_keyword_position: unexpected error",
                 ) + self.line;
@@ -295,8 +296,7 @@ impl Core {
                     return Position::new(i, self.column + n - off + 1);
                 }
                 Position::new(i, n - self.newline_indices[i - 1])
-            },
-        )
+            })
     }
 
     pub fn previous_keyword_position(&self) -> Option<Position> {
