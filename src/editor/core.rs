@@ -311,7 +311,7 @@ impl Core {
             }
             let i = i.unwrap();
             Position::new(i, n - self.newline_indices[i])
-        })
+        }).or(Some(Position::new(0, 0)))
     }
 }
 
