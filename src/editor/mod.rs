@@ -439,6 +439,7 @@ impl Editor {
     /// # use edit::editor::Editor;
     /// let mut editor = Editor::new("aaa\n bbb", 1, 3).unwrap();
     /// editor.move_to_beginning_of_previous_keyword();
+    /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 1);
     /// ```
     pub fn move_to_beginning_of_previous_keyword(&mut self) {
@@ -449,28 +450,7 @@ impl Editor {
     }
 
     fn previous_keyword_position(&self) -> Option<Position> {
-        let off = self.core.current_offset();
-        let buffer = self.buffer();
-        let mut line = self.line();
-        let mut i = self.column();
-        let mut on_keyword = false;
-        for ch in buffer[..off].iter().rev() {
-            if ch.is_alphabetic() {
-                on_keyword = true;
-                i -= 1;
-                continue;
-            }
-            if on_keyword {
-                return Some(Position::new(line, i));
-            }
-            if *ch == '\n' {
-                line -= 1;
-                i = self.line_width(line).unwrap();
-            } else {
-                i -= 1;
-            }
-        }
-        return None;
+        self.core.previous_keyword_position()
     }
 
     /// Moves a cursor to the first non-blank character.
