@@ -303,7 +303,9 @@ impl Core {
         let off = self.current_offset();
         let indices = &self.newline_indices[..self.line];
         let mut it = self.buffer[..off].iter();
-        it.rposition(|ch| ch.is_alphabetic());
+        if it.rposition(|ch| ch.is_alphabetic()).is_none() {
+            return None;
+        }
         it.rposition(|ch| !ch.is_alphabetic()).map(|n| {
             let i = indices.iter().rposition(|&x| n > x);
             if i == None {

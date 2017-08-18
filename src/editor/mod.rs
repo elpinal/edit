@@ -895,6 +895,12 @@ mod tests {
         editor.move_to_beginning_of_previous_keyword();
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 2);
+
+        let buffer = "    ";
+        let mut editor = Editor::new(buffer, 0, 3).unwrap();
+        editor.move_to_beginning_of_previous_keyword();
+        assert_eq!(editor.line(), 0);
+        assert_eq!(editor.column(), 3);
     }
 
     #[test]
