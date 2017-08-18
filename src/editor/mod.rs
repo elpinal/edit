@@ -24,6 +24,15 @@ pub use editor::core::Position;
 use std::ops::Range;
 
 /// A pair of parentheses.
+///
+/// # Examples
+///
+/// ```
+/// let p = Paren {
+///     open: '(',
+///     close: ')',
+/// };
+/// ```
 pub struct Paren {
     /// A character which is a open parenthesis.
     pub open: char,
