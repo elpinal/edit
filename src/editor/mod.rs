@@ -427,7 +427,19 @@ impl Editor {
         }
     }
 
-    fn next_keyword_position(&self) -> Option<Position> {
+    /// Returns a position at the beginning of a next keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           bb ", 0, 0).unwrap();
+    /// let pos = editor.next_keyword_position();
+    /// assert_eq!(pos, Some(Position { line: 1, column: 0 }));
+    /// ```
+    pub fn next_keyword_position(&self) -> Option<Position> {
         self.core.next_keyword_position()
     }
 
