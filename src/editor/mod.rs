@@ -31,6 +31,8 @@ use std::ops::Range;
 /// # Examples
 ///
 /// ```
+/// use edit::editor::Paren;
+///
 /// let p = Paren {
 ///     open: '(',
 ///     close: ')',
