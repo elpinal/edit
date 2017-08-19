@@ -435,7 +435,7 @@ impl Editor {
     /// # use edit::editor::Editor;
     /// let mut editor = Editor::new("aaa\n bbb", 1, 3).unwrap();
     /// editor.move_to_beginning_of_previous_keyword();
-    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.line(), 1);
     /// assert_eq!(editor.column(), 1);
     /// ```
     pub fn move_to_beginning_of_previous_keyword(&mut self) {

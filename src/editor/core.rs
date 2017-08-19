@@ -307,13 +307,14 @@ impl Core {
             return None;
         }
         it.rposition(|ch| !ch.is_alphabetic())
+            .map(|n| n + 1)
             .map(|n| {
                 let i = indices.iter().rposition(|&x| n > x);
                 if i == None {
-                    return Position::new(0, n + 1);
+                    return Position::new(0, n);
                 }
                 let i = i.unwrap();
-                Position::new(i, n - self.newline_indices[i])
+                Position::new(i + 1, n - self.newline_indices[i] - 1)
             })
             .or(Some(Position::new(0, 0)))
     }
@@ -689,6 +690,17 @@ mod tests {
             editor,
             Core::new("Hello,nd line.\nAAABBBCCC.", 0, 6).unwrap()
         );
+    }
+
+    #[test]
+    fn test_previous_keyword_position() {
+        let buffer = "**\n\
+                      a**";
+        let editor = Core::new(buffer, 0, 1).unwrap();
+        assert_eq!(editor.previous_keyword_position(), None);
+
+        let editor = Core::new(buffer, 1, 3).unwrap();
+        assert_eq!(editor.previous_keyword_position(), Some(Position::new(1, 0)));
     }
 
     #[test]
