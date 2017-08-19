@@ -679,6 +679,14 @@ mod tests {
     }
 
     #[test]
+    fn test_next_keyword_position() {
+        let buffer = "**\n\
+                      a**";
+        let editor = Core::new(buffer, 0, 1).unwrap();
+        assert_eq!(editor.next_keyword_position(), Some(Position::new(1, 0)));
+    }
+
+    #[test]
     fn test_previous_keyword_position() {
         let buffer = "**\n\
                       a**";
