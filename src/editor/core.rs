@@ -333,36 +333,34 @@ impl Core {
         self.previous_position(char::is_symbol)
     }
 
-    pub fn next_keyword_end_position(&self) -> Option<Position> {
+    pub fn next_end_position(&self, f: fn(char) -> bool) -> Option<Position> {
         let off = self.current_offset();
         let indices = &self.newline_indices[self.line..];
         let mut it = self.buffer[off..].iter();
-        let p = it.position(|ch| ch.is_alphabetic());
+        let p = it.position(|&ch| f(ch));
         if p.is_none() {
             return None;
         }
         let p = p.unwrap();
-        it.position(|ch| !ch.is_alphabetic())
-            .map(|n| n + off + p - 1)
-            .map(|n| {
-                let i = indices.iter().position(|&x| n < x).expect(
-                    "next_keyword_end_position: unexpected error",
-                ) + self.line;
-                if i == self.line {
-                    return Position::new(i, self.column + n - off + 1);
-                }
-                Position::new(i, n - self.newline_indices[i - 1])
-            })
+        it.position(|&ch| !f(ch)).map(|n| n + off + p - 1).map(|n| {
+            let i = indices.iter().position(|&x| n < x).expect(
+                "next_end_position: unexpected error",
+            ) + self.line;
+            if i == self.line {
+                return Position::new(i, self.column + n - off + 1);
+            }
+            Position::new(i, n - self.newline_indices[i - 1])
+        })
     }
 
-    pub fn previous_keyword_end_position(&self) -> Option<Position> {
+    pub fn previous_end_position(&self, f: fn(char) -> bool) -> Option<Position> {
         let off = self.current_offset();
         let indices = &self.newline_indices[..self.line];
         let mut it = self.buffer[..off].iter();
-        if it.rposition(|ch| !ch.is_alphabetic()).is_none() {
+        if it.rposition(|&ch| !f(ch)).is_none() {
             return None;
         }
-        it.rposition(|ch| ch.is_alphabetic())
+        it.rposition(|&ch| f(ch))
             .map(|n| {
                 let i = indices.iter().rposition(|&x| n > x);
                 if i == None {
@@ -372,6 +370,14 @@ impl Core {
                 Position::new(i, n - self.newline_indices[i])
             })
             .or(Some(Position::new(0, 0)))
+    }
+
+    pub fn next_keyword_end_position(&self) -> Option<Position> {
+        self.next_end_position(char::is_alphabetic)
+    }
+
+    pub fn previous_keyword_end_position(&self) -> Option<Position> {
+        self.previous_end_position(char::is_alphabetic)
     }
 }
 
