@@ -325,6 +325,14 @@ impl Core {
         self.previous_position(char::is_alphabetic)
     }
 
+    pub fn next_symbol_position(&self) -> Option<Position> {
+        self.next_position(char::is_symbol)
+    }
+
+    pub fn previous_symbol_position(&self) -> Option<Position> {
+        self.previous_position(char::is_symbol)
+    }
+
     pub fn next_keyword_end_position(&self) -> Option<Position> {
         let off = self.current_offset();
         let indices = &self.newline_indices[self.line..];
@@ -364,14 +372,6 @@ impl Core {
                 Position::new(i, n - self.newline_indices[i])
             })
             .or(Some(Position::new(0, 0)))
-    }
-
-    pub fn next_symbol_position(&self) -> Option<Position> {
-        self.next_position(char::is_symbol)
-    }
-
-    pub fn previous_symbol_position(&self) -> Option<Position> {
-        self.previous_position(char::is_symbol)
     }
 }
 
