@@ -691,6 +691,38 @@ impl Editor {
         self.core.previous_keyword_end_position()
     }
 
+    /// Returns a position at the end of a next symbol.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           ** ", 0, 2).unwrap();
+    /// let pos = editor.next_symbol_end_position();
+    /// assert_eq!(pos, Some(Position::new(1, 1)));
+    /// ```
+    pub fn next_symbol_end_position(&self) -> Option<Position> {
+        self.core.next_symbol_end_position()
+    }
+
+    /// Returns a position at the end of a previous symbol.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("** \n\
+    ///                           bb ", 1, 1).unwrap();
+    /// let pos = editor.previous_symbol_end_position();
+    /// assert_eq!(pos, Some(Position::new(0, 1)));
+    /// ```
+    pub fn previous_symbol_end_position(&self) -> Option<Position> {
+        self.core.previous_symbol_end_position()
+    }
+
     /// Searches for a character after the cursor in the current line, returning its index.
     ///
     /// # Examples
