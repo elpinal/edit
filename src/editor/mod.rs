@@ -627,6 +627,22 @@ impl Editor {
         self.core.previous_keyword_position()
     }
 
+    /// Returns a position at the end of a next keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           bb ", 0, 2).unwrap();
+    /// let pos = editor.next_keyword_end_position();
+    /// assert_eq!(pos, Some(Position::new(1, 1)));
+    /// ```
+    pub fn next_keyword_end_position(&self) -> Option<Position> {
+        self.core.next_keyword_end_position()
+    }
+
     /// Searches for a character after the cursor in the current line, returning its index.
     ///
     /// # Examples
