@@ -297,18 +297,14 @@ impl Core {
         })
     }
 
-    pub fn next_keyword_position(&self) -> Option<Position> {
-        self.next_position(char::is_alphabetic)
-    }
-
-    pub fn previous_keyword_position(&self) -> Option<Position> {
+    pub fn previous_position(&self, f: fn(char) -> bool) -> Option<Position> {
         let off = self.current_offset();
         let indices = &self.newline_indices[..self.line];
         let mut it = self.buffer[..off].iter();
-        if it.rposition(|ch| ch.is_alphabetic()).is_none() {
+        if it.rposition(|&ch| f(ch)).is_none() {
             return None;
         }
-        it.rposition(|ch| !ch.is_alphabetic())
+        it.rposition(|&ch| !f(ch))
             .map(|n| n + 1)
             .map(|n| {
                 let i = indices.iter().rposition(|&x| n > x);
@@ -319,6 +315,14 @@ impl Core {
                 Position::new(i + 1, n - self.newline_indices[i] - 1)
             })
             .or(Some(Position::new(0, 0)))
+    }
+
+    pub fn next_keyword_position(&self) -> Option<Position> {
+        self.next_position(char::is_alphabetic)
+    }
+
+    pub fn previous_keyword_position(&self) -> Option<Position> {
+        self.previous_position(char::is_alphabetic)
     }
 
     pub fn next_keyword_end_position(&self) -> Option<Position> {
@@ -367,23 +371,7 @@ impl Core {
     }
 
     pub fn previous_symbol_position(&self) -> Option<Position> {
-        let off = self.current_offset();
-        let indices = &self.newline_indices[..self.line];
-        let mut it = self.buffer[..off].iter();
-        if it.rposition(|ch| ch.is_symbol()).is_none() {
-            return None;
-        }
-        it.rposition(|ch| !ch.is_symbol())
-            .map(|n| n + 1)
-            .map(|n| {
-                let i = indices.iter().rposition(|&x| n > x);
-                if i == None {
-                    return Position::new(0, n);
-                }
-                let i = i.unwrap();
-                Position::new(i + 1, n - self.newline_indices[i] - 1)
-            })
-            .or(Some(Position::new(0, 0)))
+        self.previous_position(char::is_symbol)
     }
 }
 
