@@ -337,6 +337,23 @@ impl Core {
                 Position::new(i, n - self.newline_indices[i - 1])
             })
     }
+
+    pub fn previous_keyword_end_position(&self) -> Option<Position> {
+        let off = self.current_offset();
+        let indices = &self.newline_indices[..self.line];
+        let mut it = self.buffer[..off].iter();
+        if it.rposition(|ch| !ch.is_alphabetic()).is_none() {
+            return None;
+        }
+        it.rposition(|ch| ch.is_alphabetic()).map(|n| {
+            let i = indices.iter().rposition(|&x| n > x);
+            if i == None {
+                return Position::new(0, n);
+            }
+            let i = i.unwrap();
+            Position::new(i, n - self.newline_indices[i])
+        }).or(Some(Position::new(0, 0)))
+    }
 }
 
 impl Clone for Core {
