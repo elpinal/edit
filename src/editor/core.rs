@@ -379,6 +379,14 @@ impl Core {
     pub fn previous_keyword_end_position(&self) -> Option<Position> {
         self.previous_end_position(char::is_alphabetic)
     }
+
+    pub fn next_symbol_end_position(&self) -> Option<Position> {
+        self.next_end_position(char::is_symbol)
+    }
+
+    pub fn previous_symbol_end_position(&self) -> Option<Position> {
+        self.previous_end_position(char::is_symbol)
+    }
 }
 
 impl Clone for Core {
