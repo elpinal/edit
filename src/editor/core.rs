@@ -684,6 +684,12 @@ mod tests {
                       a**";
         let editor = Core::new(buffer, 0, 1).unwrap();
         assert_eq!(editor.next_keyword_position(), Some(Position::new(1, 0)));
+
+        let editor = Core::new(buffer, 1, 3).unwrap();
+        assert_eq!(
+            editor.next_keyword_position(),
+            None
+        );
     }
 
     #[test]
