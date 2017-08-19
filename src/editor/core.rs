@@ -306,14 +306,16 @@ impl Core {
         if it.rposition(|ch| ch.is_alphabetic()).is_none() {
             return None;
         }
-        it.rposition(|ch| !ch.is_alphabetic()).map(|n| {
-            let i = indices.iter().rposition(|&x| n > x);
-            if i == None {
-                return Position::new(0, n + 1);
-            }
-            let i = i.unwrap();
-            Position::new(i, n - self.newline_indices[i])
-        }).or(Some(Position::new(0, 0)))
+        it.rposition(|ch| !ch.is_alphabetic())
+            .map(|n| {
+                let i = indices.iter().rposition(|&x| n > x);
+                if i == None {
+                    return Position::new(0, n + 1);
+                }
+                let i = i.unwrap();
+                Position::new(i, n - self.newline_indices[i])
+            })
+            .or(Some(Position::new(0, 0)))
     }
 
     pub fn next_keyword_end_position(&self) -> Option<Position> {
@@ -345,14 +347,16 @@ impl Core {
         if it.rposition(|ch| !ch.is_alphabetic()).is_none() {
             return None;
         }
-        it.rposition(|ch| ch.is_alphabetic()).map(|n| {
-            let i = indices.iter().rposition(|&x| n > x);
-            if i == None {
-                return Position::new(0, n);
-            }
-            let i = i.unwrap();
-            Position::new(i, n - self.newline_indices[i])
-        }).or(Some(Position::new(0, 0)))
+        it.rposition(|ch| ch.is_alphabetic())
+            .map(|n| {
+                let i = indices.iter().rposition(|&x| n > x);
+                if i == None {
+                    return Position::new(0, n);
+                }
+                let i = i.unwrap();
+                Position::new(i, n - self.newline_indices[i])
+            })
+            .or(Some(Position::new(0, 0)))
     }
 
     pub fn next_symbol_position(&self) -> Option<Position> {
@@ -364,9 +368,8 @@ impl Core {
             return None;
         }
         let p = p.unwrap();
-        it.position(|ch| ch.is_symbol())
-            .map(|n| n + off + p)
-            .map(|n| {
+        it.position(|ch| ch.is_symbol()).map(|n| n + off + p).map(
+            |n| {
                 let i = indices.iter().position(|&x| n < x).expect(
                     "next_symbol_position: unexpected error",
                 ) + self.line;
@@ -374,7 +377,8 @@ impl Core {
                     return Position::new(i, self.column + n - off + 1);
                 }
                 Position::new(i, n - self.newline_indices[i - 1])
-            })
+            },
+        )
     }
 }
 
@@ -672,10 +676,7 @@ mod tests {
         let buffer = "ab\n\
                       *cd";
         let editor = Core::new(buffer, 0, 1).unwrap();
-        
-        assert_eq!(
-            editor.next_symbol_position(),
-            Some(Position::new(1, 0))
-        );
+
+        assert_eq!(editor.next_symbol_position(), Some(Position::new(1, 0)));
     }
 }
