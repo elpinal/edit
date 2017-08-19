@@ -380,6 +380,26 @@ impl Core {
             },
         )
     }
+
+    pub fn previous_symbol_position(&self) -> Option<Position> {
+        let off = self.current_offset();
+        let indices = &self.newline_indices[..self.line];
+        let mut it = self.buffer[..off].iter();
+        if it.rposition(|ch| ch.is_symbol()).is_none() {
+            return None;
+        }
+        it.rposition(|ch| !ch.is_symbol())
+            .map(|n| n + 1)
+            .map(|n| {
+                let i = indices.iter().rposition(|&x| n > x);
+                if i == None {
+                    return Position::new(0, n);
+                }
+                let i = i.unwrap();
+                Position::new(i + 1, n - self.newline_indices[i] - 1)
+            })
+            .or(Some(Position::new(0, 0)))
+    }
 }
 
 impl Clone for Core {
@@ -678,5 +698,16 @@ mod tests {
         let editor = Core::new(buffer, 0, 1).unwrap();
 
         assert_eq!(editor.next_symbol_position(), Some(Position::new(1, 0)));
+    }
+
+    #[test]
+    fn test_previous_symbol_position() {
+        let buffer = "ab\n\
+                      *cd";
+        let editor = Core::new(buffer, 0, 1).unwrap();
+        assert_eq!(editor.previous_symbol_position(), None);
+
+        let editor = Core::new(buffer, 1, 3).unwrap();
+        assert_eq!(editor.previous_symbol_position(), Some(Position::new(1, 0)));
     }
 }
