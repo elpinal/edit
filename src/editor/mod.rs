@@ -427,22 +427,6 @@ impl Editor {
         }
     }
 
-    /// Returns a position at the beginning of a next keyword.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # use edit::editor::Editor;
-    /// use edit::editor::Position;
-    /// let editor = Editor::new("aa \n\
-    ///                           bb ", 0, 0).unwrap();
-    /// let pos = editor.next_keyword_position();
-    /// assert_eq!(pos, Some(Position::new(1, 0)));
-    /// ```
-    pub fn next_keyword_position(&self) -> Option<Position> {
-        self.core.next_keyword_position()
-    }
-
     /// Moves a cursor to the beginning of a previous keyword.
     ///
     /// # Examples
@@ -459,22 +443,6 @@ impl Editor {
             self.set_line(pos.line);
             self.set_column(pos.column);
         }
-    }
-
-    /// Returns a position at the beginning of a previous keyword.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// # use edit::editor::Editor;
-    /// use edit::editor::Position;
-    /// let editor = Editor::new("aa \n\
-    ///                           bb ", 1, 0).unwrap();
-    /// let pos = editor.previous_keyword_position();
-    /// assert_eq!(pos, Some(Position::new(0, 0)));
-    /// ```
-    pub fn previous_keyword_position(&self) -> Option<Position> {
-        self.core.previous_keyword_position()
     }
 
     /// Moves a cursor to the first non-blank character.
@@ -625,6 +593,38 @@ impl Editor {
     pub fn move_to_beginning_of_lower_line(&mut self) {
         self.set_column(0);
         self.move_up(1);
+    }
+
+    /// Returns a position at the beginning of a next keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           bb ", 0, 0).unwrap();
+    /// let pos = editor.next_keyword_position();
+    /// assert_eq!(pos, Some(Position::new(1, 0)));
+    /// ```
+    pub fn next_keyword_position(&self) -> Option<Position> {
+        self.core.next_keyword_position()
+    }
+
+    /// Returns a position at the beginning of a previous keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           bb ", 1, 0).unwrap();
+    /// let pos = editor.previous_keyword_position();
+    /// assert_eq!(pos, Some(Position::new(0, 0)));
+    /// ```
+    pub fn previous_keyword_position(&self) -> Option<Position> {
+        self.core.previous_keyword_position()
     }
 
     /// Searches for a character after the cursor in the current line, returning its index.
