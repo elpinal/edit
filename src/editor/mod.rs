@@ -863,6 +863,31 @@ impl Editor {
     fn is_last_line(&self, line: usize) -> bool {
         line == self.core.line_count() - 1
     }
+
+    /// Deletes the buffer in a line range.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a a\n\
+    ///                               b b b\n\
+    ///                               c c\n\
+    ///                               d d", 0, 3).unwrap();
+    /// editor.delete_line_range(1..3);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "a a\n\
+    ///                  d d");
+    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.column(), 3);
+    /// ```
+    pub fn delete_line_range(&mut self, range: Range<usize>) {
+        // TODO: Confirm that the position is set exactly.
+        for l in range.rev() {
+            self.delete_line(l);
+        }
+    }
 }
 
 impl Clone for Editor {
