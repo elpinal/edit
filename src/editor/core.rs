@@ -367,6 +367,16 @@ impl Clone for Core {
     }
 }
 
+trait Character {
+    fn is_symbol(self) -> bool;
+}
+
+impl Character for char {
+    fn is_symbol(self) -> bool {
+        !(self.is_alphanumeric() || self.is_whitespace())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
