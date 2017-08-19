@@ -354,6 +354,28 @@ impl Core {
             Position::new(i, n - self.newline_indices[i])
         }).or(Some(Position::new(0, 0)))
     }
+
+    pub fn next_symbol_position(&self) -> Option<Position> {
+        let off = self.current_offset();
+        let indices = &self.newline_indices[self.line..];
+        let mut it = self.buffer[off..].iter();
+        let p = it.position(|ch| !ch.is_symbol());
+        if p.is_none() {
+            return None;
+        }
+        let p = p.unwrap();
+        it.position(|ch| ch.is_symbol())
+            .map(|n| n + off + p)
+            .map(|n| {
+                let i = indices.iter().position(|&x| n < x).expect(
+                    "next_symbol_position: unexpected error",
+                ) + self.line;
+                if i == self.line {
+                    return Position::new(i, self.column + n - off + 1);
+                }
+                Position::new(i, n - self.newline_indices[i - 1])
+            })
+    }
 }
 
 impl Clone for Core {
@@ -642,6 +664,18 @@ mod tests {
         assert_eq!(
             editor,
             Core::new("Hello,nd line.\nAAABBBCCC.", 0, 6).unwrap()
+        );
+    }
+
+    #[test]
+    fn test_next_symbol_position() {
+        let buffer = "ab\n\
+                      *cd";
+        let editor = Core::new(buffer, 0, 1).unwrap();
+        
+        assert_eq!(
+            editor.next_symbol_position(),
+            Some(Position::new(1, 0))
         );
     }
 }
