@@ -801,6 +801,11 @@ mod tests {
             editor.after_position(|ch| ch == 'x'),
             Some(Position::new(0, 3))
         );
+
+        let buffer = "aaa\n\
+                      aaa\n";
+        let editor = Core::new(buffer, 1, 1).unwrap();
+        assert_eq!(editor.after_position(|ch| ch == '\n'), None);
     }
 
     #[test]
