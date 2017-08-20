@@ -911,6 +911,32 @@ impl Editor {
         }
     }
 
+    /// Deletes the buffer to the cursor from the beginning at the line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a a\n\
+    ///                               b b b\n\
+    ///                               c c\n\
+    ///                               d d", 1, 2).unwrap();
+    /// editor.delete_to_beginning_of_line();
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "a a\n\
+    ///                  b b\n\
+    ///                  c c\n\
+    ///                  d d");
+    /// assert_eq!(editor.line(), 1);
+    /// assert_eq!(editor.column(), 0);
+    /// ```
+    pub fn delete_to_beginning_of_line(&mut self) {
+        let s = Position::new(self.line(), 0);
+        let e = Position::new(self.line(), self.column());
+        self.delete_range(s..e);
+    }
+
     /// Deletes the buffer from the cursor to the end at the line.
     ///
     /// # Examples
