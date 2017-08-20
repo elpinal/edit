@@ -407,6 +407,16 @@ impl Core {
     pub fn previous_symbol_end_position(&self) -> Option<Position> {
         self.previous_end_position(char::is_symbol)
     }
+
+    pub fn after_position(&self, f: fn(char) -> bool) -> Option<Position> {
+        self.next_end_position(f).map(|p| {
+            if p.column < self.line_width(p.line).unwrap() {
+                Position::new(p.line, p.column + 1)
+            } else {
+                Position::new(p.line + 1, 0)
+            }
+        })
+    }
 }
 
 impl Clone for Core {
@@ -748,5 +758,16 @@ mod tests {
 
         let editor = Core::new(buffer, 1, 3).unwrap();
         assert_eq!(editor.previous_symbol_position(), Some(Position::new(1, 0)));
+    }
+
+    #[test]
+    fn test_after_position() {
+        let buffer = "aax\n\
+                      aaa";
+        let editor = Core::new(buffer, 1, 1).unwrap();
+        assert_eq!(editor.after_position(|ch| ch == 'x'), None);
+
+        let editor = Core::new(buffer, 0, 1).unwrap();
+        assert_eq!(editor.after_position(|ch| ch == 'x'), Some(Position::new(0, 3)));
     }
 }
