@@ -338,11 +338,11 @@ impl Core {
     }
 
     pub fn next_keyword_position(&self) -> Option<Position> {
-        self.next_position(char::is_alphabetic)
+        self.next_position(char::is_alphanumeric)
     }
 
     pub fn previous_keyword_position(&self) -> Option<Position> {
-        self.previous_position(char::is_alphabetic)
+        self.previous_position(char::is_alphanumeric)
     }
 
     pub fn next_symbol_position(&self) -> Option<Position> {
@@ -393,11 +393,11 @@ impl Core {
     }
 
     pub fn next_keyword_end_position(&self) -> Option<Position> {
-        self.next_end_position(char::is_alphabetic)
+        self.next_end_position(char::is_alphanumeric)
     }
 
     pub fn previous_keyword_end_position(&self) -> Option<Position> {
-        self.previous_end_position(char::is_alphabetic)
+        self.previous_end_position(char::is_alphanumeric)
     }
 
     pub fn next_symbol_end_position(&self) -> Option<Position> {
@@ -706,6 +706,13 @@ mod tests {
         assert_eq!(editor.next_keyword_position(), Some(Position::new(1, 0)));
 
         let editor = Core::new(buffer, 1, 3).unwrap();
+        assert_eq!(editor.next_keyword_position(), None);
+
+        let buffer = " 12wb12 ";
+        let editor = Core::new(buffer, 0, 0).unwrap();
+        assert_eq!(editor.next_keyword_position(), Some(Position::new(0, 1)));
+
+        let editor = Core::new(buffer, 0, 1).unwrap();
         assert_eq!(editor.next_keyword_position(), None);
     }
 
