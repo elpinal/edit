@@ -409,12 +409,25 @@ impl Core {
     }
 
     pub fn after_position(&self, f: fn(char) -> bool) -> Option<Position> {
-        self.next_end_position(f).map(|p| {
-            if p.column < self.line_width(p.line).unwrap() {
-                Position::new(p.line, p.column + 1)
+        self.next_end_position(f).map(|p| if p.column <
+            self.line_width(p.line)
+                .unwrap()
+        {
+            Position::new(p.line, p.column + 1)
+        } else {
+            Position::new(p.line + 1, 0)
+        })
+    }
+
+    pub fn before_position(&self, f: fn(char) -> bool) -> Option<Position> {
+        self.previous_position(f).and_then(|p| if p.column == 0 {
+            if p.line == 0 {
+                None
             } else {
-                Position::new(p.line + 1, 0)
+                Some(Position::new(p.line - 1, 0))
             }
+        } else {
+            Some(Position::new(p.line, p.column - 1))
         })
     }
 }
@@ -768,6 +781,23 @@ mod tests {
         assert_eq!(editor.after_position(|ch| ch == 'x'), None);
 
         let editor = Core::new(buffer, 0, 1).unwrap();
-        assert_eq!(editor.after_position(|ch| ch == 'x'), Some(Position::new(0, 3)));
+        assert_eq!(
+            editor.after_position(|ch| ch == 'x'),
+            Some(Position::new(0, 3))
+        );
+    }
+
+    #[test]
+    fn test_before_position() {
+        let buffer = "aax\n\
+                      aaa";
+        let editor = Core::new(buffer, 0, 1).unwrap();
+        assert_eq!(editor.before_position(|ch| ch == 'x'), None);
+
+        let editor = Core::new(buffer, 1, 1).unwrap();
+        assert_eq!(
+            editor.before_position(|ch| ch == 'x'),
+            Some(Position::new(0, 1))
+        );
     }
 }

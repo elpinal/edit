@@ -188,10 +188,10 @@ impl Editor {
     /// ```
     pub fn buffer_range(&self, range: Range<Position>) -> Option<&[char]> {
         let buffer = self.buffer();
-        let s = self.core.offset(range.start.line, range.start.column).unwrap();
-        let e = self.core
-            .offset(range.end.line, range.end.column)
+        let s = self.core
+            .offset(range.start.line, range.start.column)
             .unwrap();
+        let e = self.core.offset(range.end.line, range.end.column).unwrap();
         Some(&buffer[s..e])
     }
 
