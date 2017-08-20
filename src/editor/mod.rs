@@ -323,6 +323,70 @@ impl Editor {
         self.core.previous_symbol_end_position()
     }
 
+    /// Returns a position just after the end of a next keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           bb ", 0, 2).unwrap();
+    /// let pos = editor.after_keyword_position();
+    /// assert_eq!(pos, Some(Position::new(1, 2)));
+    /// ```
+    pub fn after_keyword_position(&self) -> Option<Position> {
+        self.core.after_keyword_position()
+    }
+
+    /// Returns a position just before a previous keyword.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("*aa \n\
+    ///                           ** ", 1, 1).unwrap();
+    /// let pos = editor.before_keyword_position();
+    /// assert_eq!(pos, Some(Position::new(0, 0)));
+    /// ```
+    pub fn before_keyword_position(&self) -> Option<Position> {
+        self.core.before_keyword_position()
+    }
+
+    /// Returns a position just after the end of a next symbol.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           ** ", 0, 2).unwrap();
+    /// let pos = editor.after_symbol_position();
+    /// assert_eq!(pos, Some(Position::new(1, 2)));
+    /// ```
+    pub fn after_symbol_position(&self) -> Option<Position> {
+        self.core.after_symbol_position()
+    }
+
+    /// Returns a position just before a previous symbol.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("a** \n\
+    ///                           bb ", 1, 0).unwrap();
+    /// let pos = editor.before_symbol_position();
+    /// assert_eq!(pos, Some(Position::new(0, 0)));
+    /// ```
+    pub fn before_symbol_position(&self) -> Option<Position> {
+        self.core.before_symbol_position()
+    }
+
     /// Searches for a character after the cursor in the current line, returning its index.
     ///
     /// # Examples

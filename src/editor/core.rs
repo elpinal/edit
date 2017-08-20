@@ -430,6 +430,22 @@ impl Core {
             Some(Position::new(p.line, p.column - 1))
         })
     }
+
+    pub fn after_keyword_position(&self) -> Option<Position> {
+        self.after_position(char::is_alphanumeric)
+    }
+
+    pub fn before_keyword_position(&self) -> Option<Position> {
+        self.before_position(char::is_alphanumeric)
+    }
+
+    pub fn after_symbol_position(&self) -> Option<Position> {
+        self.after_position(char::is_symbol)
+    }
+
+    pub fn before_symbol_position(&self) -> Option<Position> {
+        self.before_position(char::is_symbol)
+    }
 }
 
 impl Clone for Core {
