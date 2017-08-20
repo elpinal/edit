@@ -108,6 +108,10 @@ impl Editor {
         self.core.column()
     }
 
+    pub fn line_count(&self) -> usize {
+        self.core.line_count()
+    }
+
     /// Returns the count of characters of line `n`.
     ///
     /// Returns `None` if `n` is out of the range.
