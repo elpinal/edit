@@ -73,6 +73,26 @@ impl Core {
         })
     }
 
+    pub fn reset(&mut self, buffer: &str, line: usize, column: usize) {
+        let chars: Vec<char> = buffer.chars().collect();
+        let mut indices: Vec<usize> = chars
+            .iter()
+            .enumerate()
+            .filter_map(|(i, ch)| if *ch == '\n' { Some(i) } else { None })
+            .collect();
+        let char_count = chars.len();
+        if indices.last() != Some(&char_count) {
+            indices.push(char_count);
+        }
+        assert!(indices.len() > line);
+        let width = indices[line] - if line == 0 { 0 } else { indices[line - 1] + 1 };
+        assert!(width >= column);
+        self.buffer = chars;
+        self.newline_indices = indices;
+        self.line = line;
+        self.column = column;
+    }
+
     pub fn buffer(&self) -> &[char] {
         &self.buffer
     }
