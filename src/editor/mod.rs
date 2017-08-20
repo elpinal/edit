@@ -945,6 +945,46 @@ impl Editor {
                 buf += "\n";
             }
         }
+        // FIXME: Possibility of panic: `l` should be updated.
+        let l = self.line();
+        let c = self.column();
+        self.core.reset(&buf, l, c);
+    }
+
+    /// Sort lines in a range.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a a\n\
+    ///                               c c\n\
+    ///                               b b b\n\
+    ///                               b a", 0, 3).unwrap();
+    /// editor.sort_line_range(0..2);
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "a a\n\
+    ///                  c c\n\
+    ///                  b b b\n\
+    ///                  b a\n");
+    /// assert_eq!(editor.line(), 0);
+    /// assert_eq!(editor.column(), 3);
+    /// ```
+    pub fn sort_line_range(&mut self, range: Range<usize>) {
+        let mut buf = String::new();
+        {
+            let mut vec = Vec::new();
+            for l in 0..self.core.line_count() {
+                vec.push(self.line_buffer(l).unwrap());
+            }
+            vec[range].sort();
+            for s in vec.into_iter() {
+                let s: String = s.iter().collect();
+                buf += &s;
+                buf += "\n";
+            }
+        }
         let l = self.line();
         let c = self.column();
         self.core.reset(&buf, l, c);
