@@ -153,7 +153,7 @@ impl Editor {
     /// assert_eq!(editor.line_buffer(2), Some(&['c'][..]));
     /// ```
     pub fn line_buffer(&self, line: usize) -> Option<&[char]> {
-        if self.core.line_count() <= line {
+        if self.line_count() <= line {
             return None;
         }
         let buffer = self.buffer();
@@ -659,7 +659,7 @@ impl Editor {
     /// ```
     pub fn move_to_beginning_of_last_line(&mut self) {
         self.set_column(0);
-        let lines = self.core.line_count();
+        let lines = self.line_count();
         self.set_line(lines - 1);
     }
 
@@ -686,7 +686,7 @@ impl Editor {
     /// ```
     pub fn move_to_beginning_of_middle_line(&mut self) {
         self.set_column(0);
-        let mut lines = self.core.line_count();
+        let mut lines = self.line_count();
         if lines % 2 == 0 {
             lines -= 1;
         }
@@ -986,7 +986,7 @@ impl Editor {
     }
 
     fn is_last_line(&self, line: usize) -> bool {
-        line == self.core.line_count() - 1
+        line == self.line_count() - 1
     }
 
     /// Deletes the buffer in a line range.
@@ -1087,7 +1087,7 @@ impl Editor {
     /// assert_eq!(editor.column(), 3);
     /// ```
     pub fn sort_line(&mut self) {
-        let n = self.core.line_count();
+        let n = self.line_count();
         self.sort_line_range(0..n);
     }
 
@@ -1117,7 +1117,7 @@ impl Editor {
         let mut buf = String::new();
         {
             let mut vec = Vec::new();
-            for l in 0..self.core.line_count() {
+            for l in 0..self.line_count() {
                 vec.push((l, self.line_buffer(l).unwrap()));
             }
             vec[range].sort_by_key(|&(_, v)| v);
