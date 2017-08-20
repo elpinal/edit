@@ -171,6 +171,30 @@ impl Editor {
         Some(&buffer[beginning..end])
     }
 
+    /// Returns the buffer in a range.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let mut editor = Editor::new("a a\n\
+    ///                               b b b b\n\
+    ///                               c", 1, 6).unwrap();
+    /// let c: Vec<char> = "a\n\
+    ///                     b b".chars().collect();
+    /// let s: &[char] = &c;
+    /// assert_eq!(editor.buffer_range(Position::new(0, 2)..Position::new(1, 3)), Some(s));
+    /// ```
+    pub fn buffer_range(&self, range: Range<Position>) -> Option<&[char]> {
+        let buffer = self.buffer();
+        let s = self.core.offset(range.start.line, range.start.column).unwrap();
+        let e = self.core
+            .offset(range.end.line, range.end.column)
+            .unwrap();
+        Some(&buffer[s..e])
+    }
+
     /// Returns a position at the beginning of a next keyword.
     ///
     /// # Examples
