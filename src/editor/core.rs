@@ -51,7 +51,7 @@ impl Core {
             .filter_map(|(i, ch)| if *ch == '\n' { Some(i) } else { None })
             .collect();
         let char_count = chars.len();
-        if indices.last() != Some(&char_count) {
+        if indices.last().map(|n| n + 1) != Some(char_count) {
             indices.push(char_count);
         }
         if indices.len() <= line {
