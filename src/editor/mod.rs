@@ -932,24 +932,8 @@ impl Editor {
     /// assert_eq!(editor.column(), 3);
     /// ```
     pub fn sort_line(&mut self) {
-        let l = self.line();
-        let nl: usize;
-        let mut buf = String::new();
-        {
-            let mut vec = Vec::new();
-            for l in 0..self.core.line_count() {
-                vec.push((l, self.line_buffer(l).unwrap()));
-            }
-            vec.sort_by_key(|&(_, v)| v);
-            nl = vec.iter().position(|&(i, _)| i == l).unwrap();
-            for (_, s) in vec.into_iter() {
-                let s: String = s.iter().collect();
-                buf += &s;
-                buf += "\n";
-            }
-        }
-        let c = self.column();
-        self.core.reset(&buf, nl, c);
+        let n = self.core.line_count();
+        self.sort_line_range(0..n);
     }
 
     /// Sort lines in a range.
@@ -973,22 +957,24 @@ impl Editor {
     /// assert_eq!(editor.column(), 3);
     /// ```
     pub fn sort_line_range(&mut self, range: Range<usize>) {
+        let l = self.line();
+        let nl: usize;
         let mut buf = String::new();
         {
             let mut vec = Vec::new();
             for l in 0..self.core.line_count() {
-                vec.push(self.line_buffer(l).unwrap());
+                vec.push((l, self.line_buffer(l).unwrap()));
             }
-            vec[range].sort();
-            for s in vec.into_iter() {
+            vec[range].sort_by_key(|&(_, v)| v);
+            nl = vec.iter().position(|&(i, _)| i == l).unwrap();
+            for (_, s) in vec.into_iter() {
                 let s: String = s.iter().collect();
                 buf += &s;
                 buf += "\n";
             }
         }
-        let l = self.line();
         let c = self.column();
-        self.core.reset(&buf, l, c);
+        self.core.reset(&buf, nl, c);
     }
 }
 
