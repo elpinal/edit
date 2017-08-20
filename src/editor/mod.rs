@@ -155,7 +155,7 @@ impl Editor {
     ///
     /// ```
     /// # use edit::editor::Editor;
-    /// let mut editor = Editor::new("a\n\
+    /// let editor = Editor::new("a\n\
     ///                               b b b b\n\
     ///                               c", 1, 6).unwrap();
     /// let c: Vec<char> = "b b b b\nc".chars().collect();
