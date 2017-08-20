@@ -945,11 +945,9 @@ impl Editor {
                 buf += "\n";
             }
         }
-        {
-            let l = self.line();
-            let c = self.column();
-            self.core.reset(&buf, l, c);
-        }
+        let l = self.line();
+        let c = self.column();
+        self.core.reset(&buf, l, c);
     }
 }
 
