@@ -1136,4 +1136,28 @@ mod tests {
         assert_eq!(editor.line(), 0);
         assert_eq!(editor.column(), 0);
     }
+
+    #[test]
+    fn test_line_buffer() {
+        let test = |editor: Editor| {
+            assert_eq!(editor.line_buffer(0), Some(&['a'][..]));
+            let c: Vec<char> = "b b b b".chars().collect();
+            let s: &[char] = &c;
+            assert_eq!(editor.line_buffer(1), Some(s));
+            assert_eq!(editor.line_buffer(2), Some(&['c'][..]));
+            assert_eq!(editor.line_buffer(3), None);
+        };
+
+        let mut buf = String::from(
+            "a\n\
+             b b b b\n\
+             c",
+        );
+        let editor = Editor::new(&buf, 1, 6).unwrap();
+        test(editor);
+
+        buf.push('\n');
+        let editor = Editor::new(&buf, 1, 6).unwrap();
+        test(editor);
+    }
 }
