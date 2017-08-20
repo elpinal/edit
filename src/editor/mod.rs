@@ -108,6 +108,17 @@ impl Editor {
         self.core.column()
     }
 
+    /// Returns the number of lines of the buffer.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("a\n\
+    ///                           b\n\
+    ///                           c", 0, 0).unwrap();
+    /// assert_eq!(editor.line_count(), 3);
+    /// ```
     pub fn line_count(&self) -> usize {
         self.core.line_count()
     }
