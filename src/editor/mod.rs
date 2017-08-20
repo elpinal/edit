@@ -911,6 +911,32 @@ impl Editor {
         }
     }
 
+    /// Deletes the buffer from the cursor to the end at the line.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new("a a\n\
+    ///                               b b b\n\
+    ///                               c c\n\
+    ///                               d d", 1, 3).unwrap();
+    /// editor.delete_to_end_of_line();
+    ///
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(buf, "a a\n\
+    ///                  b b\n\
+    ///                  c c\n\
+    ///                  d d");
+    /// assert_eq!(editor.line(), 1);
+    /// assert_eq!(editor.column(), 3);
+    /// ```
+    pub fn delete_to_end_of_line(&mut self) {
+        let s = Position::new(self.line(), self.column());
+        let e = Position::new(self.line(), self.core.current_line_width());
+        self.delete_range(s..e);
+    }
+
     /// Sort lines.
     ///
     /// # Examples
