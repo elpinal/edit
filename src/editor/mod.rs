@@ -64,7 +64,7 @@ impl Editor {
     /// assert!(editor.is_err());
     /// ```
     pub fn new(buffer: &str, line: usize, column: usize) -> Result<Editor, String> {
-        Core::new(buffer, line, column).and_then(|core| Ok(Editor { core }))
+        Core::new(buffer, line, column).map(|core| Editor { core })
     }
 
     /// Shows the content of the buffer.
