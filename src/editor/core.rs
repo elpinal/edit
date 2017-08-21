@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::ops::Range;
 
 /// `Position` represents a two-dimensional position which has line and column.
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Position {
     /// A line number. It is in a range [0, _the number of lines_).
     pub line: usize,

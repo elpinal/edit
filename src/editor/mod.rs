@@ -1174,10 +1174,9 @@ impl Editor {
     /// );
     /// ```
     pub fn replace(&mut self, s: &str, range: Range<Position>) {
-        let l = range.start.line;
-        let c = range.start.column;
+        let p = range.start;
         self.delete_range(range);
-        self.insert_string_at(s, l, c);
+        self.insert_string_at(s, p.line, p.column);
     }
 }
 
