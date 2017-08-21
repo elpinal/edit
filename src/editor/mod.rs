@@ -1147,6 +1147,38 @@ impl Editor {
         let c = self.column();
         self.core.reset(&buf, nl, c);
     }
+
+    /// Replaces the buffer with a string in a range.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let mut editor = Editor::new(
+    ///     "aa\n\
+    ///      bb\n\
+    ///      cc\n\
+    ///      dd",
+    ///     0,
+    ///     0,
+    /// ).unwrap();
+    /// editor.replace("x\nx", Position::new(1, 1)..Position::new(2, 2));
+    /// let buf: String = editor.buffer().iter().collect();
+    /// assert_eq!(
+    ///     buf,
+    ///     "aa\n\
+    ///      bx\n\
+    ///      x\n\
+    ///      dd"
+    /// );
+    /// ```
+    pub fn replace(&mut self, s: &str, range: Range<Position>) {
+        let l = range.start.line;
+        let c = range.start.column;
+        self.delete_range(range);
+        self.insert_string_at(s, l, c);
+    }
 }
 
 impl Clone for Editor {
