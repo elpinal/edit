@@ -256,10 +256,8 @@ impl Core {
         if ch == '\n' {
             self.newline_indices.remove(line);
         }
-        for x in self.newline_indices.iter_mut() {
-            if *x > offset {
-                *x -= 1
-            }
+        for x in self.newline_indices[line..].iter_mut() {
+            *x -= 1
         }
         if ch == '\n' && offset < current_offset {
             self.line -= 1;
