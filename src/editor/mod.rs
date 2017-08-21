@@ -435,9 +435,7 @@ impl Editor {
     /// ```
     pub fn rsearch_character(&self, ch: char) -> Option<usize> {
         let line = self.current_line_buffer();
-        line[..self.column()].iter().rposition(|&x| x == ch).map(
-            |n| n,
-        )
+        line[..self.column()].iter().rposition(|&x| x == ch)
     }
 
     /// Match parentheses.
