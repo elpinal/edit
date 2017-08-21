@@ -895,8 +895,7 @@ impl Editor {
     /// let mut editor = Editor::new("a b c d\n\
     ///                           x", 0, 3).unwrap();
     /// editor.join(0);
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "a b c d x");
+    /// assert_eq!(editor.buffer_as_str(), "a b c d x");
     /// ```
     pub fn join(&mut self, line: usize) {
         let c = self.line_width(line).expect(
@@ -917,8 +916,7 @@ impl Editor {
     /// let mut editor = Editor::new("insert on character", 0, 0).unwrap();
     /// editor.insert_at('e', 0, 9);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "insert one character");
+    /// assert_eq!(editor.buffer_as_str(), "insert one character");
     /// ```
     pub fn insert_at(&mut self, ch: char, line: usize, column: usize) {
         self.core.insert_at(ch, line, column);
@@ -935,8 +933,7 @@ impl Editor {
     /// let mut editor = Editor::new("insert", 0, 0).unwrap();
     /// editor.insert_string_at(" string", 0, 6);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "insert string");
+    /// assert_eq!(editor.buffer_as_str(), "insert string");
     /// ```
     pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) {
         self.core.insert_string_at(s, line, column);
@@ -951,8 +948,7 @@ impl Editor {
     /// let mut editor = Editor::new("abc", 0, 3).unwrap();
     /// editor.delete_at(0, 1);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "ac");
+    /// assert_eq!(editor.buffer_as_str(), "ac");
     ///
     /// assert_eq!(editor.column(), 2);
     /// ```
@@ -970,8 +966,7 @@ impl Editor {
     /// let mut editor = Editor::new("abcdefg \n hijk", 0, 3).unwrap();
     /// editor.delete_range(Position::new(0, 4)..Position::new(1, 3));
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "abcdjk");
+    /// assert_eq!(editor.buffer_as_str(), "abcdjk");
     /// ```
     pub fn delete_range(&mut self, range: Range<Position>) {
         self.core.delete_range(range);
@@ -987,23 +982,20 @@ impl Editor {
     ///                               b b b", 1, 3).unwrap();
     /// editor.delete_line(0);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "b b b");
+    /// assert_eq!(editor.buffer_as_str(), "b b b");
     /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 3);
     ///
     /// editor.delete_line(0);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "");
+    /// assert_eq!(editor.buffer_as_str(), "");
     /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 0);
     ///
     /// let mut editor = Editor::new("a b", 0, 2).unwrap();
     /// editor.delete_line(0);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "");
+    /// assert_eq!(editor.buffer_as_str(), "");
     /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 0);
     /// ```
@@ -1032,9 +1024,11 @@ impl Editor {
     ///                               d d", 0, 3).unwrap();
     /// editor.delete_line_range(1..3);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "a a\n\
-    ///                  d d");
+    /// assert_eq!(
+    ///     editor.buffer_as_str(),
+    ///     "a a\n\
+    ///      d d"
+    /// );
     /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 3);
     /// ```
@@ -1057,11 +1051,13 @@ impl Editor {
     ///                               d d", 1, 2).unwrap();
     /// editor.delete_to_beginning_of_line();
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "a a\n\
-    ///                  b b\n\
-    ///                  c c\n\
-    ///                  d d");
+    /// assert_eq!(
+    ///     editor.buffer_as_str(),
+    ///     "a a\n\
+    ///      b b\n\
+    ///      c c\n\
+    ///      d d"
+    /// );
     /// assert_eq!(editor.line(), 1);
     /// assert_eq!(editor.column(), 0);
     /// ```
@@ -1083,11 +1079,13 @@ impl Editor {
     ///                               d d", 1, 3).unwrap();
     /// editor.delete_to_end_of_line();
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "a a\n\
-    ///                  b b\n\
-    ///                  c c\n\
-    ///                  d d");
+    /// assert_eq!(
+    ///     editor.buffer_as_str(),
+    ///     "a a\n\
+    ///      b b\n\
+    ///      c c\n\
+    ///      d d"
+    /// );
     /// assert_eq!(editor.line(), 1);
     /// assert_eq!(editor.column(), 3);
     /// ```
@@ -1109,11 +1107,12 @@ impl Editor {
     ///                               b a", 0, 3).unwrap();
     /// editor.sort_line();
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "a a\n\
-    ///                  b a\n\
-    ///                  b b b\n\
-    ///                  c c\n");
+    /// assert_eq!(editor.buffer_as_str(),
+    ///     "a a\n\
+    ///      b a\n\
+    ///      b b b\n\
+    ///      c c\n"
+    /// );
     /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 3);
     /// ```
@@ -1134,11 +1133,12 @@ impl Editor {
     ///                               b a", 0, 3).unwrap();
     /// editor.sort_line_range(0..2);
     ///
-    /// let buf: String = editor.buffer().iter().collect();
-    /// assert_eq!(buf, "a a\n\
-    ///                  c c\n\
-    ///                  b b b\n\
-    ///                  b a\n");
+    /// assert_eq!(editor.buffer_as_str(),
+    ///     "a a\n\
+    ///      c c\n\
+    ///      b b b\n\
+    ///      b a\n"
+    /// );
     /// assert_eq!(editor.line(), 0);
     /// assert_eq!(editor.column(), 3);
     /// ```
@@ -1179,9 +1179,8 @@ impl Editor {
     ///     0,
     /// ).unwrap();
     /// editor.replace("x\nx", Position::new(1, 1)..Position::new(2, 2));
-    /// let buf: String = editor.buffer().iter().collect();
     /// assert_eq!(
-    ///     buf,
+    ///     editor.buffer_as_str(),
     ///     "aa\n\
     ///      bx\n\
     ///      x\n\
@@ -1417,9 +1416,8 @@ mod tests {
         ).unwrap();
         editor.sort_line();
 
-        let buf: String = editor.buffer().iter().collect();
         assert_eq!(
-            buf,
+            editor.buffer_as_str(),
             "a a\n\
              b b b\n\
              c a\n\
