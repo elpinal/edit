@@ -48,6 +48,7 @@ pub struct Paren {
 }
 
 /// A fundamental two-dimensional editor which has text as its buffer.
+#[derive(Clone)]
 pub struct Editor {
     core: Core,
 }
@@ -1191,12 +1192,6 @@ impl Editor {
         let p = range.start;
         self.delete_range(range);
         self.insert_string_at(s, p.line, p.column);
-    }
-}
-
-impl Clone for Editor {
-    fn clone(&self) -> Editor {
-        Editor { core: self.core.clone() }
     }
 }
 
