@@ -1193,6 +1193,30 @@ impl Editor {
         self.delete_range(range);
         self.insert_string_at(s, p.line, p.column);
     }
+
+    /// Replaces the buffer with a character at a position.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let mut editor = Editor::new(
+    ///     "aa\n\
+    ///      bb",
+    ///     0,
+    ///     0,
+    /// ).unwrap();
+    /// editor.replace_char('x', 1, 0);
+    /// assert_eq!(
+    ///     editor.buffer_as_str(),
+    ///     "aa\n\
+    ///      xb"
+    /// );
+    /// ```
+    pub fn replace_char(&mut self, ch: char, line: usize, column: usize) {
+        self.delete_at(line, column);
+        self.insert_at(ch, line, column);
+    }
 }
 
 #[cfg(test)]
