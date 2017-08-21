@@ -82,6 +82,19 @@ impl Editor {
         self.core.buffer()
     }
 
+    /// Shows the content of the buffer as `&str`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("abc", 0, 0).unwrap();
+    /// assert_eq!(&editor.buffer_as_str(), "abc");
+    /// ```
+    pub fn buffer_as_str(&self) -> String {
+        self.buffer().iter().collect()
+    }
+
     /// Returns the line of the position.
     ///
     /// # Examples
