@@ -212,10 +212,8 @@ impl Core {
         let i = offset.unwrap();
         let current_offset = self.current_offset();
         self.buffer.insert(i, ch);
-        for x in self.newline_indices.iter_mut() {
-            if *x >= i {
-                *x += 1
-            }
+        for x in self.newline_indices[line..].iter_mut() {
+            *x += 1
         }
         if ch == '\n' {
             self.newline_indices.insert(line, i);
