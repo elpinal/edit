@@ -902,8 +902,7 @@ impl Editor {
         let c = self.line_width(line).expect(
             &format!("line {}: out of range", line),
         );
-        self.delete_at(line, c);
-        self.insert_at(' ', line, c);
+        self.replace_char(' ', line, c);
     }
 
     /// Inserts a character into the buffer at a character position.
