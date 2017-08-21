@@ -490,6 +490,9 @@ impl Editor {
     /// let editor = Editor::new("a { b } c", 0, 2).unwrap();
     /// assert_eq!(editor.match_pair(Paren {open: '{', close: '}'}), Some(6));
     ///
+    /// let editor = Editor::new("a { b  c", 0, 2).unwrap();
+    /// assert_eq!(editor.match_pair(Paren {open: '{', close: '}'}), None);
+    ///
     /// let editor = Editor::new(" [1, 3) ", 0, 1).unwrap();
     /// assert_eq!(editor.match_pair(Paren {open: '[', close: ')'}), Some(6));
     /// ```
@@ -546,17 +549,19 @@ impl Editor {
     ///
     /// let editor = Editor::new("a \" b \" c", 0, 2).unwrap();
     /// assert_eq!(editor.match_quote('"'), Some(6));
+    ///
+    /// let editor = Editor::new("a \" b  c", 0, 2).unwrap();
+    /// assert_eq!(editor.match_quote('"'), None);
     /// ```
     pub fn match_quote(&self, q: char) -> Option<usize> {
         let n = self.core.current_offset();
         let x = self.buffer()[n];
         if x == q {
-            self.buffer()[n + 1..]
-                .iter()
-                .position(|&c| {
-                    c == q
-                })
-                .map(|i| i + n + 1)
+            self.buffer()[n + 1..].iter().position(|&c| c == q).map(
+                |i| {
+                    i + n + 1
+                },
+            )
         } else {
             None
         }
