@@ -159,7 +159,7 @@ impl Editor {
         let buffer = self.buffer();
         let beginning = self.core.offset(line, 0).unwrap();
         let end = self.core
-            .offset(line, self.core.line_width(line).unwrap())
+            .offset(line, self.line_width(line).unwrap())
             .unwrap();
         Some(&buffer[beginning..end])
     }
@@ -181,7 +181,7 @@ impl Editor {
         let buffer = self.buffer();
         let beginning = self.core.offset(range.start, 0).unwrap();
         let end = self.core
-            .offset(range.end - 1, self.core.line_width(range.end - 1).unwrap())
+            .offset(range.end - 1, self.line_width(range.end - 1).unwrap())
             .unwrap();
         Some(&buffer[beginning..end])
     }
