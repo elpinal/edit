@@ -521,6 +521,26 @@ impl Editor {
         }
     }
 
+    /// Returns character offset of a position.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new(
+    ///     "aa\n\
+    ///      abb\n\
+    ///      bbc",
+    ///     0,
+    ///     0,
+    /// ).unwrap();
+    /// assert_eq!(editor.offset_position(Position::new(2, 1)), Some(8));
+    /// ```
+    pub fn offset_position(&self, p: Position) -> Option<usize> {
+        self.core.offset(p.line, p.column)
+    }
+
     /// Moves a cursor by `n` characters rightward.
     ///
     /// If the cursor will be out of the range, it is moved to the rightmost column.
