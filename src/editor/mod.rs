@@ -13,10 +13,12 @@
 //! editor.move_left(2);
 //! editor.insert_string_at("\nghighi" , 1, 6);
 //!
-//! let buffer: String = editor.buffer().iter().collect();
-//! assert_eq!(buffer, "abcabc\n\
-//!                     defdef\n\
-//!                     ghighi");
+//! assert_eq!(
+//!     &editor.buffer_as_str(),
+//!     "abcabc\n\
+//!      defdef\n\
+//!      ghighi"
+//! );
 //! ```
 
 mod core;
