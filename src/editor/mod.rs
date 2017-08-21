@@ -224,6 +224,38 @@ impl Editor {
         Some(&buffer[s..e])
     }
 
+    /// Returns a position at the beginning of a next match.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           Bb ", 0, 0).unwrap();
+    /// let pos = editor.next_position(char::is_uppercase);
+    /// assert_eq!(pos, Some(Position::new(1, 0)));
+    /// ```
+    pub fn next_position(&self, f: fn(char) -> bool) -> Option<Position> {
+        self.core.next_position(f)
+    }
+
+    /// Returns a position at the beginning of a previous match.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("Aa \n\
+    ///                           bb ", 1, 0).unwrap();
+    /// let pos = editor.previous_position(char::is_uppercase);
+    /// assert_eq!(pos, Some(Position::new(0, 0)));
+    /// ```
+    pub fn previous_position(&self, f: fn(char) -> bool) -> Option<Position> {
+        self.core.previous_position(f)
+    }
+
     /// Returns a position at the beginning of a next keyword.
     ///
     /// # Examples
