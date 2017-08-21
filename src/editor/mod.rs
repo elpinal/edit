@@ -535,6 +535,31 @@ impl Editor {
         }
     }
 
+    /// Matches quotes.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// let editor = Editor::new("a ' b ' c", 0, 2).unwrap();
+    /// assert_eq!(editor.match_quote('\''), Some(6));
+    /// ```
+    pub fn match_quote(&self, q: char) -> Option<usize> {
+        let n = self.core.current_offset();
+        let mut level: usize = 0;
+        let x = self.buffer()[n];
+        if x == q {
+            self.buffer()[n + 1..]
+                .iter()
+                .position(|&c| {
+                    c == q
+                })
+                .map(|i| i + n + 1)
+        } else {
+            None
+        }
+    }
+
     /// Returns character offset of a position.
     ///
     /// # Examples
