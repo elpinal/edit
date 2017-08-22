@@ -90,4 +90,12 @@ mod tests {
         let got = editor.line_count();
         assert_eq!(got, 1);
     }
+
+    #[test]
+    fn test_line_width() {
+        let buffer = "aa aa";
+        let editor = Core2::new(buffer, 0, 0).unwrap();
+        let got = editor.line_width(0);
+        assert_eq!(got, Some(5));
+    }
 }
