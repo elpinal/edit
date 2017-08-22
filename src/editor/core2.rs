@@ -34,6 +34,10 @@ impl Core2 {
     pub fn column(&self) -> usize {
         self.column
     }
+
+    pub fn line_count(&self) -> usize {
+        self.buffer.len()
+    }
 }
 
 #[cfg(test)]
@@ -73,5 +77,13 @@ mod tests {
         let editor = Core2::new(buffer, 0, 0).unwrap();
         let got = editor.column();
         assert_eq!(got, 0);
+    }
+
+    #[test]
+    fn test_line_count() {
+        let buffer = "aa aa";
+        let editor = Core2::new(buffer, 0, 0).unwrap();
+        let got = editor.line_count();
+        assert_eq!(got, 1);
     }
 }
