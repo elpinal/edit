@@ -26,6 +26,10 @@ impl Core2 {
     pub fn buffer(&self) -> &[Vec<char>] {
         &self.buffer
     }
+
+    pub fn line(&self) -> usize {
+        self.line
+    }
 }
 
 #[cfg(test)]
@@ -49,5 +53,13 @@ mod tests {
         let got = editor.buffer();
         assert_eq!(got.len(), 1);
         assert_eq!(got[0], vec!['a', 'a', ' ', 'a', 'a']);
+    }
+
+    #[test]
+    fn test_line() {
+        let buffer = "aa aa";
+        let editor = Core2::new(buffer, 0, 0).unwrap();
+        let got = editor.line();
+        assert_eq!(got, 0);
     }
 }
