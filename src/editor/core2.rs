@@ -48,5 +48,6 @@ mod tests {
         let editor = Core2::new(buffer, 0, 0).unwrap();
         let got = editor.buffer();
         assert_eq!(got.len(), 1);
+        assert_eq!(got[0], vec!['a', 'a', ' ', 'a', 'a']);
     }
 }
