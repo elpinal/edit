@@ -470,7 +470,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_build_editor() {
+    fn test_new() {
         let buffer = "Hello, world!\nThe 2nd line.";
         let editor = Core::new(buffer, 10, 10);
         assert!(editor.is_err());
