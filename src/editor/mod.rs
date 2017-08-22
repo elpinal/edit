@@ -488,6 +488,37 @@ impl Editor {
         }
     }
 
+    /// Returns a position at the beginning of a previous keyword or symbol.
+    ///
+    /// Note that a "word" here is defined as a keyword or a symbol.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           a*b ", 1, 1).unwrap();
+    /// let pos = editor.previous_word_position();
+    /// assert_eq!(pos, Some(Position::new(1, 0)));
+    /// ```
+    pub fn previous_word_position(&self) -> Option<Position> {
+        // TODO: Reduce comparison.
+        let a = self.core.previous_keyword_position();
+        let b = self.core.previous_symbol_position();
+        if a.is_none() {
+            return b;
+        }
+        if b.is_none() {
+            return a;
+        }
+        if a.unwrap() > b.unwrap() {
+            a
+        } else {
+            b
+        }
+    }
+
     /// Searches for a character after the cursor in the current line, returning its index.
     ///
     /// # Examples
