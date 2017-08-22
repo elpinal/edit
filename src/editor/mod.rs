@@ -106,6 +106,9 @@ impl Editor {
     /// # use edit::editor::Editor;
     /// let editor = Editor::new("A\nA\nA\nA\nA", 3, 0).unwrap();
     /// assert_eq!(editor.line(), 3);
+    ///
+    /// let editor = Editor::new("", 0, 0).unwrap();
+    /// assert_eq!(editor.line(), 0);
     /// ```
     pub fn line(&self) -> usize {
         self.core.line()
@@ -119,6 +122,9 @@ impl Editor {
     /// # use edit::editor::Editor;
     /// let editor = Editor::new("A\nA\nAAAAA\nA\nA", 2, 4).unwrap();
     /// assert_eq!(editor.column(), 4);
+    ///
+    /// let editor = Editor::new("", 0, 0).unwrap();
+    /// assert_eq!(editor.column(), 0);
     /// ```
     pub fn column(&self) -> usize {
         self.core.column()
