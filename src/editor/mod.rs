@@ -475,8 +475,11 @@ impl Editor {
         // TODO: Reduce comparison.
         let a = self.core.next_keyword_position();
         let b = self.core.next_symbol_position();
-        if a.is_none() || b.is_none() {
-            return None;
+        if a.is_none() {
+            return b;
+        }
+        if b.is_none() {
+            return a;
         }
         if a.unwrap() < b.unwrap() {
             a
