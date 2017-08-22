@@ -37,5 +37,8 @@ mod tests {
         let buffer = "aa aa";
         let editor = Core2::new(buffer, 0, 0);
         assert!(editor.is_ok());
+
+        let editor = Core2::new(buffer, 0, 6);
+        assert!(editor.is_err());
     }
 }
