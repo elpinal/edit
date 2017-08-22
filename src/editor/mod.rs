@@ -22,6 +22,7 @@
 //! ```
 
 mod core;
+mod core2;
 
 use editor::core::Core;
 pub use editor::core::Position;
