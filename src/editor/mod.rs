@@ -196,8 +196,8 @@ impl Editor {
     /// ```
     /// # use edit::editor::Editor;
     /// let editor = Editor::new("a\n\
-    ///                               b b b b\n\
-    ///                               c", 1, 6).unwrap();
+    ///                           b b b b\n\
+    ///                           c", 1, 6).unwrap();
     /// let c: Vec<char> = "b b b b\nc".chars().collect();
     /// let s: &[char] = &c;
     /// assert_eq!(editor.line_buffer_range(1..3), Some(s));
