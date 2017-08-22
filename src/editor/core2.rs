@@ -22,6 +22,10 @@ impl Core2 {
             column,
         })
     }
+
+    pub fn buffer(&self) -> &[Vec<char>] {
+        &self.buffer
+    }
 }
 
 #[cfg(test)]
@@ -36,5 +40,13 @@ mod tests {
 
         let editor = Core2::new(buffer, 0, 6);
         assert!(editor.is_err());
+    }
+
+    #[test]
+    fn test_buffer() {
+        let buffer = "aa aa";
+        let editor = Core2::new(buffer, 0, 0).unwrap();
+        let got = editor.buffer();
+        assert_eq!(got.len(), 1);
     }
 }
