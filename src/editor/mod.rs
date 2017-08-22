@@ -457,6 +457,34 @@ impl Editor {
         self.core.before_symbol_position()
     }
 
+    /// Returns a position at the beginning of a next keyword or symbol.
+    ///
+    /// Note that a "word" here is defined as a keyword or a symbol.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use edit::editor::Editor;
+    /// use edit::editor::Position;
+    /// let editor = Editor::new("aa \n\
+    ///                           *b ", 0, 0).unwrap();
+    /// let pos = editor.next_word_position();
+    /// assert_eq!(pos, Some(Position::new(1, 0)));
+    /// ```
+    pub fn next_word_position(&self) -> Option<Position> {
+        // TODO: Reduce comparison.
+        let a = self.core.next_keyword_position();
+        let b = self.core.next_symbol_position();
+        if a.is_none() || b.is_none() {
+            return None;
+        }
+        if a.unwrap() < b.unwrap() {
+            a
+        } else {
+            b
+        }
+    }
+
     /// Searches for a character after the cursor in the current line, returning its index.
     ///
     /// # Examples
