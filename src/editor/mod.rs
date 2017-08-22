@@ -140,6 +140,9 @@ impl Editor {
     ///                           b\n\
     ///                           c", 0, 0).unwrap();
     /// assert_eq!(editor.line_count(), 3);
+    ///
+    /// let editor = Editor::new("", 0, 0).unwrap();
+    /// assert_eq!(editor.line_count(), 1);
     /// ```
     pub fn line_count(&self) -> usize {
         self.core.line_count()
