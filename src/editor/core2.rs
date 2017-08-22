@@ -10,11 +10,7 @@ impl Core2 {
         let buf: Vec<Vec<char>> = buffer.lines().map(|l| l.chars().collect()).collect();
 
         if buf.len() <= line {
-            return Err(format!(
-                "Line {} is out of range [0, {})",
-                line,
-                buf.len()
-            ));
+            return Err(format!("Line {} is out of range [0, {})", line, buf.len()));
         }
         let width = buf[line].len();
         if width < column {
