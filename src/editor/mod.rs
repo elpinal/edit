@@ -481,11 +481,7 @@ impl Editor {
         if b.is_none() {
             return a;
         }
-        if a.unwrap() < b.unwrap() {
-            a
-        } else {
-            b
-        }
+        if a.unwrap() < b.unwrap() { a } else { b }
     }
 
     /// Returns a position at the beginning of a previous keyword or symbol.
@@ -512,11 +508,7 @@ impl Editor {
         if b.is_none() {
             return a;
         }
-        if a.unwrap() > b.unwrap() {
-            a
-        } else {
-            b
-        }
+        if a.unwrap() > b.unwrap() { a } else { b }
     }
 
     /// Searches for a character after the cursor in the current line, returning its index.
