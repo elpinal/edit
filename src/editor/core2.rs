@@ -97,5 +97,8 @@ mod tests {
         let editor = Core2::new(buffer, 0, 0).unwrap();
         let got = editor.line_width(0);
         assert_eq!(got, Some(5));
+
+        let got = editor.line_width(1);
+        assert_eq!(got, None);
     }
 }
