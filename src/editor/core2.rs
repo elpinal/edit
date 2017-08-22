@@ -38,6 +38,10 @@ impl Core2 {
     pub fn line_count(&self) -> usize {
         self.buffer.len()
     }
+
+    pub fn line_width(&self, n: usize) -> Option<usize> {
+        self.buffer.get(n).map(|l| l.len())
+    }
 }
 
 #[cfg(test)]
