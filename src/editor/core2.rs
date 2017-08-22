@@ -30,6 +30,10 @@ impl Core2 {
     pub fn line(&self) -> usize {
         self.line
     }
+
+    pub fn column(&self) -> usize {
+        self.column
+    }
 }
 
 #[cfg(test)]
@@ -60,6 +64,14 @@ mod tests {
         let buffer = "aa aa";
         let editor = Core2::new(buffer, 0, 0).unwrap();
         let got = editor.line();
+        assert_eq!(got, 0);
+    }
+
+    #[test]
+    fn test_column() {
+        let buffer = "aa aa";
+        let editor = Core2::new(buffer, 0, 0).unwrap();
+        let got = editor.column();
         assert_eq!(got, 0);
     }
 }
