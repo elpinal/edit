@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 #[derive(PartialEq, Debug)]
 pub struct Core2 {
     buffer: Vec<Vec<char>>,
