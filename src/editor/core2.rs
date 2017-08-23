@@ -44,6 +44,22 @@ impl Core2 {
     pub fn line_width(&self, n: usize) -> Option<usize> {
         self.buffer.get(n).map(|l| l.len())
     }
+
+    pub fn offset(&self, line: usize, column: usize) -> Option<usize> {
+        if let Some(w) = self.line_width(line) {
+            if w < column {
+                return None;
+            }
+        } else {
+            return None;
+        }
+        Some(
+            self.buffer[..line]
+                .iter()
+                .map(|l| l.len() + 1)
+                .sum::<usize>() + column,
+        )
+    }
 }
 
 #[cfg(test)]
@@ -101,6 +117,32 @@ mod tests {
         assert_eq!(got, Some(5));
 
         let got = editor.line_width(1);
+        assert_eq!(got, None);
+    }
+
+    #[test]
+    fn test_offset() {
+        let buffer = "aa aa";
+        let editor = Core2::new(buffer, 0, 0).unwrap();
+        let got = editor.offset(0, 0);
+        assert_eq!(got, Some(0));
+
+        let got = editor.offset(0, 5);
+        assert_eq!(got, Some(5));
+
+        let got = editor.offset(0, 6);
+        assert_eq!(got, None);
+
+        let buffer = "aa aa\n\
+                      bb bb";
+        let editor = Core2::new(buffer, 0, 0).unwrap();
+        let got = editor.offset(1, 0);
+        assert_eq!(got, Some(6));
+
+        let got = editor.offset(1, 5);
+        assert_eq!(got, Some(11));
+
+        let got = editor.offset(1, 6);
         assert_eq!(got, None);
     }
 }
