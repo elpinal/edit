@@ -60,6 +60,11 @@ impl Core2 {
                 .sum::<usize>() + column,
         )
     }
+
+    pub fn set_column(&mut self, column: usize) {
+        assert!(column < self.line_width(self.line).unwrap());
+        self.column = column;
+    }
 }
 
 #[cfg(test)]
@@ -144,5 +149,13 @@ mod tests {
 
         let got = editor.offset(1, 6);
         assert_eq!(got, None);
+    }
+
+    #[test]
+    fn test_set_column() {
+        let buffer = "aa aa";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+        editor.set_column(2);
+        assert_eq!(editor.column, 2);
     }
 }
