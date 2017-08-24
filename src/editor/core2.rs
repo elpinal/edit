@@ -41,8 +41,8 @@ impl Core2 {
         self.buffer.len()
     }
 
-    pub fn line_width(&self, n: usize) -> Option<usize> {
-        self.buffer.get(n).map(|l| l.len())
+    pub fn line_width(&self, line: usize) -> Option<usize> {
+        self.buffer.get(line).map(|l| l.len())
     }
 
     pub fn offset(&self, line: usize, column: usize) -> Option<usize> {
