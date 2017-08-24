@@ -61,6 +61,11 @@ impl Core2 {
         )
     }
 
+    pub fn set_line(&mut self, line: usize) {
+        assert!(line < self.line_count());
+        self.line = line;
+    }
+
     pub fn set_column(&mut self, column: usize) {
         assert!(column <= self.line_width(self.line).unwrap());
         self.column = column;
@@ -149,6 +154,18 @@ mod tests {
 
         let got = editor.offset(1, 6);
         assert_eq!(got, None);
+    }
+
+    #[test]
+    fn test_set_line() {
+        let buffer = "aa aa\n\
+                      bb bb";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+        editor.set_line(0);
+        assert_eq!(editor.line, 0);
+
+        editor.set_line(1);
+        assert_eq!(editor.line, 1);
     }
 
     #[test]
