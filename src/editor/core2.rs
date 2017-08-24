@@ -45,6 +45,10 @@ impl Core2 {
         self.buffer.get(line).map(|l| l.len())
     }
 
+    pub fn current_line_width(&self) -> usize {
+        self.line_width(self.line).unwrap()
+    }
+
     pub fn offset(&self, line: usize, column: usize) -> Option<usize> {
         if let Some(w) = self.line_width(line) {
             if w < column {
@@ -67,7 +71,7 @@ impl Core2 {
     }
 
     pub fn set_column(&mut self, column: usize) {
-        assert!(column <= self.line_width(self.line).unwrap());
+        assert!(column <= self.current_line_width());
         self.column = column;
     }
 
