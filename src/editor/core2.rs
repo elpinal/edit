@@ -70,6 +70,14 @@ impl Core2 {
         assert!(column <= self.line_width(self.line).unwrap());
         self.column = column;
     }
+
+    pub fn move_left(&mut self, n: usize) {
+        if self.column < n {
+            self.column = 0;
+            return;
+        }
+        self.column -= n;
+    }
 }
 
 #[cfg(test)]
