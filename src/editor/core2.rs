@@ -62,7 +62,7 @@ impl Core2 {
     }
 
     pub fn set_column(&mut self, column: usize) {
-        assert!(column < self.line_width(self.line).unwrap());
+        assert!(column <= self.line_width(self.line).unwrap());
         self.column = column;
     }
 }
@@ -157,5 +157,8 @@ mod tests {
         let mut editor = Core2::new(buffer, 0, 0).unwrap();
         editor.set_column(2);
         assert_eq!(editor.column, 2);
+
+        editor.set_column(5);
+        assert_eq!(editor.column, 5);
     }
 }
