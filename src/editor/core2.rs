@@ -177,7 +177,11 @@ impl Core2 {
                 Ok(l.insert(column, ch))
             } else {
                 Err(PositionError::Column(column))
-            })
+            })?;
+        if self.line == line && column <= self.column {
+            self.column += 1;
+        }
+        Ok(())
     }
 }
 
@@ -340,5 +344,114 @@ mod tests {
         editor.move_up(1);
         assert_eq!(editor.line, 2);
         assert_eq!(editor.column, 1);
+    }
+
+    #[test]
+    fn test_insert_at() {
+        let buffer = "aa aa\n\
+                      bb bb";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+        editor.insert_at('b', 0, 5);
+        assert_eq!(
+            editor.buffer,
+            "aa aab\n\
+             bb bb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+
+        let mut editor = Core2::new(buffer, 0, 5).unwrap();
+        editor.insert_at('b', 0, 2);
+        assert_eq!(
+            editor.buffer,
+            "aab aa\n\
+             bb bb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 6);
+
+        let mut editor = Core2::new(buffer, 0, 5).unwrap();
+        editor.insert_at('b', 0, 5);
+        assert_eq!(
+            editor.buffer,
+            "aa aab\n\
+             bb bb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 6);
+
+        let mut editor = Core2::new(buffer, 0, 5).unwrap();
+        editor.insert_at('b', 1, 5);
+        assert_eq!(
+            editor.buffer,
+            "aa aa\n\
+             bb bbb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 5);
+
+        let mut editor = Core2::new(buffer, 1, 4).unwrap();
+        editor.insert_at('b', 1, 5);
+        assert_eq!(
+            editor.buffer,
+            "aa aa\n\
+             bb bbb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 1);
+        assert_eq!(editor.column, 4);
+
+        let mut editor = Core2::new(buffer, 1, 4).unwrap();
+        editor.insert_at('b', 1, 2);
+        assert_eq!(
+            editor.buffer,
+            "aa aa\n\
+             bbb bb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 1);
+        assert_eq!(editor.column, 5);
+
+        let mut editor = Core2::new(buffer, 1, 4).unwrap();
+        editor.insert_at('b', 1, 4);
+        assert_eq!(
+            editor.buffer,
+            "aa aa\n\
+             bb bbb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 1);
+        assert_eq!(editor.column, 5);
+
+        let mut editor = Core2::new(buffer, 1, 4).unwrap();
+        editor.insert_at('b', 0, 4);
+        assert_eq!(
+            editor.buffer,
+            "aa aba\n\
+             bb bb"
+                .lines()
+                .map(|l| l.chars().collect())
+                .collect::<Vec<Vec<char>>>()
+        );
+        assert_eq!(editor.line, 1);
+        assert_eq!(editor.column, 4);
     }
 }
