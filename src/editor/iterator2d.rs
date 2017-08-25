@@ -1,11 +1,11 @@
-struct Iterator2d<'a> {
+pub struct Iterator2d<'a> {
     iter: &'a [Vec<char>],
     line: usize,
     column: usize,
 }
 
 impl<'a> Iterator2d<'a> {
-    fn new(vec: &[Vec<char>]) -> Iterator2d {
+    pub fn new(vec: &[Vec<char>]) -> Iterator2d {
         Iterator2d {
             iter: vec,
             line: 0,
@@ -13,12 +13,14 @@ impl<'a> Iterator2d<'a> {
         }
     }
 
-    fn skip(&mut self, line: usize, column: usize) {
+    pub fn skip(&mut self, line: usize, column: usize) {
         self.line = line;
         self.column = column;
     }
 
-    fn position<P>(&mut self, mut predicate: P) -> Option<(usize, usize)> where P: FnMut(&char) -> bool,
+    pub fn position<P>(&mut self, mut predicate: P) -> Option<(usize, usize)>
+    where
+        P: FnMut(&char) -> bool,
     {
         while let Some(l) = self.iter.get(self.line) {
             while let Some(x) = l.get(self.column) {

@@ -23,6 +23,7 @@
 
 mod core;
 mod core2;
+mod iterator2d;
 
 use editor::core::Core;
 pub use editor::core::Position;

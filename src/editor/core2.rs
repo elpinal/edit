@@ -3,6 +3,9 @@
 use std::fmt;
 use std::error;
 
+use editor::core::Position;
+use editor::iterator2d::Iterator2d;
+
 #[derive(PartialEq, Debug)]
 pub struct Core2 {
     buffer: Vec<Vec<char>>,
@@ -197,6 +200,14 @@ impl Core2 {
             self.column -= 1;
         }
         Ok(())
+    }
+
+    pub fn next_position(&self, f: fn(char) -> bool) -> Option<Position> {
+        let mut it = Iterator2d::new(self.buffer());
+        it.skip(self.line, self.column);
+        it.position(|&ch| !f(ch))
+            .and(it.position(|&ch| f(ch)))
+            .map(|(x, y)| Position::new(x, y))
     }
 }
 
@@ -464,5 +475,16 @@ mod tests {
         );
         assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 4);
+    }
+
+    #[test]
+    fn test_next_position() {
+        let buffer = "**\n\
+                      a**";
+        let editor = Core2::new(buffer, 0, 1).unwrap();
+        assert_eq!(
+            editor.next_position(|ch| ch == '*'),
+            Some(Position::new(1, 1))
+        );
     }
 }
