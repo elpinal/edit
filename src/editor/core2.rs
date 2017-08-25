@@ -483,8 +483,19 @@ mod tests {
                       a**";
         let editor = Core2::new(buffer, 0, 1).unwrap();
         assert_eq!(
+            editor.next_position(|ch| ch == 'a'),
+            Some(Position::new(1, 0))
+        );
+
+        let editor = Core2::new(buffer, 1, 1).unwrap();
+        assert_eq!(editor.next_position(|ch| ch == 'a'), None);
+
+        let editor = Core2::new(buffer, 0, 1).unwrap();
+        assert_eq!(
             editor.next_position(|ch| ch == '*'),
             Some(Position::new(1, 1))
         );
+
+        assert_eq!(editor.next_position(|ch| ch == '-'), None);
     }
 }
