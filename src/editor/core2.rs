@@ -168,6 +168,17 @@ impl Core2 {
             self.column = w;
         }
     }
+
+    pub fn insert_at(&mut self, ch: char, line: usize, column: usize) -> Result<(), PositionError> {
+        self.buffer
+            .get_mut(line)
+            .ok_or(PositionError::Line(line))
+            .and_then(|l| if column <= l.len() {
+                Ok(l.insert(column, ch))
+            } else {
+                Err(PositionError::Column(column))
+            })
+    }
 }
 
 #[cfg(test)]
