@@ -1,6 +1,7 @@
 #![allow(unused)]
 
 use std::fmt;
+use std::error;
 
 #[derive(PartialEq, Debug)]
 pub struct Core2 {
@@ -20,6 +21,15 @@ impl fmt::Display for InitCore2Error {
         match *self {
             InitCore2Error::Line(n) => write!(f, "line {} is out of range", n),
             InitCore2Error::Column(n) => write!(f, "column {} is out of range", n),
+        }
+    }
+}
+
+impl error::Error for InitCore2Error {
+    fn description(&self) -> &str {
+        match *self {
+            InitCore2Error::Line(..) => "line is out of range",
+            InitCore2Error::Column(..) => "column is out of range",
         }
     }
 }
