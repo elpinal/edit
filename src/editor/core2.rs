@@ -289,4 +289,56 @@ mod tests {
         editor.set_column(5);
         assert_eq!(editor.column, 5);
     }
+
+    #[test]
+    fn test_move_around() {
+        let buffer = "aa aa\n\
+                      bb bb\n\
+                      cc\n\
+                      dd d\n\
+                      e\n\
+                      \n\
+                      gg";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+
+        editor.move_right(1);
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 1);
+
+        editor.move_right(2);
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 3);
+
+        editor.move_left(1);
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 2);
+
+        editor.move_down(1);
+        assert_eq!(editor.line, 1);
+        assert_eq!(editor.column, 2);
+
+        editor.move_down(5);
+        assert_eq!(editor.line, 6);
+        assert_eq!(editor.column, 2);
+
+        editor.move_up(1);
+        assert_eq!(editor.line, 5);
+        assert_eq!(editor.column, 0);
+
+        editor.move_up(1);
+        assert_eq!(editor.line, 4);
+        assert_eq!(editor.column, 1);
+
+        editor.move_up(1);
+        assert_eq!(editor.line, 3);
+        assert_eq!(editor.column, 2);
+
+        editor.move_left(1);
+        assert_eq!(editor.line, 3);
+        assert_eq!(editor.column, 1);
+
+        editor.move_up(1);
+        assert_eq!(editor.line, 2);
+        assert_eq!(editor.column, 1);
+    }
 }
