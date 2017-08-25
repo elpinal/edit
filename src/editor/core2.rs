@@ -93,9 +93,18 @@ impl Core2 {
         )
     }
 
-    pub fn set_line(&mut self, line: usize) {
-        assert!(line < self.line_count());
+    pub fn set_position(&mut self, line: usize, column: usize) {
+        let n = self.line_count();
+        assert!(line < n, "line {} is out of bounds of {:?}", line, 0..n);
+        let w = self.line_width(line).unwrap();
+        assert!(
+            column <= w,
+            "column {} is out of bounds of {:?}",
+            column,
+            0..w + 1
+        );
         self.line = line;
+        self.column = column;
     }
 
     pub fn set_column(&mut self, column: usize) {
@@ -197,15 +206,17 @@ mod tests {
     }
 
     #[test]
-    fn test_set_line() {
+    fn test_set_position() {
         let buffer = "aa aa\n\
                       bb bb";
         let mut editor = Core2::new(buffer, 0, 0).unwrap();
-        editor.set_line(0);
+        editor.set_position(0, 0);
         assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
 
-        editor.set_line(1);
+        editor.set_position(1, 1);
         assert_eq!(editor.line, 1);
+        assert_eq!(editor.column, 1);
     }
 
     #[test]
