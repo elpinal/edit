@@ -475,6 +475,9 @@ mod tests {
         );
         assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 4);
+
+        let mut editor = Core2::new(buffer, 1, 0).unwrap();
+        assert!(editor.insert_at('x', 2, 0).is_err());
     }
 
     #[test]
@@ -516,6 +519,9 @@ mod tests {
         );
         assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 0);
+
+        let mut editor = Core2::new(buffer, 1, 0).unwrap();
+        assert!(editor.delete_at(2, 0).is_err());
     }
 
     #[test]
