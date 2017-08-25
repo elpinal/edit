@@ -11,39 +11,39 @@ pub struct Core2 {
 }
 
 #[derive(Debug)]
-pub enum InitCore2Error {
+pub enum PositionError {
     Line(usize),
     Column(usize),
 }
 
-impl fmt::Display for InitCore2Error {
+impl fmt::Display for PositionError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            InitCore2Error::Line(n) => write!(f, "line {} is out of range", n),
-            InitCore2Error::Column(n) => write!(f, "column {} is out of range", n),
+            PositionError::Line(n) => write!(f, "line {} is out of range", n),
+            PositionError::Column(n) => write!(f, "column {} is out of range", n),
         }
     }
 }
 
-impl error::Error for InitCore2Error {
+impl error::Error for PositionError {
     fn description(&self) -> &str {
         match *self {
-            InitCore2Error::Line(..) => "line is out of range",
-            InitCore2Error::Column(..) => "column is out of range",
+            PositionError::Line(..) => "line is out of range",
+            PositionError::Column(..) => "column is out of range",
         }
     }
 }
 
 impl Core2 {
-    pub fn new(buffer: &str, line: usize, column: usize) -> Result<Core2, InitCore2Error> {
+    pub fn new(buffer: &str, line: usize, column: usize) -> Result<Core2, PositionError> {
         let buf: Vec<Vec<char>> = buffer.lines().map(|l| l.chars().collect()).collect();
 
         if buf.len() <= line {
-            return Err(InitCore2Error::Line(line));
+            return Err(PositionError::Line(line));
         }
         let width = buf[line].len();
         if width < column {
-            return Err(InitCore2Error::Column(column));
+            return Err(PositionError::Column(column));
         }
         Ok(Core2 {
             buffer: buf,
