@@ -183,6 +183,21 @@ impl Core2 {
         }
         Ok(())
     }
+
+    pub fn delete_at(&mut self, line: usize, column: usize) -> Result<(), PositionError> {
+        self.buffer
+            .get_mut(line)
+            .ok_or(PositionError::Line(line))
+            .and_then(|l| if column <= l.len() {
+                Ok(l.remove(column))
+            } else {
+                Err(PositionError::Column(column))
+            })?;
+        if self.line == line && column <= self.column {
+            self.column -= 1;
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
