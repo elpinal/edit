@@ -346,6 +346,10 @@ mod tests {
         assert_eq!(editor.column, 1);
     }
 
+    fn str_to_lines(s: &str) -> Vec<Vec<char>> {
+        s.lines().map(|l| l.chars().collect()).collect()
+    }
+
     #[test]
     fn test_insert_at() {
         let buffer = "aa aa\n\
@@ -354,11 +358,10 @@ mod tests {
         editor.insert_at('b', 0, 5);
         assert_eq!(
             editor.buffer,
-            "aa aab\n\
-             bb bb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aa aab\n\
+                 bb bb",
+            )
         );
         assert_eq!(editor.line, 0);
         assert_eq!(editor.column, 0);
@@ -367,11 +370,10 @@ mod tests {
         editor.insert_at('b', 0, 2);
         assert_eq!(
             editor.buffer,
-            "aab aa\n\
-             bb bb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aab aa\n\
+                 bb bb",
+            )
         );
         assert_eq!(editor.line, 0);
         assert_eq!(editor.column, 6);
@@ -380,11 +382,10 @@ mod tests {
         editor.insert_at('b', 0, 5);
         assert_eq!(
             editor.buffer,
-            "aa aab\n\
-             bb bb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aa aab\n\
+                 bb bb",
+            )
         );
         assert_eq!(editor.line, 0);
         assert_eq!(editor.column, 6);
@@ -393,11 +394,10 @@ mod tests {
         editor.insert_at('b', 1, 5);
         assert_eq!(
             editor.buffer,
-            "aa aa\n\
-             bb bbb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aa aa\n\
+                 bb bbb",
+            )
         );
         assert_eq!(editor.line, 0);
         assert_eq!(editor.column, 5);
@@ -406,11 +406,10 @@ mod tests {
         editor.insert_at('b', 1, 5);
         assert_eq!(
             editor.buffer,
-            "aa aa\n\
-             bb bbb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aa aa\n\
+                 bb bbb",
+            )
         );
         assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 4);
@@ -419,11 +418,10 @@ mod tests {
         editor.insert_at('b', 1, 2);
         assert_eq!(
             editor.buffer,
-            "aa aa\n\
-             bbb bb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aa aa\n\
+                 bbb bb",
+            )
         );
         assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 5);
@@ -432,11 +430,10 @@ mod tests {
         editor.insert_at('b', 1, 4);
         assert_eq!(
             editor.buffer,
-            "aa aa\n\
-             bb bbb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aa aa\n\
+                 bb bbb",
+            )
         );
         assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 5);
@@ -445,11 +442,10 @@ mod tests {
         editor.insert_at('b', 0, 4);
         assert_eq!(
             editor.buffer,
-            "aa aba\n\
-             bb bb"
-                .lines()
-                .map(|l| l.chars().collect())
-                .collect::<Vec<Vec<char>>>()
+            str_to_lines(
+                "aa aba\n\
+                 bb bb",
+            )
         );
         assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 4);
