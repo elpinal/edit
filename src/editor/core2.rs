@@ -10,7 +10,7 @@ pub struct Core2 {
     column: usize,
 }
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub enum PositionError {
     Line(usize),
     Column(usize),
@@ -68,23 +68,24 @@ impl Core2 {
         self.buffer.len()
     }
 
-    pub fn line_width(&self, line: usize) -> Option<usize> {
-        self.buffer.get(line).map(|l| l.len())
+    pub fn line_width(&self, line: usize) -> Result<usize, PositionError> {
+        self.buffer.get(line).map(|l| l.len()).ok_or(
+            PositionError::Line(
+                line,
+            ),
+        )
     }
 
     pub fn current_line_width(&self) -> usize {
         self.line_width(self.line).unwrap()
     }
 
-    pub fn offset(&self, line: usize, column: usize) -> Option<usize> {
-        if let Some(w) = self.line_width(line) {
-            if w < column {
-                return None;
-            }
-        } else {
-            return None;
+    pub fn offset(&self, line: usize, column: usize) -> Result<usize, PositionError> {
+        let w = self.line_width(line)?;
+        if w < column {
+            return Err(PositionError::Column(column));
         }
-        Some(
+        Ok(
             self.buffer[..line]
                 .iter()
                 .map(|l| l.len() + 1)
@@ -163,10 +164,10 @@ mod tests {
         let buffer = "aa aa";
         let editor = Core2::new(buffer, 0, 0).unwrap();
         let got = editor.line_width(0);
-        assert_eq!(got, Some(5));
+        assert_eq!(got, Ok(5));
 
         let got = editor.line_width(1);
-        assert_eq!(got, None);
+        assert_eq!(got, Err(PositionError::Line(1)));
     }
 
     #[test]
@@ -174,25 +175,25 @@ mod tests {
         let buffer = "aa aa";
         let editor = Core2::new(buffer, 0, 0).unwrap();
         let got = editor.offset(0, 0);
-        assert_eq!(got, Some(0));
+        assert_eq!(got, Ok(0));
 
         let got = editor.offset(0, 5);
-        assert_eq!(got, Some(5));
+        assert_eq!(got, Ok(5));
 
         let got = editor.offset(0, 6);
-        assert_eq!(got, None);
+        assert_eq!(got, Err(PositionError::Column(6)));
 
         let buffer = "aa aa\n\
                       bb bb";
         let editor = Core2::new(buffer, 0, 0).unwrap();
         let got = editor.offset(1, 0);
-        assert_eq!(got, Some(6));
+        assert_eq!(got, Ok(6));
 
         let got = editor.offset(1, 5);
-        assert_eq!(got, Some(11));
+        assert_eq!(got, Ok(11));
 
         let got = editor.offset(1, 6);
-        assert_eq!(got, None);
+        assert_eq!(got, Err(PositionError::Column(6)));
     }
 
     #[test]
