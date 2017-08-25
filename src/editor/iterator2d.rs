@@ -18,11 +18,11 @@ impl<'a> Iterator2d<'a> {
         self.column = column;
     }
 
-    fn position<P>(&mut self, mut predicate: P) -> Option<(usize, usize)> where P: FnMut(char) -> bool,
+    fn position<P>(&mut self, mut predicate: P) -> Option<(usize, usize)> where P: FnMut(&char) -> bool,
     {
         while let Some(l) = self.iter.get(self.line) {
             while let Some(x) = l.get(self.column) {
-                if predicate(x.clone()) {
+                if predicate(x) {
                     return Some((self.line, self.column));
                 }
                 self.column += 1;
@@ -43,6 +43,6 @@ mod tests {
         let vec = vec![vec!['a', 'b'], vec!['c', 'd', 'e', 'f']];
         let mut it = Iterator2d::new(&vec);
         it.skip(1, 1);
-        assert_eq!(it.position(|x| x == 'e'), Some((1, 2)));
+        assert_eq!(it.position(|&x| x == 'e'), Some((1, 2)));
     }
 }
