@@ -196,7 +196,7 @@ impl Core2 {
             } else {
                 Err(PositionError::Column(column))
             })?;
-        if self.line == line && column <= self.column {
+        if self.line == line && column < self.column {
             self.column -= 1;
         }
         Ok(())
@@ -491,6 +491,30 @@ mod tests {
             )
         );
         assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+
+        let mut editor = Core2::new(buffer, 1, 0).unwrap();
+        editor.delete_at(0, 2);
+        assert_eq!(
+            editor.buffer,
+            str_to_lines(
+                "aaaa\n\
+                 bb bb",
+            )
+        );
+        assert_eq!(editor.line, 1);
+        assert_eq!(editor.column, 0);
+
+        let mut editor = Core2::new(buffer, 1, 0).unwrap();
+        editor.delete_at(1, 0);
+        assert_eq!(
+            editor.buffer,
+            str_to_lines(
+                "aa aa\n\
+                 b bb",
+            )
+        );
+        assert_eq!(editor.line, 1);
         assert_eq!(editor.column, 0);
     }
 
