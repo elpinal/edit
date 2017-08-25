@@ -478,6 +478,23 @@ mod tests {
     }
 
     #[test]
+    fn test_delete_at() {
+        let buffer = "aa aa\n\
+                      bb bb";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+        editor.delete_at(1, 2);
+        assert_eq!(
+            editor.buffer,
+            str_to_lines(
+                "aa aa\n\
+                 bbbb",
+            )
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+    }
+
+    #[test]
     fn test_next_position() {
         let buffer = "**\n\
                       a**";
