@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 pub struct Iterator2d<'a> {
     iter: &'a [Vec<char>],
     line: usize,
