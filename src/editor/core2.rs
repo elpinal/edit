@@ -167,7 +167,7 @@ mod tests {
         assert_eq!(got, Ok(5));
 
         let got = editor.line_width(1);
-        assert_eq!(got, Err(PositionError::Line(1)));
+        assert_eq!(got.ok(), None);
     }
 
     #[test]
@@ -181,7 +181,7 @@ mod tests {
         assert_eq!(got, Ok(5));
 
         let got = editor.offset(0, 6);
-        assert_eq!(got, Err(PositionError::Column(6)));
+        assert_eq!(got.ok(), None);
 
         let buffer = "aa aa\n\
                       bb bb";
@@ -193,7 +193,7 @@ mod tests {
         assert_eq!(got, Ok(11));
 
         let got = editor.offset(1, 6);
-        assert_eq!(got, Err(PositionError::Column(6)));
+        assert_eq!(got.ok(), None);
     }
 
     #[test]
