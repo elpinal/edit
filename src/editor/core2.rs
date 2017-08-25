@@ -8,6 +8,8 @@ pub struct Core2 {
     buffer: Vec<Vec<char>>,
     line: usize,
     column: usize,
+
+    virtual_column: Option<usize>,
 }
 
 #[derive(PartialEq, Debug)]
@@ -49,6 +51,7 @@ impl Core2 {
             buffer: buf,
             line,
             column,
+            virtual_column: None,
         })
     }
 
@@ -113,11 +116,57 @@ impl Core2 {
     }
 
     pub fn move_left(&mut self, n: usize) {
+        let c = self.column;
         if self.column < n {
             self.column = 0;
+        } else {
+            self.column -= n;
+        }
+        if self.column != c {
+            self.virtual_column = None;
+        }
+    }
+
+    pub fn move_right(&mut self, n: usize) {
+        let w = self.current_line_width();
+        if self.column + n >= w {
+            self.column = w;
             return;
         }
-        self.column -= n;
+        self.column += n;
+    }
+
+    pub fn move_up(&mut self, n: usize) {
+        if self.line < n {
+            self.line = 0;
+        } else {
+            self.line -= n;
+        }
+        if let Some(vc) = self.virtual_column {
+            self.column = vc;
+        }
+        let w = self.current_line_width();
+        if w < self.column {
+            self.virtual_column = Some(self.column);
+            self.column = w;
+        }
+    }
+
+    pub fn move_down(&mut self, n: usize) {
+        let lc = self.line_count();
+        if self.line + n >= lc {
+            self.line = lc - 1;
+        } else {
+            self.line += n;
+        }
+        if let Some(vc) = self.virtual_column {
+            self.column = vc;
+        }
+        let w = self.current_line_width();
+        if w < self.column {
+            self.virtual_column = Some(self.column);
+            self.column = w;
+        }
     }
 }
 
