@@ -1,5 +1,7 @@
 #![allow(unused)]
 
+use std::fmt;
+
 #[derive(PartialEq, Debug)]
 pub struct Core2 {
     buffer: Vec<Vec<char>>,
@@ -7,16 +9,31 @@ pub struct Core2 {
     column: usize,
 }
 
+#[derive(Debug)]
+pub enum InitCore2Error {
+    Line(usize),
+    Column(usize),
+}
+
+impl fmt::Display for InitCore2Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            InitCore2Error::Line(n) => write!(f, "line {} is out of range", n),
+            InitCore2Error::Column(n) => write!(f, "column {} is out of range", n),
+        }
+    }
+}
+
 impl Core2 {
-    pub fn new(buffer: &str, line: usize, column: usize) -> Result<Core2, String> {
+    pub fn new(buffer: &str, line: usize, column: usize) -> Result<Core2, InitCore2Error> {
         let buf: Vec<Vec<char>> = buffer.lines().map(|l| l.chars().collect()).collect();
 
         if buf.len() <= line {
-            return Err(format!("Line {} is out of range [0, {})", line, buf.len()));
+            return Err(InitCore2Error::Line(line));
         }
         let width = buf[line].len();
         if width < column {
-            return Err(format!("Column {} is out of range [0, {}]", column, width));
+            return Err(InitCore2Error::Column(column));
         }
         Ok(Core2 {
             buffer: buf,
