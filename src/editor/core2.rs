@@ -187,6 +187,13 @@ impl Core2 {
         Ok(())
     }
 
+    pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) -> Result<(), PositionError> {
+        for ch in s.chars() {
+            self.insert_at(ch, line, column)?;
+        }
+        Ok(())
+    }
+
     pub fn delete_at(&mut self, line: usize, column: usize) -> Result<(), PositionError> {
         self.buffer
             .get_mut(line)
