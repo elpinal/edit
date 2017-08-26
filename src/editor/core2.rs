@@ -2,6 +2,7 @@
 
 use std::fmt;
 use std::error;
+use std::ops::Range;
 
 use editor::core::Position;
 use editor::iterator2d::Iterator2d;
@@ -213,6 +214,14 @@ impl Core2 {
         let w = self.line_width(line)?;
         for _ in 0..w {
             self.delete_at(line, 0)?;
+        }
+        Ok(())
+    }
+
+    pub fn delete_lines(&mut self, range: Range<usize>) -> Result<(), PositionError> {
+        let l = range.start;
+        for _ in range {
+            self.delete_line(l)?;
         }
         Ok(())
     }
