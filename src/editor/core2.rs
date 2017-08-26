@@ -209,6 +209,14 @@ impl Core2 {
         Ok(())
     }
 
+    pub fn delete_line(&mut self, line: usize) -> Result<(), PositionError> {
+        let w = self.line_width(line)?;
+        for _ in 0..w {
+            self.delete_at(line, 0)?;
+        }
+        Ok(())
+    }
+
     pub fn next_position(&self, f: fn(char) -> bool) -> Option<Position> {
         let mut it = Iterator2d::new(self.buffer());
         it.skip(self.line, self.column);
