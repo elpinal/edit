@@ -188,7 +188,12 @@ impl Core2 {
         Ok(())
     }
 
-    pub fn insert_string_at(&mut self, s: &str, line: usize, column: usize) -> Result<(), PositionError> {
+    pub fn insert_string_at(
+        &mut self,
+        s: &str,
+        line: usize,
+        column: usize,
+    ) -> Result<(), PositionError> {
         for ch in s.chars() {
             self.insert_at(ch, line, column)?;
         }
@@ -213,6 +218,16 @@ impl Core2 {
     pub fn delete_line(&mut self, line: usize) -> Result<(), PositionError> {
         if self.line_count() <= line {
             return Err(PositionError::Line(line));
+        }
+        if self.line_count() == 1 {
+            self.buffer = vec![];
+            return Ok(());
+        }
+        if line == self.line {
+            self.column = 0;
+        }
+        if self.line == self.line_count() - 1 {
+            self.line -= 1;
         }
         self.buffer.remove(line);
         Ok(())
@@ -584,12 +599,24 @@ mod tests {
                       bb bb";
         let mut editor = Core2::new(buffer, 0, 0).unwrap();
         editor.delete_line(1);
-        assert_eq!(
-            editor.buffer,
-            str_to_lines(
-                "aa aa",
-            )
-        );
+        assert_eq!(editor.buffer, str_to_lines("aa aa"));
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+
+        let mut editor = Core2::new(buffer, 1, 0).unwrap();
+        editor.delete_line(0);
+        assert_eq!(editor.buffer, str_to_lines("bb bb"));
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+
+        editor.delete_line(0);
+        assert_eq!(editor.buffer, str_to_lines(""));
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+
+        let mut editor = Core2::new(buffer, 1, 0).unwrap();
+        editor.delete_line(1);
+        assert_eq!(editor.buffer, str_to_lines("aa aa"));
         assert_eq!(editor.line, 0);
         assert_eq!(editor.column, 0);
     }
