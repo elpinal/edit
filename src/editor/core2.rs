@@ -517,6 +517,12 @@ mod tests {
 
         let mut editor = Core2::new(buffer, 1, 0).unwrap();
         assert!(editor.insert_at('x', 2, 0).is_err());
+
+        let buffer = "💖a";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+        editor.insert_at('💖', 0, 2);
+        let want = str_to_lines("💖a💖");
+        assert_eq!(editor.buffer, want);
     }
 
 
