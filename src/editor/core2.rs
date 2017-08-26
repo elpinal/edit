@@ -504,6 +504,36 @@ mod tests {
         assert!(editor.insert_at('x', 2, 0).is_err());
     }
 
+
+    #[test]
+    fn test_insert_string_at() {
+        let buffer = "aa aa\n\
+                      bb bb";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+        editor.insert_string_at("ccc", 0, 5);
+        assert_eq!(
+            editor.buffer,
+            str_to_lines(
+                "aa aaccc\n\
+                 bb bb",
+            )
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+
+        let mut editor = Core2::new(buffer, 0, 5).unwrap();
+        editor.insert_string_at("ccc", 0, 2);
+        assert_eq!(
+            editor.buffer,
+            str_to_lines(
+                "aaccc aa\n\
+                 bb bb",
+            )
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 8);
+    }
+
     #[test]
     fn test_delete_at() {
         let buffer = "aa aa\n\
