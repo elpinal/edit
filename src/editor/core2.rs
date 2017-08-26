@@ -211,10 +211,10 @@ impl Core2 {
     }
 
     pub fn delete_line(&mut self, line: usize) -> Result<(), PositionError> {
-        let w = self.line_width(line)?;
-        for _ in 0..w {
-            self.delete_at(line, 0)?;
+        if self.line_count() <= line {
+            return Err(PositionError::Line(line));
         }
+        self.buffer.remove(line);
         Ok(())
     }
 
@@ -576,6 +576,22 @@ mod tests {
 
         let mut editor = Core2::new(buffer, 1, 0).unwrap();
         assert!(editor.delete_at(2, 0).is_err());
+    }
+
+    #[test]
+    fn test_delete_line() {
+        let buffer = "aa aa\n\
+                      bb bb";
+        let mut editor = Core2::new(buffer, 0, 0).unwrap();
+        editor.delete_line(1);
+        assert_eq!(
+            editor.buffer,
+            str_to_lines(
+                "aa aa",
+            )
+        );
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
     }
 
     #[test]
