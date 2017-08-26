@@ -622,6 +622,19 @@ mod tests {
     }
 
     #[test]
+    fn test_delete_lines() {
+        let buffer = "aa aa\n\
+                      bb bb";
+        let mut editor = Core2::new(buffer, 1, 0).unwrap();
+        editor.delete_lines(0..1);
+        assert_eq!(editor.buffer, str_to_lines("bb bb"));
+        assert_eq!(editor.line, 0);
+        assert_eq!(editor.column, 0);
+
+        assert!(editor.delete_lines(0..10).is_err());
+    }
+
+    #[test]
     fn test_next_position() {
         let buffer = "**\n\
                       a**";
